@@ -63,19 +63,19 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVa
 
         try {
             %res2 = do for %res.kv -> $k, $v {
-                $k => do for $v.kv -> $k1, $v1 { $k1 => $v1.map({ $_{$valueVarName} }).sum }
+                $k => Hash( do for $v.kv -> $k1, $v1 { $k1 => $v1.map({ $_{$valueVarName} }).sum } )
             }
         }
 
         if $! {
             note "Not all records allow summation with the key $valueVarName.";
-            return Nil
+            return Nil;
         }
 
     } else {
 
         %res2 = do for %res.kv -> $k, $v {
-            $k => do for $v.kv -> $k1, $v1 { $k1 => $v1.elems }
+            $k => Hash( do for $v.kv -> $k1, $v1 { $k1 => $v1.elems } )
         }
 
     }
@@ -91,11 +91,10 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_[$rowIndex], $_[$columnIndex]) } ).duckmap({ $_.duckmap({$_[$valueIndex]}).sum });
 
-
     # Note that we could have (likely) optimized the case when @tbl an array-of-arrays using
     # if @tbl.isa(Array[Array]) { ...
 
-    # Check its array-of-arrays
+    # Coerce into array-of-arrays
     my Array @arr-of-arrays;
     try {
         @arr-of-arrays = @tbl
@@ -123,19 +122,19 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
 
         try {
             %res2 = do for %res.kv -> $k, $v {
-                $k => do for $v.kv -> $k1, $v1 { $k1 => $v1.map({ $_[$valueIndex] }).sum }
+                $k => Hash( do for $v.kv -> $k1, $v1 { $k1 => $v1.map({ $_[$valueIndex] }).sum } )
             }
         }
 
         if $! {
             note "Not all records allow summation with the index $valueIndex.";
-            return Nil
+            return Nil;
         }
 
     } else {
 
         %res2 = do for %res.kv -> $k, $v {
-            $k => do for $v.kv -> $k1, $v1 { $k1 => $v1.elems }
+            $k => Hash( do for $v.kv -> $k1, $v1 { $k1 => $v1.elems } )
         }
 
     }
