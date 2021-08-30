@@ -4,7 +4,7 @@ use lib './lib';
 use lib '.';
 
 use Text::CSV;
-use Data::Reshapers;
+use Data::Reshapers::CrossTabulate;
 
 my $csv = Text::CSV.new;
 my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
