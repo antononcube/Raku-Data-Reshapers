@@ -7,11 +7,14 @@ different data structures (full arrays, Red tables, Text::CSV tables.)
 
 =head1 Synopsis
 
+    # To run the code below make sure you have this CSV file :
+    #    "https://raw.githubusercontent.com/antononcube/MathematicaVsR/master/Data/MathematicaVsR-Data-Titanic.csv"
+
     use Data::Reshapers;
     use Text::CSV;
 
     my $csv = Text::CSV.new;
-    my $fileName = %?RESOURCES<dfTitanic.csv>;
+    my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
     my @tbl = $csv.csv(in => $fileName, headers => "auto");
 
     my $xtab1 = cross-tabulate(@tbl, 'passengerClass', 'passengerSex');
@@ -94,6 +97,16 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     # Note that we could have (likely) optimized the case when @tbl an array-of-arrays using
     # if @tbl.isa(Array[Array]) { ...
 
+    say @tbl.shape;
+    say @tbl.raku;
+    if @tbl.shape.elems > 1 {
+        note 'Cannot work with multi-dimensional arrays. Sorry.';
+        return Nil;
+    } elsif @tbl.shape.elems == 2 {
+        my @arr = @tbl.flat.rotor( @tbl.shape()[1] )>>.Array;
+        cross-tabulate( @arr, $rowIndex, $columnIndex, $valueIndex )
+    }
+
     # Coerce into array-of-arrays
     my Array @arr-of-arrays;
     try {
@@ -101,6 +114,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     }
 
     if $! {
+        note $!;
         note 'The first argument is expected to be an array that is or can be coerced into an array-of-arrays if the rest of the arguments are integers.';
         return Nil;
     }
