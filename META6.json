@@ -1,0 +1,36 @@
+{
+  "perl": "6.d",
+  "name": "Data::Reshapers",
+  "api": "1",
+  "auth": "github:antononcube",
+  "version": "0.1.0",
+  "description": "Data reshaping functions for different data structures (full arrays, Red tables, Text::CSV tables.)",
+  "authors": [
+    "Anton Antonov"
+  ],
+  "license": "Artistic-2.0",
+  "provides": {
+    "Data::Reshapers": "lib/Data/Reshapers.rakumod"
+  },
+  "depends": [
+    "Red",
+    "Text:CSV"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "resources": [
+    "dfTitanic.csv"
+  ],
+  "tags": [
+    "contingency table",
+    "data",
+    "dataset",
+    "long form",
+    "long format",
+    "narrow format",
+    "schema",
+    "wide form",
+    "wide format"
+  ],
+  "source-url": "https://github.com/antononcube/Raku-Data-Reshapers.git"
+}
