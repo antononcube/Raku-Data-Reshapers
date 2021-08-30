@@ -54,3 +54,15 @@ say @tbl1a;
 
 say cross-tabulate(@tbl1a, 10, 3, 2);
 say cross-tabulate(@tbl1a, 1, 3, 2);
+
+
+say "=" x 60;
+say 'Mulit-dimensional array';
+say "-" x 60;
+
+my @rarr[12;5] = map { [<a b c d e> X~ $_] }, (1...5).roll(12);
+#my @rarr = map { [<a b c d e> X~ $_] }, (1...5).roll(12);
+
+say @rarr.raku;
+
+say cross-tabulate( @rarr, 1, 3);
