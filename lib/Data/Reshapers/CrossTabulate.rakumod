@@ -52,7 +52,7 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVa
     # Break-down into groups
     my %res;
     try {
-        %res = @arr-of-hashes.classify({ ($_{$rowVarName}, $_{$columnVarName}) });
+        %res = @arr-of-hashes.classify({ $_{($rowVarName, $columnVarName)} });
     }
 
     if $! {
@@ -119,7 +119,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     # Break-down into groups
     my %res;
     try {
-        %res = @arr-of-arrays.classify({ ($_[$rowIndex], $_[$columnIndex]) });
+        %res = @arr-of-arrays.classify({ $_[($rowIndex, $columnIndex)] });
     }
 
     if $! {
