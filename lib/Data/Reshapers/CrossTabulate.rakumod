@@ -97,16 +97,16 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     # Note that we could have (likely) optimized the case when @tbl an array-of-arrays using
     # if @tbl.isa(Array[Array]) { ...
 
-    if @tbl.shape.elems > 1 {
+    if @tbl.isa(Array) and @tbl.shape.elems > 2 {
         note 'Cannot work with multi-dimensional arrays. Sorry.';
         return Nil;
-    } elsif @tbl.shape.elems == 2 {
-        my @arr = @tbl.flat.rotor( @tbl.shape()[1] )>>.Array;
-        cross-tabulate( @arr, $rowIndex, $columnIndex, $valueIndex )
+    } elsif @tbl.isa(Array)  and @tbl.shape.elems == 2 {
+        my $arr = @tbl.flat.rotor( @tbl.shape()[1] );
+        return cross-tabulate( $arr, $rowIndex, $columnIndex, $valueIndex )
     }
 
     # Coerce into array-of-arrays
-    my Array @arr-of-arrays;
+    my Positional @arr-of-arrays;
     try {
         @arr-of-arrays = @tbl
     }
