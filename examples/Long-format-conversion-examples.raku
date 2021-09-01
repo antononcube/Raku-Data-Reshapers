@@ -17,4 +17,10 @@ say "-" x 60;
 
 my @tbl0 = $csv.csv(in => $fileName, headers => "auto");
 
-put to-long-format( @tbl0, ["id"], ["passengerSex", "passengerClass", "passengerSurvival"] );
+#.say for to-long-format( @tbl0[^4], ["id"], ["passengerSex", "passengerClass", "passengerSurvival"], variablesTo => "VAR", valuesTo => "VAL2" );
+
+.say for to-long-format( @tbl0[^4], [], [], variablesTo => "VAR", valuesTo => "VAL2" );
+
+#.say for to-long-format( @tbl0[^4], [], 'AUTO', variablesTo => "VAR", valuesTo => "VAL2" );
+
+#.say for to-long-format( @tbl0[^4], Nil, Nil, variablesTo => "VAR", valuesTo => "VAL2" );
