@@ -24,15 +24,17 @@ say "=" x 60;
 say "Sample data";
 say "-" x 60;
 
-.say for @tbl0[^4];
+my @tbl1 = @tbl0.roll(5);
+
+.say for @tbl1;
 
 say "=" x 60;
 say "To long format";
 say "-" x 60;
 
-my @res = to-long-format( @tbl0[^4], [], [], variablesTo => "VAR", valuesTo => "VAL2" );
+my @lfRes = to-long-format( @tbl1, [], [], variablesTo => "VAR", valuesTo => "VAL2" );
 
-.say for @res;
+.say for @lfRes;
 
 #.say for to-long-format( @tbl0[^4], [], 'AUTO', variablesTo => "VAR", valuesTo => "VAL2" );
 
@@ -42,6 +44,6 @@ say "=" x 60;
 say "To wide format";
 say "-" x 60;
 
-my @wres = to-wide-format( @res, "AutomaticKey", "VAR", "VAL2");
+my @wfRes = to-wide-format( @lfRes, "AutomaticKey", "VAR", "VAL2");
 
-.say for @wres;
+.say for @wfRes;
