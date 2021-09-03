@@ -4,7 +4,7 @@
   "api": "1",
   "auth": "github:antononcube",
   "version": "0.1.0",
-  "description": "Data reshaping functions for different data structures (full arrays, Red tables, Text::CSV tables.)",
+  "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
   "authors": [
     "Anton Antonov"
   ],
@@ -12,7 +12,8 @@
   "provides": {
     "Data::Reshapers": "lib/Data/Reshapers.rakumod",
     "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
-    "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod"
+    "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
+    "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod"
   },
   "depends": [
     "Red",
