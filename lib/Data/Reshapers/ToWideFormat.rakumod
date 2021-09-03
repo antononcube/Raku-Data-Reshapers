@@ -101,13 +101,26 @@ multi to-wide-format(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColN
                 my $aggrRes = &aggregationFunction( $p.value.map({ $_{$valueColName} }) );
 
                 # Delete the pair corresponding to the aggregated column
-                my %h = $p.value[0]; %h{$valueColName}:delete;
+                my %h = $p.value[0];
+                my $var = %h{$variableColName}:delete;
+                %h{$valueColName}:delete;
                 # %h{%h.keys.grep(* !(elem) [$valueColName])}:p
 
-                %h.push( [$valueColName] Z=> [$aggrRes] )
+                %h.push( [$var] Z=> [$aggrRes] )
             };
 
-    #@res = @res.reduce( { $^a.append( $^b )});
+    # Breakdown by ID columns only
+    @res = @res.categorize({ $_{ |@idColsLocal }.join($sep) });
+
+    # Make the wide form records
+    @res =
+            do for @res -> $p {
+                # Merge the hashes for each unique combination of values from the ID columns
+                my %hres;
+                %hres = do for |$p.value -> %h {
+                    %hres = %hres , %h
+                }
+            }
 
     # Result
     return @res.sort({ $_{@idColsLocal} });
