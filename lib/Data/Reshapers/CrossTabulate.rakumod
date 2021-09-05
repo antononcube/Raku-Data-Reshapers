@@ -100,7 +100,7 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str $columnVarName?, Str $valueVar
 
 #-----------------------------------------------------------
 #| Count or sum using two or three indexes respectively
-multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex = -1, Int $valueIndex = -1) {
+multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt $columnIndex?, UInt $valueIndex?) {
 
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_[$rowIndex], $_[$columnIndex]) } ).duckmap({ $_.duckmap({$_[$valueIndex]}).sum });
@@ -130,7 +130,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex = -1, Int $valu
     # Break-down into groups
     my %res;
     try {
-        if $columnIndex >= 0 {
+        with $columnIndex {
             %res = @arr-of-arrays.classify({ $_[($rowIndex, $columnIndex)] });
         } else {
             %res = @arr-of-arrays.classify({ ('ONE', $_[($rowIndex)]) });
@@ -144,7 +144,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex = -1, Int $valu
 
     # Summarize per group
     my %res2;
-    if $valueIndex >= 0 {
+    with $valueIndex {
 
         try {
             %res2 = do for %res.kv -> $k, $v {
@@ -166,7 +166,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex = -1, Int $valu
     }
 
     # If no second column is specified return single hash
-    if $columnIndex < 0 {
+    without $columnIndex {
         %res2 = %res2{'ONE'}
     }
 
