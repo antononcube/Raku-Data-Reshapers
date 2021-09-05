@@ -27,7 +27,7 @@ dfTitanic[GroupBy[#passengerClass &], Total[#passengerAge & /@ #] &]
 ```
 )
 
-plan 21;
+plan 23;
 
 ## 1
 ok $fileName.IO.e;
@@ -136,27 +136,38 @@ lives-ok
         "one-column-cross-tabulation counts over array of hashes";
 
 ## 18
+my Int %res42;
+lives-ok
+        { %res42 = cross-tabulate(@tblNoHeaders, 1) },
+        "one-column-cross-tabulation counts over array of arrays";
+
+## 19
 ok
         [&&] (do for %res40.keys -> $k { %res40{$k} == %res41{$k} }),
                 "one-column-cross-tabulation counts expected equivalence for array of hashes";
+
+## 20
+ok
+        [&&] (do for %res40.keys -> $k { %res40{$k} == %res42{$k} }),
+                "one-column-cross-tabulation counts expected equivalence for array of arrays";
 
 ##-----------------------------------------------------------
 ## Sums for one column
 ##-----------------------------------------------------------
 
-## 19
+## 21
 my Int %res50 = "1st" => 11131, "2nd" => 7574, "3rd" => 12122;
 ok
         %res50.isa(Hash[Int]),
         "expected result for sums with one column";
 
-## 20
+## 22
 my Int %res51;
 lives-ok
         { %res51 = cross-tabulate(@tblHeaders, 'passengerClass', '', 'passengerAge') },
         "one-column-cross-tabulation sums over array of hashes";
 
-## 21
+## 23
 ok
         [&&] (do for %res50.keys -> $k { %res50{$k} == %res51{$k} }),
                 "one-column-cross-tabulation sums expected equivalence for array of hashes";
