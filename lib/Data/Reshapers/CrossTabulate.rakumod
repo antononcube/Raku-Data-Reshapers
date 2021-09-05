@@ -33,7 +33,7 @@ proto cross-tabulate(|) is export {*}
 
 #-----------------------------------------------------------
 #| Count or sum using two or three keys respectively
-multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVarName = '') {
+multi cross-tabulate(@tbl, Str:D $rowVarName, Str $columnVarName?, Str $valueVarName? ) {
 
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_{$rowVarName}, $_{$columnVarName}) } ).duckmap({ $_.duckmap({$_{$valueVarName}}).sum });
@@ -52,7 +52,13 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVa
     # Break-down into groups
     my %res;
     try {
-        %res = @arr-of-hashes.classify({ $_{($rowVarName, $columnVarName)} });
+        if $columnVarName {
+            %res = @arr-of-hashes.classify({ $_{($rowVarName, $columnVarName)} })
+        } else {
+            # If no second column is specified classify with "default" first level key,
+            # in order to obtain %res that is similar to 'main' case.
+            %res = @arr-of-hashes.classify({ ('ONE', $_{$rowVarName}) })
+        };
     }
 
     if $! {
@@ -62,7 +68,7 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVa
 
     # Summarize per group
     my %res2;
-    if $valueVarName.chars > 0 {
+    if $valueVarName {
 
         try {
             %res2 = do for %res.kv -> $k, $v {
@@ -83,13 +89,18 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str:D $columnVarName, Str $valueVa
 
     }
 
+    # If no second column is specified return single hash
+    if not $columnVarName {
+        %res2 = %res2{'ONE'}
+    }
+
     # Result
     return %res2;
 }
 
 #-----------------------------------------------------------
 #| Count or sum using two or three indexes respectively
-multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueIndex = -1) {
+multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex = -1, Int $valueIndex = -1) {
 
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_[$rowIndex], $_[$columnIndex]) } ).duckmap({ $_.duckmap({$_[$valueIndex]}).sum });
@@ -119,7 +130,11 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
     # Break-down into groups
     my %res;
     try {
-        %res = @arr-of-arrays.classify({ $_[($rowIndex, $columnIndex)] });
+        if $columnIndex >= 0 {
+            %res = @arr-of-arrays.classify({ $_[($rowIndex, $columnIndex)] });
+        } else {
+            %res = @arr-of-arrays.classify({ ('ONE', $_[($rowIndex)]) });
+        }
     }
 
     if $! {
@@ -148,6 +163,11 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt:D $columnIndex, Int $valueInde
             $k => Hash( do for $v.kv -> $k1, $v1 { $k1 => $v1.elems } )
         }
 
+    }
+
+    # If no second column is specified return single hash
+    if $columnIndex < 0 {
+        %res2 = %res2{'ONE'}
     }
 
     # Result
