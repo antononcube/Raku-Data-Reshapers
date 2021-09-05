@@ -22,10 +22,12 @@ The tests below can be derived / verified with the following Mathematica code:
 dfTitanic = ResourceFunction["ImportCSVToDataset"]["https://raw.githubusercontent.com/antononcube/MathematicaVsR/master/Data/MathematicaVsR-Data-Titanic.csv"]
 ResourceFunction["CrossTabulate"][dfTitanic[[All, {"passengerClass", "passengerSex"}]]]
 ResourceFunction["CrossTabulate"][dfTitanic[[All, {"passengerClass", "passengerSex", "passengerAge"}]]]
+dfTitanic[GroupBy[#passengerClass &], Length]
+dfTitanic[GroupBy[#passengerClass &], Total[#passengerAge & /@ #] &]
 ```
 )
 
-plan 15;
+plan 21;
 
 ## 1
 ok $fileName.IO.e;
@@ -41,7 +43,11 @@ ok @array-of-arrays.isa(Array[Array]);
 ##-----------------------------------------------------------
 
 ## 4
-my Hash %res0 = "1st" => %(:female(144), :male(179)), "2nd" => %(:female(106), :male(171)), "3rd" => %(:male(493), :female(216));
+my Hash %res0 = "1st" => %(:female(144), :male(179)), "2nd" => %(:female(106), :male(171)), "3rd" => %(:male(493),
+                                                                                                       :female(216));
+ok
+        %res0.isa(Hash[Hash]),
+        "expected result for counts";
 
 ## 5
 my Hash %res1;
@@ -78,7 +84,11 @@ ok
 ##-----------------------------------------------------------
 
 ## 10
-my Hash %res30 = "1st" => %(:female(144), :male(179)), "2nd" => %(:female(106), :male(171)), "3rd" => %(:male(493), :female(216));
+my Hash %res30 = "1st" => %(:female(144), :male(179)), "2nd" => %(:female(106), :male(171)), "3rd" => %(:male(493),
+                                                                                                        :female(216));
+ok
+        %res30.isa(Hash[Hash]),
+        "expected result for sums";
 
 ## 11
 my Hash %res31;
@@ -101,12 +111,54 @@ is
 
 ## 14
 ok
-        [&&] (do for @two-keys -> $p { %res0{$p[0]}{$p[1]} == %res1{$p[0]}{$p[1]} }),
+        [&&] (do for @two-keys -> $p { %res30{$p[0]}{$p[1]} == %res31{$p[0]}{$p[1]} }),
                 "cross tabulation sum expected equivalence for array of hashes";
 
 ## 15
 ok
-        [&&] (do for @two-keys -> $p { %res0{$p[0]}{$p[1]} == %res2{$p[0]}{$p[1]} }),
+        [&&] (do for @two-keys -> $p { %res30{$p[0]}{$p[1]} == %res32{$p[0]}{$p[1]} }),
                 "cross tabulation sum expected equivalence for array of arrays";
+
+##-----------------------------------------------------------
+## Counts for one column
+##-----------------------------------------------------------
+
+## 16
+my Int %res40 = "1st" => 323, "2nd" => 277, "3rd" => 709;
+ok
+        %res40.isa(Hash[Int]),
+        "expected result for counts with one column";
+
+## 17
+my Int %res41;
+lives-ok
+        { %res41 = cross-tabulate(@tblHeaders, 'passengerClass') },
+        "one-column-cross-tabulation counts over array of hashes";
+
+## 18
+ok
+        [&&] (do for %res40.keys -> $k { %res40{$k} == %res41{$k} }),
+                "one-column-cross-tabulation counts expected equivalence for array of hashes";
+
+##-----------------------------------------------------------
+## Sums for one column
+##-----------------------------------------------------------
+
+## 19
+my Int %res50 = "1st" => 11131, "2nd" => 7574, "3rd" => 12122;
+ok
+        %res50.isa(Hash[Int]),
+        "expected result for sums with one column";
+
+## 20
+my Int %res51;
+lives-ok
+        { %res51 = cross-tabulate(@tblHeaders, 'passengerClass', '', 'passengerAge') },
+        "one-column-cross-tabulation sums over array of hashes";
+
+## 21
+ok
+        [&&] (do for %res50.keys -> $k { %res50{$k} == %res51{$k} }),
+                "one-column-cross-tabulation sums expected equivalence for array of hashes";
 
 done-testing;
