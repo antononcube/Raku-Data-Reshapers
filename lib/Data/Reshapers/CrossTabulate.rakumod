@@ -29,7 +29,7 @@ different data structures coercible to full-arrays.
 unit module Data::Reshapers::CrossTabulate;
 
 #===========================================================
-proto cross-tabulate(|) is export {*}
+our proto cross-tabulate(|) is export {*}
 
 #-----------------------------------------------------------
 #| Count or sum using two or three keys respectively
