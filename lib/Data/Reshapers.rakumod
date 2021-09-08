@@ -28,5 +28,22 @@ different data structures (full arrays, Red tables, Text::CSV tables.)
 
 unit module Data::Reshapers;
 
+use Text::CSV;
+
+#===========================================================
+
+#| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
+sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is export {
+    my $csv = Text::CSV.new;
+    my $fileHandle = %?RESOURCES<dfTitanic.csv>;
+
+    my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
+
+    return @tbl;
+}
+#| Ingests the resource file "dfTitanic.csv" of Data::Reshapers.
+
+
 #===========================================================
 proto data-reshape(|) is export {*}
+
