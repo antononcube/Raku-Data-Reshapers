@@ -3,17 +3,15 @@ use Test;
 use lib './lib';
 use lib '.';
 
-use Text::CSV;
+use Data::Reshapers;
 use Data::Reshapers::CrossTabulate;
 
-my $csv = Text::CSV.new;
-my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
-
-my @tblHeaders = $csv.csv(in => $fileName, headers => "auto");
+my @tblHeaders = get-titanic-dataset(headers => 'auto');
 my Hash @array-of-hashes = @tblHeaders;
 
-my @tblNoHeaders = $csv.csv(in => $fileName, headers => "none");
+my @tblNoHeaders = get-titanic-dataset(headers => 'none');
 my Array @array-of-arrays = @tblNoHeaders;
+
 
 #`(
 The tests below can be derived / verified with the following Mathematica code:
@@ -30,7 +28,7 @@ dfTitanic[GroupBy[#passengerClass &], Total[#passengerAge & /@ #] &]
 plan 23;
 
 ## 1
-ok $fileName.IO.e;
+ok @tblHeaders.isa(Array) && @tblHeaders.elems >= 1300;
 
 ## 2
 ok @array-of-hashes.isa(Array[Hash]);
