@@ -3,22 +3,21 @@
 use lib './lib';
 use lib '.';
 
-use Text::CSV;
 use Data::Reshapers;
 use Data::Reshapers::CrossTabulate;
 
 ##===========================================================
-my $csv = Text::CSV.new;
-my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
+#my $csv = Text::CSV.new;
+#my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
 
 say "=" x 60;
 say 'Array of hashes';
 say "-" x 60;
 
-my $tbl0 = $csv.csv(in => $fileName, headers => "auto");
+my $tbl0 = get-titanic-dataset(headers => 'auto');
 
 say cross-tabulate($tbl0, 'passengerClass', 'passengerSex').raku;
-say cross-tabulate($tbl0, 'passengerClass', 'passengerSex', 'passengerAge').raku;
+say data-reshape('cross-tabulate', $tbl0, 'passengerClass', 'passengerSex', 'passengerAge').raku;
 
 say cross-tabulate($tbl0, 1, 3);
 
@@ -37,7 +36,8 @@ say "=" x 60;
 say 'Array of arrays';
 say "-" x 60;
 
-my @tbl1 = $csv.csv(in => $fileName, headers => "none");
+#my @tbl1 = $csv.csv(in => $fileName, headers => "none");
+my @tbl1 = get-titanic-dataset(headers => 'none');
 
 say cross-tabulate(@tbl1, 1, 3);
 say cross-tabulate(@tbl1, 1, 3, 2);
