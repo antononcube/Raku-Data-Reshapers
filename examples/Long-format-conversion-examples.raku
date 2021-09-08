@@ -3,20 +3,17 @@
 use lib './lib';
 use lib '.';
 
-use Text::CSV;
 use Data::Reshapers;
 use Data::Reshapers::ToLongFormat;
 use Data::Reshapers::ToWideFormat;
 
 ##===========================================================
-my $csv = Text::CSV.new;
-my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
-
 say "=" x 60;
 say 'Array of hashes';
 say "-" x 60;
 
-my @tbl0 = $csv.csv(in => $fileName, headers => "auto");
+my @tbl0 = get-titanic-dataset( headers => 'auto') ;
+say @tbl0.elems, ' ', @tbl0[0].keys.elems;
 
 #.say for to-long-format( @tbl0[^4], ["id"], ["passengerSex", "passengerClass", "passengerSurvival"], variablesTo => "VAR", valuesTo => "VAL2" );
 
@@ -32,7 +29,11 @@ say "=" x 60;
 say "To long format";
 say "-" x 60;
 
+say 'before @tbl1[0] : ', @tbl1[0];
+
 my @lfRes = to-long-format( @tbl1, [], [], variablesTo => "VAR", valuesTo => "VAL2" );
+
+say 'after @tbl1[0] : ', @tbl1[0];
 
 .say for @lfRes;
 
