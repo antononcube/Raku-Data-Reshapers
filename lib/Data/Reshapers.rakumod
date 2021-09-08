@@ -29,11 +29,14 @@ different data structures (full arrays, Red tables, Text::CSV tables.)
 unit module Data::Reshapers;
 
 use Text::CSV;
+use Data::Reshapers::CrossTabulate;
+use Data::Reshapers::ToLongFormat;
+use Data::Reshapers::ToWideFormat;
 
 #===========================================================
 
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
-sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is export {
+our sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is export {
     my $csv = Text::CSV.new;
     my $fileHandle = %?RESOURCES<dfTitanic.csv>;
 
@@ -45,5 +48,16 @@ sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is export {
 
 
 #===========================================================
-proto data-reshape(|) is export {*}
+our proto data-reshape(|) is export {*}
 
+multi data-reshape('cross-tabulate', *@args ) {
+    cross-tabulate( |@args )
+}
+
+multi data-reshape('to-long-format', *@args ) {
+    to-long-format( |@args )
+}
+
+multi data-reshape('to-wide-format', *@args ) {
+    to-wide-format( |@args )
+}
