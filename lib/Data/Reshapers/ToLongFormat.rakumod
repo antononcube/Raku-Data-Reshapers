@@ -13,7 +13,7 @@ into corresponding long formats. The central data structure is a positional (lis
 unit module Data::Reshapers::ToLongFormat;
 
 #===========================================================
-proto to-long-format(|) is export {*}
+our proto to-long-format(|) is export {*}
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
@@ -42,8 +42,9 @@ multi to-long-format(@tbl, $idColsSpec, $valColsSpec, Str:D :$automaticKeysTo = 
         @idColsLocal = [$automaticKeysTo];
 
         # Add automatic IDs.
+        # Note the cloning of each record -- this might be reconsidered for optimization purposes.
         my $k = 0;
-        @arr-of-hashes = @arr-of-hashes.map({ $_.push( [$automaticKeysTo] Z=> [$k++] ) });
+        @arr-of-hashes = @arr-of-hashes.map({ $_.clone.push( [$automaticKeysTo] Z=> [$k++] ) });
 
         @allCols.push( $automaticKeysTo );
 
