@@ -13,7 +13,7 @@ into corresponding wide formats. The central data structure is a positional (lis
 unit module Data::Reshapers::ToWideFormat;
 
 #===========================================================
-proto auto-aggregator(|) is export {*}
+our proto auto-aggregator(|) is export {*}
 
 multi auto-aggregator(Num @vec ) { @vec.sum }
 
@@ -28,7 +28,7 @@ multi auto-aggregator($vec) {
 
 
 #===========================================================
-proto to-wide-format(|) is export {*}
+our proto to-wide-format(|) is export {*}
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
