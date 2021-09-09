@@ -84,6 +84,35 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
 
 ------
 
+## TODO
+
+1. [ ] Simpler more convenient interface.
+
+   - Currently, a user have to specify four different namespaces
+     in order to be able to use all package functions.
+    
+2. [ ] More extensive long format tests.
+
+3. [ ] More extensive wide format tests.
+
+4. [ ] Implement verifications for
+   
+    - [X] Positional-of-hashes
+      
+    - [X] Positional-of-arrays
+    
+    - [ ] Positional-of-hashes, each record of which has:
+      
+       - [ ] Same keys 
+       - [ ] Same type of values of corresponding keys
+      
+    - [ ] Positional-of-arrays, each record of which has:
+    
+       - [ ] Same length
+       - [ ] Same type of values of corresponding elements
+    
+------
+
 ## References
 
 ### Articles
