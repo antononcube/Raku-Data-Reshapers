@@ -16,8 +16,15 @@ unit module Data::Reshapers::ToLongFormat;
 our proto to-long-format(|) is export {*}
 
 #-----------------------------------------------------------
+multi to-long-format(@tbl) {
+    to-long-format(@tbl, [], [])
+}
+
+#-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
-multi to-long-format(@tbl, $idColsSpec, $valColsSpec, Str:D :$automaticKeysTo = 'AutomaticKey', Str:D :$variablesTo = 'Variable',
+multi to-long-format(@tbl, $idColsSpec, $valColsSpec,
+                     Str:D :$automaticKeysTo = 'AutomaticKey',
+                     Str:D :$variablesTo = 'Variable',
                      Str:D :$valuesTo = 'Value') {
 
     # Coerce into array-of-hashes

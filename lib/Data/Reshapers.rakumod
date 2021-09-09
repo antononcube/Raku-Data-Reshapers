@@ -50,14 +50,14 @@ our sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is expor
 #===========================================================
 our proto data-reshape(|) is export {*}
 
-multi data-reshape('cross-tabulate', *@args ) {
+multi data-reshape('cross-tabulate', **@args ) {
     cross-tabulate( |@args )
 }
 
-multi data-reshape('to-long-format', *@args ) {
+multi data-reshape('to-long-format', **@args ) {
     to-long-format( |@args )
 }
 
-multi data-reshape('to-wide-format', *@args ) {
+multi data-reshape('to-wide-format', **@args ) {
     to-wide-format( |@args )
 }
