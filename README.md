@@ -1,26 +1,19 @@
 # Raku Data::Reshapers
 
-This Raku package has data reshaping functions for different data structures that are coercible to full arrays.
+This Raku package has data reshaping functions for different data structures that are 
+coercible to full arrays.
 
-Here is list of the supported data structures and reshaping operations over them:
-
+The supported data structures are:
   - Positional-of-hashes
-    - Cross tabulation
-    - Long format
-    - Wide format
-      
   - Positional-of-arrays
-    - Cross tabulation
-    - Long format
-    - Wide format  
  
-The three functions provided yb the package:
+The three data reshaping provided by the package over those data structures are:
 
-- `cross-tabulate`
-- `to-long-format`
-- `to-wide-format`
+- Cross tabulation, `cross-tabulate`
+- Long format conversion, `to-long-format`
+- Wide format conversion, `to-wide-format`
 
-are implementations of fundamental operations in data wrangling and data analysis; 
+Those three operations are fundamental in data wrangling and data analysis; 
 see [AA1, Wk1, Wk2, AAv1-AAv2].
 
 
@@ -51,7 +44,7 @@ say cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
 
 Conversion to long format allows column names to be treated as data.
 
-(More precisely, when converting to long format we specified column names of a tabular dataset become values
+(More precisely, when converting to long format specified column names of a tabular dataset become values
 in a dedicated column, e.g. "Variable" in the long format.)
 
 ```perl6
