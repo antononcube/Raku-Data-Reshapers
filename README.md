@@ -2,7 +2,7 @@
 
 This Raku package has data reshaping functions for different data structures that are coercible to full arrays.
 
-Here is list of the data structures that are in scope:
+Here is list of the supported data structures and reshaping operations over them:
 
   - Positional-of-hashes
     - Cross tabulation
@@ -14,31 +14,79 @@ Here is list of the data structures that are in scope:
     - Long format
     - Wide format  
  
+The three functions provided yb the package:
+
+- `cross-tabulate`
+- `to-long-format`
+- `to-wide-format`
+
+are implementations of fundamental operations in data wrangling and data analysis; 
+see [AA1, Wk1, Wk2, AAv1-AAv2].
+
+
 ------
 
 ## Usage examples
 
 ### Cross tabulation
 
+Making contingency tables -- or cross tabulation -- is a fundamental statistics and data analysis operation,
+[Wk1, AA1]. 
+
+Here is an example using the 
+[Titanic](https://en.wikipedia.org/wiki/Titanic) 
+dataset (that is provided by this package through the function `get-titanic-dataset`):
+
 ```perl6
 use Data::Reshapers;
 use Data::Reshapers::CrossTabulate;
 
-my @tbl = get-titanic-data();
+my @tbl = get-titanic-dataset();
 say cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
 
 # {female => {1st => 144, 2nd => 106, 3rd => 216}, male => {1st => 179, 2nd => 171, 3rd => 493}}
 ```
 
-### Unified interface
+### Long format
 
-There is a unified interface to all package functions through the function
-`data-reshape`:
+Conversion to long format allows column names to be treated as data.
+
+(More precisely, when converting to long format we specified column names of a tabular dataset become values
+in a dedicated column, e.g. "Variable" in the long format.)
 
 ```perl6
+use Data::Reshapers::ToLongFormat;
+
+my @tbl1 = @tbl.roll(5);
+.say for @tbl1;
+
+.say for to-long-format( @tbl1 );
+
+my @lfRes1 = to-long-format( @tbl1, 'id', [], variablesTo => "VAR", valuesTo => "VAL2" );
+.say for @lfRes1;
+```
+
+### Wide format
+
+Here we transform the long format result `@lfRes1` above into wide format -- 
+the result has the same records as the `@tbl1`:
+
+```perl6
+use Data::Reshapers::ToWideFormat;
+
+.say for to-wide-format( @lfRes1, 'id', "VAR", "VAL2" );
+```
+
+### Unified interface
+
+There is a unified interface to all package functions through the function `data-reshape`:
+
+```perl6
+use Data::Reshapers;
+my @tbl = get-titanic-dataset();
 say data-reshape('cross-tabulate', @tbl, 'passengerSex', 'passengerClass');
 my @lfRes = data-reshape('to-long-format', @tbl);
-my @wfRes = data-reshape('to-wide-format', @lfRes); 
+my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', 'Value'); 
 ```
 
 ------
