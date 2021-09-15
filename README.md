@@ -56,7 +56,7 @@ Conversion to long format allows column names to be treated as data.
 in a dedicated column, e.g. "Variable" in the long format.)
 
 ```perl6
-my @tbl1 = @tbl.roll(5);
+my @tbl1 = @tbl.roll(3);
 .say for @tbl1;
 
 .say for to-long-format( @tbl1 );
@@ -71,8 +71,6 @@ Here we transform the long format result `@lfRes1` above into wide format --
 the result has the same records as the `@tbl1`:
 
 ```perl6
-.say for to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' );
-
 ‌‌say to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
 
 # +-------------------+----------------+--------------+--------------+-----+
@@ -127,9 +125,9 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
        - [ ] Same length
        - [ ] Same type of values of corresponding elements
 
-5. [X] Implement "nice tabular visualization" using   
-   [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table) 
-   and/or 
+5. [X] Implement "nice tabular visualization" using 
+   [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table)
+   and/or
    [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
 
 6. [X] Document examples using pretty tables.
