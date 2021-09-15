@@ -13,16 +13,16 @@ into corresponding long formats. The central data structure is a positional (lis
 unit module Data::Reshapers::ToLongFormat;
 
 #===========================================================
-our proto to-long-format(|) is export {*}
+our proto ToLongFormat(|) is export {*}
 
 #-----------------------------------------------------------
-multi to-long-format(@tbl) {
-    to-long-format(@tbl, [], [])
+multi ToLongFormat(@tbl) {
+    ToLongFormat(@tbl, [], [])
 }
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
-multi to-long-format(@tbl, $idColsSpec, $valColsSpec,
+multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
                      Str:D :$automaticKeysTo = 'AutomaticKey',
                      Str:D :$variablesTo = 'Variable',
                      Str:D :$valuesTo = 'Value') {

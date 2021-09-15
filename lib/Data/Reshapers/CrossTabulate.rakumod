@@ -17,23 +17,23 @@ different data structures coercible to full-arrays.
     my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
     my @tbl = $csv.csv(in => $fileName, headers => "auto");
 
-    my $xtab1 = cross-tabulate(@tbl, 'passengerClass', 'passengerSex');
-    my $xtab2 = cross-tabulate(@tbl, 'passengerClass', 'passengerSex', 'passengerAge');
+    my $xtab1 = CrossTabulate(@tbl, 'passengerClass', 'passengerSex');
+    my $xtab2 = CrossTabulate(@tbl, 'passengerClass', 'passengerSex', 'passengerAge');
 
     my @tbl2 = $csv.csv(in => $fileName, headers => "none");
-    my $xtab3 = cross-tabulate(@tbl, 1, 3);
-    my $xtab4 = cross-tabulate(@tbl, 1, 3, 2);
+    my $xtab3 = CrossTabulate(@tbl, 1, 3);
+    my $xtab4 = CrossTabulate(@tbl, 1, 3, 2);
 
 =end pod
 
 unit module Data::Reshapers::CrossTabulate;
 
 #===========================================================
-our proto cross-tabulate(|) is export {*}
+our proto CrossTabulate(|) is export {*}
 
 #-----------------------------------------------------------
 #| Count or sum using two or three keys respectively
-multi cross-tabulate(@tbl, Str:D $rowVarName, Str $columnVarName?, Str $valueVarName? ) {
+multi CrossTabulate(@tbl, Str:D $rowVarName, Str $columnVarName?, Str $valueVarName? ) {
 
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_{$rowVarName}, $_{$columnVarName}) } ).duckmap({ $_.duckmap({$_{$valueVarName}}).sum });
@@ -100,7 +100,7 @@ multi cross-tabulate(@tbl, Str:D $rowVarName, Str $columnVarName?, Str $valueVar
 
 #-----------------------------------------------------------
 #| Count or sum using two or three indexes respectively
-multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt $columnIndex?, UInt $valueIndex?) {
+multi CrossTabulate(@tbl, UInt:D $rowIndex, UInt $columnIndex?, UInt $valueIndex?) {
 
     # One-liner summarizing the implementation below
     #my %res = @tbl.classify( { ($_[$rowIndex], $_[$columnIndex]) } ).duckmap({ $_.duckmap({$_[$valueIndex]}).sum });
@@ -113,7 +113,7 @@ multi cross-tabulate(@tbl, UInt:D $rowIndex, UInt $columnIndex?, UInt $valueInde
         return Nil;
     } elsif @tbl.isa(Array)  and @tbl.shape.elems == 2 {
         my $arr = @tbl.flat.rotor( @tbl.shape()[1] );
-        return cross-tabulate( $arr, $rowIndex, $columnIndex, $valueIndex )
+        return CrossTabulate( $arr, $rowIndex, $columnIndex, $valueIndex )
     }
 
     # Coerce into array-of-arrays

@@ -28,11 +28,11 @@ multi auto-aggregator($vec) {
 
 
 #===========================================================
-our proto to-wide-format(|) is export {*}
+our proto ToWideFormat(|) is export {*}
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
-multi to-wide-format(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColName,
+multi ToWideFormat(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColName,
                      Str:D :$automaticKeysTo = 'AutomaticKey', :&aggregationFunction = &auto-aggregator) {
 
     # Coerce into array-of-hashes

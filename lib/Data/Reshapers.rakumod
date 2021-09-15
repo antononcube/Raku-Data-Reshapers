@@ -46,6 +46,26 @@ our sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is expor
 }
 #| Ingests the resource file "dfTitanic.csv" of Data::Reshapers.
 
+#===========================================================
+our proto cross-tabulate(|) is export {*}
+
+multi cross-tabulate( **@args ) {
+    Data::Reshapers::CrossTabulate::CrossTabulate( |@args )
+}
+
+#===========================================================
+our proto to-long-format(|) is export {*}
+
+multi to-long-format( **@args, *%args ) {
+    Data::Reshapers::ToLongFormat::ToLongFormat( |@args, |%args )
+}
+
+#===========================================================
+our proto to-wide-format(|) is export {*}
+
+multi to-wide-format( **@args, *%args ) {
+    Data::Reshapers::ToWideFormat::ToWideFormat( |@args, |%args )
+}
 
 #===========================================================
 our proto data-reshape(|) is export {*}
@@ -54,10 +74,10 @@ multi data-reshape('cross-tabulate', **@args ) {
     cross-tabulate( |@args )
 }
 
-multi data-reshape('to-long-format', **@args ) {
-    to-long-format( |@args )
+multi data-reshape('to-long-format', **@args, *%args ) {
+    to-long-format( |@args, |%args )
 }
 
-multi data-reshape('to-wide-format', **@args ) {
-    to-wide-format( |@args )
+multi data-reshape('to-wide-format', **@args, *%args ) {
+    to-wide-format( |@args, |%args )
 }
