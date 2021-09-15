@@ -14,6 +14,7 @@ different data structures coercible to full-arrays.
     use Text::CSV;
 
     my $csv = Text::CSV.new;
+    # Change to appropriate path.
     my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
     my @tbl = $csv.csv(in => $fileName, headers => "auto");
 
