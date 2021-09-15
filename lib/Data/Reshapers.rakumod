@@ -7,20 +7,14 @@ different data structures (full arrays, Red tables, Text::CSV tables.)
 
 =head1 Synopsis
 
-    # To run the code below make sure you have this CSV file :
-    #    "https://raw.githubusercontent.com/antononcube/MathematicaVsR/master/Data/MathematicaVsR-Data-Titanic.csv"
-
     use Data::Reshapers;
-    use Text::CSV;
 
-    my $csv = Text::CSV.new;
-    my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
-    my @tbl = $csv.csv(in => $fileName, headers => "auto");
+    my @tbl = get-titanic-dataset(headers => "auto");
 
     my $xtab1 = cross-tabulate(@tbl, 'passengerClass', 'passengerSex');
     my $xtab2 = cross-tabulate(@tbl, 'passengerClass', 'passengerSex', 'passengerAge');
 
-    my @tbl2 = $csv.csv(in => $fileName, headers => "none");
+    my @tbl2 = get-titanic-dataset(headers => "none");
     my $xtab3 = cross-tabulate(@tbl, 1, 3);
     my $xtab4 = cross-tabulate(@tbl, 1, 3, 2);
 
@@ -32,6 +26,7 @@ use Text::CSV;
 use Data::Reshapers::CrossTabulate;
 use Data::Reshapers::ToLongFormat;
 use Data::Reshapers::ToWideFormat;
+use Data::Reshapers::ToPrettyTable;
 
 #===========================================================
 
@@ -80,4 +75,11 @@ multi data-reshape('to-long-format', **@args, *%args ) {
 
 multi data-reshape('to-wide-format', **@args, *%args ) {
     to-wide-format( |@args, |%args )
+}
+
+#===========================================================
+our proto to-pretty-table(|) is export {*}
+
+multi to-pretty-table( **@args, *%args ) {
+    Data::Reshapers::ToPrettyTable::ToPrettyTable( |@args, |%args )
 }
