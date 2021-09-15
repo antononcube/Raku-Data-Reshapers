@@ -17,7 +17,7 @@
     "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod"
   },
   "depends": [
-    "Text:CSV",
+    "Text::CSV",
     "Pretty::Table"
   ],
   "build-depends": [],
