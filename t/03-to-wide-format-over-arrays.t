@@ -4,8 +4,6 @@ use lib './lib';
 use lib '.';
 
 use Data::Reshapers;
-use Data::Reshapers::ToLongFormat;
-use Data::Reshapers::ToWideFormat;
 
 my @tblHeaders = Data::Reshapers::get-titanic-dataset(headers => 'auto');
 my Hash @array-of-hashes = @tblHeaders;

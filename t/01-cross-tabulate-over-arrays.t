@@ -4,7 +4,6 @@ use lib './lib';
 use lib '.';
 
 use Data::Reshapers;
-use Data::Reshapers::CrossTabulate;
 
 my @tblHeaders = get-titanic-dataset(headers => 'auto');
 my Hash @array-of-hashes = @tblHeaders;
