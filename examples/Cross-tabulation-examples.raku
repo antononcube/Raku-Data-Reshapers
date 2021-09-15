@@ -4,7 +4,6 @@ use lib './lib';
 use lib '.';
 
 use Data::Reshapers;
-use Data::Reshapers::CrossTabulate;
 
 ##===========================================================
 #my $csv = Text::CSV.new;
