@@ -32,7 +32,6 @@ dataset (that is provided by this package through the function `get-titanic-data
 
 ```perl6
 use Data::Reshapers;
-use Data::Reshapers::CrossTabulate;
 
 my @tbl = get-titanic-dataset();
 say cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
@@ -48,7 +47,7 @@ Conversion to long format allows column names to be treated as data.
 in a dedicated column, e.g. "Variable" in the long format.)
 
 ```perl6
-use Data::Reshapers::ToLongFormat;
+use Data::Reshapers;
 
 my @tbl1 = @tbl.roll(5);
 .say for @tbl1;
@@ -65,7 +64,7 @@ Here we transform the long format result `@lfRes1` above into wide format --
 the result has the same records as the `@tbl1`:
 
 ```perl6
-use Data::Reshapers::ToWideFormat;
+use Data::Reshapers;
 
 .say for to-wide-format( @lfRes1, 'id', "VAR", "VAL2" );
 ```
@@ -86,10 +85,10 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
 
 ## TODO
 
-1. [ ] Simpler more convenient interface.
+1. [X] Simpler more convenient interface.
 
-   - Currently, a user have to specify four different namespaces
-     in order to be able to use all package functions.
+   - ~~Currently, a user have to specify four different namespaces
+     in order to be able to use all package functions.~~
     
 2. [ ] More extensive long format tests.
 
@@ -110,7 +109,12 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
     
        - [ ] Same length
        - [ ] Same type of values of corresponding elements
-    
+
+5. [ ] Document examples using 
+   [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table) 
+   and/or 
+   [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
+
 ------
 
 ## References
