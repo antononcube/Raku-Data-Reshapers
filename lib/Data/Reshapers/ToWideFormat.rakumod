@@ -2,11 +2,8 @@
 
 =head1 Data::Reshapers::ToWideFormat
 
-C<Data::Reshapers::ToLongFormat> package module has functions that convert data structures coercible to full-arrays
+C<Data::Reshapers::ToWideFormat> package module has functions that convert data structures coercible to full-arrays
 into corresponding wide formats. The central data structure is a positional (list or array) of hashes.
-
-=head1 Synopsis
-
 
 =end pod
 
