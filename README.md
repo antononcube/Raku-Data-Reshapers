@@ -34,9 +34,18 @@ dataset (that is provided by this package through the function `get-titanic-data
 use Data::Reshapers;
 
 my @tbl = get-titanic-dataset();
-say cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
+my $res = cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
+say $res;
 
 # {female => {1st => 144, 2nd => 106, 3rd => 216}, male => {1st => 179, 2nd => 171, 3rd => 493}}
+
+say to-pretty-table($res);
+# +--------+-----+-----+-----+
+# |        | 1st | 2nd | 3rd |
+# +--------+-----+-----+-----+
+# | female | 144 | 106 | 216 |
+# | male   | 179 | 171 | 493 |
+# +--------+-----+-----+-----+
 ```
 
 ### Long format
@@ -47,8 +56,6 @@ Conversion to long format allows column names to be treated as data.
 in a dedicated column, e.g. "Variable" in the long format.)
 
 ```perl6
-use Data::Reshapers;
-
 my @tbl1 = @tbl.roll(5);
 .say for @tbl1;
 
@@ -64,9 +71,19 @@ Here we transform the long format result `@lfRes1` above into wide format --
 the result has the same records as the `@tbl1`:
 
 ```perl6
-use Data::Reshapers;
+.say for to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' );
 
-.say for to-wide-format( @lfRes1, 'id', "VAR", "VAL2" );
+‌‌say to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
+
+# +-------------------+----------------+--------------+--------------+-----+
+# | passengerSurvival | passengerClass | passengerAge | passengerSex |  id |
+# +-------------------+----------------+--------------+--------------+-----+
+# |        died       |      1st       |      20      |     male     | 308 |
+# |        died       |      2nd       |      40      |    female    | 412 |
+# |      survived     |      2nd       |      50      |    female    | 441 |
+# |        died       |      3rd       |      20      |     male     | 741 |
+# |        died       |      3rd       |      -1      |     male     | 932 |
+# +-------------------+----------------+--------------+--------------+-----+
 ```
 
 ### Unified interface
@@ -110,10 +127,12 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
        - [ ] Same length
        - [ ] Same type of values of corresponding elements
 
-5. [ ] Document examples using 
+5. [X] Implement "nice tabular visualization" using   
    [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table) 
    and/or 
    [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
+
+6. [X] Document examples using pretty tables.
 
 ------
 
