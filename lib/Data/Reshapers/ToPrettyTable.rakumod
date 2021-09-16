@@ -24,66 +24,86 @@ unit module Data::Reshapers::ToPrettyTable;
 our proto ToPrettyTable(|) is export {*}
 
 #-----------------------------------------------------------
-multi ToPrettyTable( %tbl, *%args) {
+multi ToPrettyTable(%tbl, *%args) {
 
+    # Assuming we have hash of hashes
+    my Hash %tblLocal;
+    try {
+        %tblLocal = %tbl;
+    }
+
+    if $! {
+        fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes.';
+    }
+
+    # Column names of the pretty table
     my @colnames = %tbl{%tbl.keys[0]}.keys;
 
+    # Initialize the pretty table object
     my $tableObj = Pretty::Table.new:
             field-names => ['', |@colnames],
             sort-by => '',
             align => %('' => 'l'),
             |%args;
 
-    %tbl.map({ $tableObj.add-row([ $_.key, |$_.value{|@colnames} ]) });
+    # Add each hash into the pretty table as table row
+    %tbl.map({ $tableObj.add-row([$_.key, |$_.value{|@colnames}]) });
 
+    # Result
     return $tableObj;
 }
 
 #-----------------------------------------------------------
 multi ToPrettyTable(@tbl, *%args) {
 
-    # Coerce into array-of-hashes
     my Hash @arr-of-hashes;
-    my Array @arr-of-arrays;
+    my Positional @arr-of-arrays;
 
+    # Coerce into array-of-hashes
     try {
         @arr-of-hashes = @tbl
     }
 
     if $! {
 
+        # Coerce into array-of-hashes
         try {
-            @arr-of-hashes = @tbl
+            @arr-of-arrays = @tbl
         }
 
         if $! {
-            note 'The first argument is expected to be an array that can be coerced into an array-of-hashes if the rest of the arguments are strings.';
-            return Nil;
+            fail 'If the first argument is an array then it is expected that it can be coerced into an array-of-hashes or an array-of-positionals.';
         }
     }
 
+    # Convert to table
+    if @arr-of-hashes.defined and @arr-of-hashes {
 
-    with @arr-of-hashes {
-
+        # Column names of the pretty table
         my @colnames = @arr-of-hashes[0].keys;
 
+        # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
                 field-names => @colnames,
                 |%args;
 
-        @arr-of-hashes.map({ $tableObj.add-row( $_{|@colnames} ) });
+        # Add each hash into the pretty table as table row
+        @arr-of-hashes.map({ $tableObj.add-row($_{|@colnames}) });
 
         return $tableObj;
 
     } else {
 
-        my @colnames = 1 ... @arr-of-arrays.values[0].elems;
+        # Column names of the pretty table
+        my @colnames = ^@arr-of-arrays.values[0].elems;
 
+        # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
-                field-names => @colnames,
+                field-names => @colnames>>.Str,
                 |%args;
 
-        @arr-of-arrays.map({ $tableObj.add-row( $_[|@colnames] ) });
+        # Add each hash into the pretty table as table row
+        @arr-of-arrays.map({ $tableObj.add-row($_[|@colnames]) });
 
         return $tableObj;
 
