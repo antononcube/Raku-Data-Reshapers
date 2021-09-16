@@ -25,9 +25,9 @@ unit module Data::Reshapers;
 use Text::CSV;
 use Data::Reshapers::CrossTabulate;
 use Data::Reshapers::ToLongFormat;
-use Data::Reshapers::Transpose;
 use Data::Reshapers::ToWideFormat;
 use Data::Reshapers::ToPrettyTable;
+use Data::Reshapers::Transpose;
 
 #===========================================================
 
@@ -83,6 +83,10 @@ multi data-reshape('to-long-format', **@args, *%args ) {
 
 multi data-reshape('to-wide-format', **@args, *%args ) {
     to-wide-format( |@args, |%args )
+}
+
+multi data-reshape('transpose', **@args ) {
+    transpose( |@args )
 }
 
 #===========================================================
