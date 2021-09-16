@@ -10,15 +10,18 @@ The supported data structures are:
   - Positional-of-hashes
   - Positional-of-arrays
  
-The three data reshaping provided by the package over those data structures are:
+The four data reshaping provided by the package over those data structures are:
 
 - Cross tabulation, `cross-tabulate`
 - Long format conversion, `to-long-format`
 - Wide format conversion, `to-wide-format`
+- Transpose, `transpose`
 
-Those three operations are fundamental in data wrangling and data analysis; 
+The first three operations are fundamental in data wrangling and data analysis; 
 see [AA1, Wk1, Wk2, AAv1-AAv2].
 
+(Transposing of tabular data is, of course, also fundamental, but it also can be seen as a
+basic functional programming operation.)
 
 ------
 
@@ -87,16 +90,15 @@ the result has the same records as the `@tbl1`:
 # +-------------------+----------------+--------------+--------------+-----+
 ```
 
-### Unified interface
+### Transpose
 
-There is a unified interface to all package functions through the function `data-reshape`:
+Using cross tabulation result above:
 
 ```perl6
-use Data::Reshapers;
-my @tbl = get-titanic-dataset();
-say data-reshape('cross-tabulate', @tbl, 'passengerSex', 'passengerClass');
-my @lfRes = data-reshape('to-long-format', @tbl);
-my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', 'Value'); 
+my $tres = transpose( $res );
+
+say to-pretty-table($res, title => "Original");
+say to-pretty-table($tres, title => "Transposed");
 ```
 
 ------
@@ -134,6 +136,12 @@ my @wfRes = data-reshape('to-wide-format', @lfRes, 'AutomaticKey', 'Variable', '
    [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
 
 6. [X] Document examples using pretty tables.
+
+7. [X] Implement transposing operation for
+   - [X] hash of hashes
+   - [X] hash of arrays
+   - [X] array of hashes
+   - [X] array of arrays
 
 ------
 
