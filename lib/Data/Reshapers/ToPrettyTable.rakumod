@@ -26,31 +26,65 @@ our proto ToPrettyTable(|) is export {*}
 #-----------------------------------------------------------
 multi ToPrettyTable(%tbl, *%args) {
 
-    # Assuming we have hash of hashes
-    my Hash %tblLocal;
+    my Hash %hash-of-hashes;
+    my Positional %hash-of-arrays;
+
+    # Coerces into hash of hashes
     try {
-        %tblLocal = %tbl;
+        %hash-of-hashes = %tbl;
     }
 
     if $! {
-        fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes.';
+
+        # Coerce into array-of-hashes
+        try {
+            %hash-of-arrays = %tbl
+        }
+
+        if $! {
+            fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes or a hash-of-positionals.';
+        }
     }
 
-    # Column names of the pretty table
-    my @colnames = %tbl{%tbl.keys[0]}.keys;
+    if %hash-of-hashes.defined and %hash-of-hashes {
 
-    # Initialize the pretty table object
-    my $tableObj = Pretty::Table.new:
-            field-names => ['', |@colnames],
-            sort-by => '',
-            align => %('' => 'l'),
-            |%args;
+        # Column names of the pretty table
+        my @colnames = %hash-of-hashes{%hash-of-hashes.keys[0]}.keys;
 
-    # Add each hash into the pretty table as table row
-    %tbl.map({ $tableObj.add-row([$_.key, |$_.value{|@colnames}]) });
+        # Initialize the pretty table object
+        my $tableObj = Pretty::Table.new:
+                field-names => ['', |@colnames],
+                sort-by => '',
+                align => %('' => 'l'),
+                |%args;
 
-    # Result
-    return $tableObj;
+        # Add each hash into the pretty table as table row
+        %hash-of-hashes.map({ $tableObj.add-row([$_.key, |$_.value{|@colnames}]) });
+
+        # Result
+        return $tableObj;
+
+    } else {
+
+        # Column names of the pretty table
+        my @colnames = ^%hash-of-arrays{%hash-of-arrays.keys[0]}.elems;
+
+        # Initialize the pretty table object
+        my $tableObj = Pretty::Table.new:
+                field-names => ['', |@colnames>>.Str],
+                sort-by => '',
+                align => %('' => 'l'),
+                |%args;
+
+        # Add each hash into the pretty table as table row
+        %hash-of-arrays.map({ $tableObj.add-row([$_.key, |$_.value[|@colnames]]) });
+
+        # Result
+        return $tableObj;
+
+    }
+
+    return Nil;
 }
 
 #-----------------------------------------------------------
