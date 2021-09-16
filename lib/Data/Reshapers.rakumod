@@ -25,6 +25,7 @@ unit module Data::Reshapers;
 use Text::CSV;
 use Data::Reshapers::CrossTabulate;
 use Data::Reshapers::ToLongFormat;
+use Data::Reshapers::Transpose;
 use Data::Reshapers::ToWideFormat;
 use Data::Reshapers::ToPrettyTable;
 
@@ -53,6 +54,13 @@ our proto to-long-format(|) is export {*}
 
 multi to-long-format( **@args, *%args ) {
     Data::Reshapers::ToLongFormat::ToLongFormat( |@args, |%args )
+}
+
+#===========================================================
+our proto transpose(|) is export {*}
+
+multi transpose( **@args ) {
+    Data::Reshapers::Transpose::Transpose( |@args )
 }
 
 #===========================================================
