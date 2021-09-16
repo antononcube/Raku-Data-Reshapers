@@ -43,7 +43,7 @@ my Array @array-of-arrays2 =
                 $["died", "survived", "survived", "died", "died", "survived", "died"]);
 
 
-plan 3;
+plan 4;
 
 ## 1
 is-deeply transpose(%hash-of-hashes),
@@ -56,6 +56,11 @@ is-deeply transpose(@array-of-hashes),
         'transpose of array-of-hashes';
 
 ## 3
+is-deeply transpose(transpose(@array-of-hashes)),
+        @array-of-hashes,
+        'transpose of transpose of array-of-hashes';
+
+## 4
 is-deeply transpose(@array-of-hashes),
         %hash-of-arrays2,
         'transpose of array-of-arrays';
