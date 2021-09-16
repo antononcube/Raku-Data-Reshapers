@@ -27,23 +27,47 @@ our proto Transpose(|) is export {*}
 #-----------------------------------------------------------
 multi Transpose(%tbl) {
 
-    # Assuming we have hash of hashes
-    my Hash %tblLocal;
+    my Hash %hash-of-hashes;
+    my Positional %hash-of-arrays;
+
+    # Coerces into hash of hashes
     try {
-        %tblLocal = %tbl;
+        %hash-of-hashes = %tbl;
     }
 
     if $! {
-        fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes.';
+
+        # Coerce into array-of-hashes
+        try {
+            %hash-of-arrays = %tbl
+        }
+
+        if $! {
+            fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes or a hash-of-positionals.';
+        }
     }
 
-    my %h-new;
-    for %tblLocal.values.first.keys X %tblLocal.keys -> ($new-key, $current-key) {
-        %h-new{$new-key}{$current-key} = %tblLocal{$current-key}{$new-key};
+    if %hash-of-hashes.defined and %hash-of-hashes {
+
+        my %h-new;
+        for %hash-of-hashes.values.first.keys X %hash-of-hashes.keys -> ($new-key, $current-key) {
+            %h-new{$new-key}{$current-key} = %hash-of-hashes{$current-key}{$new-key};
+        }
+
+        return %h-new;
+
+    } else {
+
+        my Hash @arrNew;
+        for ^%hash-of-arrays.values.first.elems X %hash-of-arrays.keys -> ($new-index, $current-key) {
+            @arrNew[$new-index]{$current-key} = %hash-of-arrays{$current-key}[$new-index];
+        }
+
+        return @arrNew;
     }
 
     # Result
-    return %h-new;
+    return Nil;
 }
 
 #-----------------------------------------------------------
