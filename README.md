@@ -98,7 +98,24 @@ Using cross tabulation result above:
 my $tres = transpose( $res );
 
 say to-pretty-table($res, title => "Original");
+# +--------------------------+
+# |         Original         |
+# +--------+------+----------+
+# |        | died | survived |
+# +--------+------+----------+
+# | female | 127  |   339    |
+# | male   | 682  |   161    |
+# +--------+------+----------+
+
 say to-pretty-table($tres, title => "Transposed");
+# +--------------------------+
+# |        Transposed        |
+# +----------+--------+------+
+# |          | female | male |
+# +----------+--------+------+
+# | died     |  127   | 682  |
+# | survived |  339   | 161  |
+# +----------+--------+------+
 ```
 
 ------
@@ -137,11 +154,11 @@ say to-pretty-table($tres, title => "Transposed");
 
 6. [X] Document examples using pretty tables.
 
-7. [X] Implement transposing operation for
-   - [X] hash of hashes
-   - [X] hash of arrays
-   - [X] array of hashes
-   - [X] array of arrays
+7. [X] Implement transposing operation for:
+    - [X] hash of hashes
+    - [X] hash of arrays
+    - [X] array of hashes
+    - [X] array of arrays
 
 ------
 
