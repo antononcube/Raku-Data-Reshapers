@@ -160,6 +160,15 @@ say to-pretty-table($tres, title => "Transposed");
     - [X] array of hashes
     - [X] array of arrays
 
+8. [ ] Implement to long format conversion for:
+    - [ ] hash of hashes
+    - [ ] hash of arrays
+
+9. Speed/performance profiling.
+   - [ ] Come up with profiling tests
+   - [ ] Comparison with R
+   - [ ] Comparison with Python
+
 ------
 
 ## References
