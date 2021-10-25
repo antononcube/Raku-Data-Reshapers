@@ -25,9 +25,15 @@ unit module Data::Reshapers::ToPrettyTable;
 #| Convert into a pretty table object.
 our proto ToPrettyTable(|) is export {*}
 
-my Str $argsErrMsg =
+my Str $hashArgErrMsg =
         'If the first argument is a hash then it is expected that it can be coerced into a' ~
-        ' hash-of-hashes, hash-of-positionals, array-of-hashes, or array-of-positionals.';
+        ' hash-of-hashes or hash-of-positionals,' ~
+        ' which in turn can be coerced into a full two dimensional array.';;
+
+my Str $arrayArgErrMsg =
+        'If the first argument is an array then it is expected that it can be coerced into a' ~
+        ' array-of-hashes, array-of-positionals, or hash-of-hashes,' ~
+        ' which in turn can be coerced into a full two dimensional array.';
 
 #-----------------------------------------------------------
 multi ToPrettyTable(%tbl, *%args) {
@@ -48,7 +54,7 @@ multi ToPrettyTable(%tbl, *%args) {
         }
 
         if $! {
-            fail $argsErrMsg;
+            fail $hashArgErrMsg;
         }
     }
 
@@ -108,7 +114,11 @@ multi ToPrettyTable(@tbl, *%args) {
 
         # Coerce into array-of-hashes
         try {
-            @arr-of-arrays = @tbl
+            @arr-of-arrays = @tbl;
+
+            if not has-homogeneous-shape(@arr-of-arrays) {
+                fail $arrayArgErrMsg;
+            }
         }
 
         if $! {
@@ -121,7 +131,7 @@ multi ToPrettyTable(@tbl, *%args) {
                 return ToPrettyTable(%res, |%args)
             }
 
-            fail $argsErrMsg;
+            fail $arrayArgErrMsg;
         }
     }
 
