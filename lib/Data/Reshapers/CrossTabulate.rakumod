@@ -7,16 +7,10 @@ different data structures coercible to full-arrays.
 
 =head1 Synopsis
 
-    # To run the code below make sure you have this CSV file :
-    #    "https://raw.githubusercontent.com/antononcube/MathematicaVsR/master/Data/MathematicaVsR-Data-Titanic.csv"
-
+    use Data::Reshapers;
     use Data::Reshapers::CrossTabulate;
-    use Text::CSV;
 
-    my $csv = Text::CSV.new;
-    # Change to appropriate path.
-    my $fileName = $*CWD.Str ~ "/resources/dfTitanic.csv";
-    my @tbl = $csv.csv(in => $fileName, headers => "auto");
+    my @tbl = get-titanic-dataset();
 
     my $xtab1 = CrossTabulate(@tbl, 'passengerClass', 'passengerSex');
     my $xtab2 = CrossTabulate(@tbl, 'passengerClass', 'passengerSex', 'passengerAge');
