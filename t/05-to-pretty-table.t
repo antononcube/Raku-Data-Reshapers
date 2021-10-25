@@ -57,8 +57,10 @@ fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
         'data wrong 1';
 
 ## 10
-ok to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 1"),
-        'cannot figure out how check failure here';
+fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2") },
+        X::AdHoc,
+        :message(/'If the first argument is an array then it is expected'/),
+        'data wrong 2';
 
 
 done-testing;
