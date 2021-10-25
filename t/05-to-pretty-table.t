@@ -20,8 +20,14 @@ my %hash-of-arrays =
     passengerSex => <female male male>,
     passengerSurvival => <survived died died>;
 
+my Pair @array-of-key-array-pairs =
+        [:id($["745", "1092", "658"]),
+         :passengerAge($["20", "20", "0"]),
+         :passengerClass($["3rd", "3rd", "3rd"]),
+         :passengerSex($["male", "female", "female"]),
+         :passengerSurvival($["died", "died", "survived"])];
 
-plan 10;
+plan 11;
 
 ## 1
 ok @tblHeaders.isa(Array) and
@@ -51,12 +57,15 @@ ok to-pretty-table( [<4 3 6>, <1 3 7>, <9 3 232>], title => "Data test 2");
 ok to-pretty-table( (<4 3 6>, <1 3 7>, <9 3 232>), title => "Data test 3");
 
 ## 9
+ok to-pretty-table( @array-of-key-array-pairs, title => "Array of key-array pairs");
+
+## 10
 fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
         X::AdHoc,
         :message(/'If the first argument is an array then it is expected'/),
         'data wrong 1';
 
-## 10
+## 11
 fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2") },
         X::AdHoc,
         :message(/'If the first argument is an array then it is expected'/),
