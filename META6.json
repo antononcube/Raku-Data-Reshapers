@@ -11,6 +11,7 @@
   "license": "Artistic-2.0",
   "provides": {
     "Data::Reshapers": "lib/Data/Reshapers.rakumod",
+    "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
     "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
     "Data::Reshapers::Predicates": "lib/Data/Reshapers/Predicates.rakumod",
     "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",

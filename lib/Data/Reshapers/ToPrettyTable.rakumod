@@ -16,12 +16,18 @@ different data structures coercible to full-arrays.
 =end pod
 
 use Pretty::Table;
+use Data::Reshapers::Adapters;
+use Data::Reshapers::Predicates;
 
 unit module Data::Reshapers::ToPrettyTable;
 
 #===========================================================
 #| Convert into a pretty table object.
 our proto ToPrettyTable(|) is export {*}
+
+my Str $argsErrMsg =
+        'If the first argument is a hash then it is expected that it can be coerced into a' ~
+        ' hash-of-hashes, hash-of-positionals, array-of-hashes, or array-of-positionals.';
 
 #-----------------------------------------------------------
 multi ToPrettyTable(%tbl, *%args) {
@@ -42,7 +48,7 @@ multi ToPrettyTable(%tbl, *%args) {
         }
 
         if $! {
-            fail 'If the first argument is a hash then it is expected that it can be coerced into a hash-of-hashes or a hash-of-positionals.';
+            fail $argsErrMsg;
         }
     }
 
@@ -106,7 +112,16 @@ multi ToPrettyTable(@tbl, *%args) {
         }
 
         if $! {
-            fail 'If the first argument is an array then it is expected that it can be coerced into an array-of-hashes or an array-of-positionals.';
+            # Check for an array of key-array pairs
+            if is-array-of-key-array-pairs(@tbl) {
+
+                # Convert an array of key-array pairs into a hash of hashes
+                my %res = convert-to-hash-of-hashes(@tbl);
+
+                return ToPrettyTable(%res, |%args)
+            }
+
+            fail $argsErrMsg;
         }
     }
 

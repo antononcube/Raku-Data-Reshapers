@@ -15,7 +15,8 @@ different data structures coercible to full-arrays.
 
 =end pod
 
-use Pretty::Table;
+use Data::Reshapers::Predicates;
+use Data::Reshapers::Adapters;
 
 unit module Data::Reshapers::Transpose;
 
@@ -89,6 +90,15 @@ multi Transpose(@tbl) {
         }
 
         if $! {
+            # Check for an array of key-array pairs
+            if is-array-of-key-array-pairs(@tbl) {
+
+                # Convert an array of key-array pairs into a hash of hashes
+                my %res = convert-to-hash-of-hashes(@tbl);
+
+                return Transpose(%res)
+            }
+
             fail 'If the first argument is an array then it is expected that it can be coerced into an array-of-hashes or an array-of-positionals.';
         }
     }
