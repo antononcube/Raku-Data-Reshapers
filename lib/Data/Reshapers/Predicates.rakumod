@@ -2,8 +2,8 @@ unit module Data::Reshapers::Predicates;
 
 # From gfldex over Discord #raku channel.
 #| Returns True if the argument is a list of hashes or lists that have the same number of elements.
-multi has-homogeneous-shape(\l) is export {
-    so \l[*].&{ $_».elems.all == $_[0] }
+multi has-homogeneous-shape($l) is export {
+    so $l[*].&{ $_».elems.all == $_[0].elems }
 }
 
 multi has-homogeneous-shape(@l where $_.all ~~ Pair) is export {
