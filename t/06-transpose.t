@@ -17,7 +17,7 @@ my Hash @array-of-hashes =
          { :id("1092"), :passengerAge("20"), :passengerClass("3rd"), :passengerSex("female"), :passengerSurvival("died") },
          { :id("658"), :passengerAge("0"), :passengerClass("3rd"), :passengerSex("female"), :passengerSurvival("survived") }];
 
-my Array %hash-of-arrays2 =
+my Pair @array-of-key-array-pairs =
         [:id($["745", "1092", "658"]),
          :passengerAge($["20", "20", "0"]),
          :passengerClass($["3rd", "3rd", "3rd"]),
@@ -51,18 +51,18 @@ is-deeply transpose(%hash-of-hashes),
         'transpose of hash-of-hashes';
 
 ## 2
-is-deeply transpose(@array-of-hashes),
-        %hash-of-arrays2,
-        'transpose of array-of-hashes';
+is-deeply transpose(transpose(%hash-of-hashes)),
+        %hash-of-hashes,
+        'transpose of or transpose hash-of-arrays';
 
 ## 3
+is-deeply transpose(@array-of-hashes).List.sort,
+        @array-of-key-array-pairs.List.sort,
+        'transpose of array-of-hashes';
+
+## 4
 is-deeply transpose(transpose(@array-of-hashes)),
         @array-of-hashes,
         'transpose of transpose of array-of-hashes';
-
-## 4
-is-deeply transpose(@array-of-hashes),
-        %hash-of-arrays2,
-        'transpose of array-of-arrays';
 
 done-testing;
