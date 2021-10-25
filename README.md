@@ -136,6 +136,8 @@ say to-pretty-table($tres, title => "Transposed");
     - [X] Positional-of-hashes
       
     - [X] Positional-of-arrays
+       
+    - [X] Positional-of-key-to-array-pairs
     
     - [ ] Positional-of-hashes, each record of which has:
       
@@ -159,12 +161,20 @@ say to-pretty-table($tres, title => "Transposed");
     - [X] hash of arrays
     - [X] array of hashes
     - [X] array of arrays
+    - [X] array of key-to-array pairs 
 
-8. [ ] Implement to long format conversion for:
+8. [X] Implement to-pretty-table for:
+   - [X] hash of hashes
+   - [X] hash of arrays
+   - [X] array of hashes
+   - [X] array of arrays
+   - [X] array of key-to-array pairs
+
+9. [ ] Implement to long format conversion for:
     - [ ] hash of hashes
     - [ ] hash of arrays
 
-9. Speed/performance profiling.
+10. [ ] Speed/performance profiling.
    - [ ] Come up with profiling tests
    - [ ] Comparison with R
    - [ ] Comparison with Python
