@@ -123,9 +123,9 @@ multi ToPrettyTable(@tbl, *%args) {
 
         if $! {
             # Check for an array of key-array pairs
-            if is-array-of-key-array-pairs(@tbl) {
+            if is-array-of-key-array-pairs(@tbl) or is-array-of-key-hash-pairs(@tbl) {
 
-                # Convert an array of key-array pairs into a hash of hashes
+                # Convert an array of key-[array|hash] pairs into a hash of hashes
                 my %res = convert-to-hash-of-hashes(@tbl);
 
                 return ToPrettyTable(%res, |%args)

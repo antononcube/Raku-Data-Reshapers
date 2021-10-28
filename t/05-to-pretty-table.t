@@ -27,7 +27,13 @@ my Pair @array-of-key-array-pairs =
          :passengerSex($["male", "female", "female"]),
          :passengerSurvival($["died", "died", "survived"])];
 
-plan 11;
+my @dfRand = ["2" => ${ :drink(121.67239295221576e0), :refinance(111.49589770601989e0), :uncompromisingly(112.83057932039914e0) },
+              "1" => ${ :drink(140.0346028991027e0), :refinance(99.8238528322897e0), :uncompromisingly(86.9574096817264e0) },
+              "0" => ${ :drink(125.29827601833546e0), :refinance(101.04520165281197e0), :uncompromisingly(91.49572496103593e0) },
+              "4" => ${ :drink(124.73006527768604e0), :refinance(74.26748488483263e0), :uncompromisingly(150.10090828356613e0) },
+              "3" => ${ :drink(102.0971638701688e0), :refinance(75.86794386663075e0), :uncompromisingly(114.90831504979715e0) }];
+
+plan 12;
 
 ## 1
 ok @tblHeaders.isa(Array) and
@@ -71,5 +77,8 @@ fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2")
         :message(/'If the first argument is an array then it is expected'/),
         'data wrong 2';
 
+## 12
+ok to-pretty-table(@dfRand),
+        'pretty table of array of key-hash pairs';
 
 done-testing;
