@@ -3,7 +3,7 @@
   "name": "Data::Reshapers",
   "api": "1",
   "auth": "github:antononcube",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
   "authors": [
     "Anton Antonov"
