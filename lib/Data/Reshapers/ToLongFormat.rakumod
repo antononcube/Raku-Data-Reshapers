@@ -108,5 +108,6 @@ multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
     #@res = @res.reduce( { $^a.append( $^b )});
 
     # Result
-    return @res.sort({ $_{@idColsLocal} });
+    # Converting to a list since some of the operations produce Seq.
+    return @res.sort({ $_{@idColsLocal} }).List;
 }

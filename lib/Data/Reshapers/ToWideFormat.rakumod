@@ -120,5 +120,6 @@ multi ToWideFormat(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColNam
             }
 
     # Result
-    return @res.sort({ $_{@idColsLocal} });
+    # Converting to a list since some of the operations produce Seq.
+    return @res.sort({ $_{@idColsLocal} }).List;
 }
