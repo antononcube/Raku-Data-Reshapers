@@ -21,7 +21,7 @@
     "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
   },
   "depends": [
-    "Hash::merge",
+    "Hash::Merge",
     "Text::CSV",
     "Pretty::Table"
   ],
