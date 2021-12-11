@@ -28,11 +28,12 @@ use Data::Reshapers::ToLongFormat;
 use Data::Reshapers::ToWideFormat;
 use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
+use Data::Reshapers::Predicates;
 
 #===========================================================
 
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
-our sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is export {
+our sub get-titanic-dataset(Str:D :$headers = 'auto', --> Positional) is export {
     my $csv = Text::CSV.new;
     my $fileHandle = %?RESOURCES<dfTitanic.csv>;
 
@@ -45,53 +46,80 @@ our sub get-titanic-dataset( Str:D :$headers = 'auto', --> Positional ) is expor
 #===========================================================
 our proto cross-tabulate(|) is export {*}
 
-multi cross-tabulate( **@args ) {
-    Data::Reshapers::CrossTabulate::CrossTabulate( |@args )
+multi cross-tabulate(**@args) {
+    Data::Reshapers::CrossTabulate::CrossTabulate(|@args)
 }
 
 #===========================================================
 our proto to-long-format(|) is export {*}
 
-multi to-long-format( **@args, *%args ) {
-    Data::Reshapers::ToLongFormat::ToLongFormat( |@args, |%args )
+multi to-long-format(**@args, *%args) {
+    Data::Reshapers::ToLongFormat::ToLongFormat(|@args, |%args)
 }
 
 #===========================================================
 our proto transpose(|) is export {*}
 
-multi transpose( **@args ) {
-    Data::Reshapers::Transpose::Transpose( |@args )
+multi transpose(**@args) {
+    Data::Reshapers::Transpose::Transpose(|@args)
 }
 
 #===========================================================
 our proto to-wide-format(|) is export {*}
 
-multi to-wide-format( **@args, *%args ) {
-    Data::Reshapers::ToWideFormat::ToWideFormat( |@args, |%args )
+multi to-wide-format(**@args, *%args) {
+    Data::Reshapers::ToWideFormat::ToWideFormat(|@args, |%args)
 }
 
 #===========================================================
 our proto data-reshape(|) is export {*}
 
-multi data-reshape('cross-tabulate', **@args ) {
-    cross-tabulate( |@args )
+multi data-reshape('cross-tabulate', **@args) {
+    cross-tabulate(|@args)
 }
 
-multi data-reshape('to-long-format', **@args, *%args ) {
-    to-long-format( |@args, |%args )
+multi data-reshape('to-long-format', **@args, *%args) {
+    to-long-format(|@args, |%args)
 }
 
-multi data-reshape('to-wide-format', **@args, *%args ) {
-    to-wide-format( |@args, |%args )
+multi data-reshape('to-wide-format', **@args, *%args) {
+    to-wide-format(|@args, |%args)
 }
 
-multi data-reshape('transpose', **@args ) {
-    transpose( |@args )
+multi data-reshape('transpose', **@args) {
+    transpose(|@args)
+}
+
+#===========================================================
+our proto dimensions(|) is export {*}
+
+multi dimensions(%arg -->List) {
+    if has-homogeneous-shape(%arg) {
+        my $first = %arg.values[0];
+        if $first ~~ Pair {
+            return (%arg.elems, $first.value.elems)
+        }
+        return (%arg.elems, $first.elems)
+    } else {
+        return (%arg.elems)
+    }
+}
+
+multi dimensions(@arg -->List) {
+    if has-homogeneous-shape(@arg) {
+        my $first = @arg.values[0];
+        if $first ~~ Pair {
+            return (@arg.elems, $first.value.elems)
+        }
+        return (@arg.elems, $first.elems)
+    } else {
+        return (@arg.elems)
+    }
 }
 
 #===========================================================
 our proto to-pretty-table(|) is export {*}
 
-multi to-pretty-table( **@args, *%args ) {
-    Data::Reshapers::ToPrettyTable::ToPrettyTable( |@args, |%args )
+multi to-pretty-table(**@args, *%args) {
+    Data::Reshapers::ToPrettyTable::ToPrettyTable(|@args, |%args)
 }
