@@ -15,11 +15,13 @@
     "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
     "Data::Reshapers::Predicates": "lib/Data/Reshapers/Predicates.rakumod",
     "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
+    "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
     "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
     "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
     "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
   },
   "depends": [
+    "Hash::merge",
     "Text::CSV",
     "Pretty::Table"
   ],

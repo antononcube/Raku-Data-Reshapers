@@ -26,6 +26,7 @@ use Text::CSV;
 use Data::Reshapers::CrossTabulate;
 use Data::Reshapers::ToLongFormat;
 use Data::Reshapers::ToWideFormat;
+use Data::Reshapers::JoinAcross;
 use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
 use Data::Reshapers::Predicates;
@@ -86,6 +87,13 @@ multi to-wide-format(**@args, *%args) {
 }
 
 #===========================================================
+our proto join-across(|) is export {*}
+
+multi join-across(**@args, *%args) {
+    Data::Reshapers::JoinAcross::JoinAcross(|@args, |%args)
+}
+
+#===========================================================
 our proto data-reshape(|) is export {*}
 
 multi data-reshape('cross-tabulate', **@args) {
@@ -98,6 +106,10 @@ multi data-reshape('to-long-format', **@args, *%args) {
 
 multi data-reshape('to-wide-format', **@args, *%args) {
     to-wide-format(|@args, |%args)
+}
+
+multi data-reshape('join-across', **@args,  *%args) {
+    join-across(|@args, |%args)
 }
 
 multi data-reshape('transpose', **@args) {
