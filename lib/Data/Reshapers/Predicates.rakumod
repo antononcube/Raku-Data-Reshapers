@@ -53,3 +53,8 @@ sub is-array-of-key-hash-pairs(@arr) is export {
 }
 
 sub is-key-hash-pair( $p ) { $p ~~ Pair and $p.key ~~ Str and $p.value ~~ Map }
+
+#------------------------------------------------------------
+sub is-array-of-hashes($arr) is export {
+    $arr ~~ Positional and ( [and] $arr.map({ $_ ~~ Map }) )
+}
