@@ -41,7 +41,21 @@ our sub get-titanic-dataset(Str:D :$headers = 'auto', --> Positional) is export 
 
     return @tbl;
 }
-#| Ingests the resource file "dfTitanic.csv" of Data::Reshapers.
+#= Ingests the resource file "dfTitanic.csv" of Data::Reshapers.
+
+#===========================================================
+
+#| Get the Lake Mead levels dataset. Returns Positional[Hash] or Positional[Array].
+our sub get-lake-mead-levels-dataset(Str:D :$headers = 'auto', --> Positional) is export {
+    my $csv = Text::CSV.new;
+    my $fileHandle = %?RESOURCES<dfLakeMeadLevels.csv>;
+
+    my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
+
+    return @tbl;
+}
+#= Ingests the resource file "dfLakeMeadLevels.csv" of Data::Reshapers.
+
 
 #===========================================================
 our proto cross-tabulate(|) is export {*}
