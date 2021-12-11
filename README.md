@@ -185,7 +185,7 @@ say to-pretty-table($tres, title => "Transposed");
 
 ### Articles
 
-[AA1] Anton Antonov
+[AA1] Anton Antonov,
 ["Contingency tables creation examples"](https://mathematicaforprediction.wordpress.com/2016/10/04/contingency-tables-creation-examples/), 
 (2016), 
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
@@ -226,7 +226,7 @@ say to-pretty-table($tres, title => "Transposed");
 (Wolfram Technology Conference 2020 presentation.)
 
 [AAv2] Anton Antonov,
-["Data Transformation Workflows with Anton Antonov, Session #1"](https://www.youtube.com/watch?v=pQk5jwoMSxs),
+["Data Transformation Workflows with Anton Antonov, Session #1"](https://www.youtube.com/watch?v=iXrXMQdXOsM),
 (2020),
 [YouTube channel of Wolfram Research, Inc.](https://www.youtube.com/channel/UCJekgf6k62CQHdENWf2NgAQ).
 
