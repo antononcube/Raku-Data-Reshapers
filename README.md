@@ -10,14 +10,15 @@ The supported data structures are:
   - Positional-of-hashes
   - Positional-of-arrays
  
-The four data reshaping provided by the package over those data structures are:
+The five data reshaping provided by the package over those data structures are:
 
 - Cross tabulation, `cross-tabulate`
 - Long format conversion, `to-long-format`
 - Wide format conversion, `to-wide-format`
+- Join across (aka `SQL JOIN`), `join-across`
 - Transpose, `transpose`
 
-The first three operations are fundamental in data wrangling and data analysis; 
+The first four operations are fundamental in data wrangling and data analysis; 
 see [AA1, Wk1, Wk2, AAv1-AAv2].
 
 (Transposing of tabular data is, of course, also fundamental, but it also can be seen as a
