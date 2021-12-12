@@ -171,11 +171,18 @@ say to-pretty-table($tres, title => "Transposed");
    - [X] array of arrays
    - [X] array of key-to-array pairs
 
-9. [ ] Implement to long format conversion for:
+9. [ ] Implemented join-across:
+   - [X] inner, left, right, outer
+   - [X] single key-to-key pair
+   - [ ] multiple key-to-key pairs
+   - [ ] optional fill-in of missing values
+   - [ ] handling collisions
+   
+10. [ ] Implement to long format conversion for:
     - [ ] hash of hashes
     - [ ] hash of arrays
 
-10. [ ] Speed/performance profiling.
+11. [ ] Speed/performance profiling.
    - [ ] Come up with profiling tests
    - [ ] Comparison with R
    - [ ] Comparison with Python
