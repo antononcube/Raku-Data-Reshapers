@@ -144,6 +144,50 @@ multi dimensions(@arg -->List) {
 }
 
 #===========================================================
+our proto select-columns(|) is export {*}
+
+multi select-columns(@data, @columns) {
+    if has-homogeneous-hash-types(@data) {
+        my %colSet = Set(@columns);
+        my $res = @data>>.grep({ $_.key (elem) %colSet})>>.Hash;
+        return $res;
+    } else {
+        die "If the first argument is an array then it is expected to be an array of hashes with same keys."
+    }
+}
+
+multi select-columns(%data, @columns) {
+    if has-homogeneous-hash-types(%data) {
+        my %colSet = Set(@columns);
+        my %res = %data.pairs.map({ $_.key => $_.value.pairs.grep({ $_.key (elem) %colSet }).Hash })>>.Hash;
+        return %res;
+    } else {
+        die "If the first argument is a hash then it is expected to be a hash of hashes with same keys."
+    }
+}
+
+#===========================================================
+our proto rename-columns(|) is export {*}
+
+multi rename-columns(@data, %mapper) {
+    if has-homogeneous-hash-types(@data) {
+        my $res = @data>>.map({ %mapper{.key}:exists ?? (%mapper{.key} => .value) !! $_ })>>.Hash;
+        return $res;
+    } else {
+        die "If the first argument is an array then it is expected to be an array of hashes with same keys."
+    }
+}
+
+multi rename-columns(%data, %mapper) {
+    if has-homogeneous-hash-types(%data) {
+        my %res = %data.pairs>>.map({ $_.key => $_.value.map({ %mapper{.key}:exists ?? (%mapper{.key} => .value) !! $_ }).Hash })>>.Hash;
+        return %res;
+    } else {
+        die "If the first argument is a hash then it is expected to be a hash of hashes with same keys."
+    }
+}
+
+#===========================================================
 our proto to-pretty-table(|) is export {*}
 
 multi to-pretty-table(**@args, *%args) {
