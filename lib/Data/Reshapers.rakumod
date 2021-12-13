@@ -146,6 +146,10 @@ multi dimensions(@arg -->List) {
 #===========================================================
 our proto select-columns(|) is export {*}
 
+multi select-columns(@data, %mapper) {
+    rename-columns(select-columns(@data, %mapper.keys), %mapper)
+}
+
 multi select-columns(@data, @columns) {
     if has-homogeneous-hash-types(@data) {
         my %colSet = Set(@columns);
@@ -154,6 +158,10 @@ multi select-columns(@data, @columns) {
     } else {
         die "If the first argument is an array then it is expected to be an array of hashes with same keys."
     }
+}
+
+multi select-columns(%data, %mapper) {
+    rename-columns(select-columns(%data, %mapper.keys), %mapper)
 }
 
 multi select-columns(%data, @columns) {
