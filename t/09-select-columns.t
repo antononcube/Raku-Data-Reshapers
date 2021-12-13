@@ -6,10 +6,8 @@ use lib '.';
 use Data::Reshapers;
 
 # The test data was generated with the package Data::Generators.
-# my @a = random-tabular-dataset(6, <A B C>, generators=>['gala'.comb.List, 'sin'.comb.List, [3,4,5]]);
-# my @b = random-tabular-dataset(8, <A D E>, generators=>['lalab'.comb.List, 'rick'.comb.List, [13,14,15]]);
-# say to-pretty-table(@a);
-# say to-pretty-table(@b);
+# my @dfData0 = random-tabular-dataset(4, <alpha beta gamma delta>, generators=>[ -> $x { (rand xx $x).Array }, &random-pet-name]);
+# my %dfData1 = random-tabular-dataset(4, <alpha beta gamma delta>, generators=>[ -> $x { (rand xx $x).Array }, &random-pet-name], :row-names);
 
 my @dfData0 = [{ :alpha(0.1162641854786215e0), :beta("Millie"), :delta("Guinness"), :gamma(0.3124665964634822e0) },
                { :alpha(0.5276046799428872e0), :beta("Professor Nibblesworth"), :delta("Darcy"), :gamma(0.7355073717255032e0) },
