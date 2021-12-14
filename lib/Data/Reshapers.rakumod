@@ -181,6 +181,10 @@ multi select-columns(%data, @columns) {
 #===========================================================
 our proto rename-columns(|) is export {*}
 
+multi rename-columns(@data, Pair $map) {
+    return rename-columns(@data, %($map))
+}
+
 multi rename-columns(@data, %mapper) {
     if is-array-of-hashes(@data) {
         my $res = @data>>.map({ %mapper{.key}:exists ?? (%mapper{.key} => .value) !! $_ })>>.Hash;
@@ -188,6 +192,10 @@ multi rename-columns(@data, %mapper) {
     } else {
         die "If the first argument is an array then it is expected to be an array of hashes."
     }
+}
+
+multi rename-columns(%data, Pair $map) {
+    return rename-columns(%data, %($map))
 }
 
 multi rename-columns(%data, %mapper) {
