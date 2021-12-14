@@ -20,7 +20,7 @@ my %dfData1 = "0" => ${ :alpha(0.9038461749723564e0), :beta("Tacoma"), :delta("K
               "3" => ${ :alpha(0.8153474825814797e0), :beta("Tacoma"), :delta("Katphryn Vera Rose"), :gamma(0.5623954124920828e0) };
 
 
-plan 8;
+plan 10;
 
 ## 1
 is-deeply select-columns(@dfData0, <delta beta>)>>.keys>>.Array.unique(:as({ $_.sort.Array }):with(&[eqv]))>>.sort>>.List,
@@ -68,5 +68,18 @@ my $res8 = [(&)] select-columns(%dfData1, 'beta').values>>.Set;
 
 is-deeply $res8, Set(<beta>),
         "Hash of hashes single column selection";
+
+## 9
+my $res9 = [(&)] rename-columns(@dfData0, 'beta' => 'CIGAR')>>.Set;
+
+is-deeply $res9, Set(<alpha CIGAR gamma delta>),
+        "Array of hashes single pair ranaming.";
+
+## 10
+my $res10 = [(&)] rename-columns(%dfData1, 'beta' => 'CIGAR').values>>.Set;
+
+is-deeply $res10, Set(<alpha CIGAR gamma delta>),
+        "Hash of hashes single pair ranaming.";
+
 
 done-testing;
