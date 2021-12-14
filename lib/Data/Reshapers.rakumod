@@ -146,13 +146,17 @@ multi dimensions(@arg -->List) {
 #===========================================================
 our proto select-columns(|) is export {*}
 
-multi select-columns(@data, %mapper) {
-    rename-columns(select-columns(@data, %mapper.keys), %mapper)
+multi select-columns($data, Str $var) {
+    return select-columns($data, [$var,])
 }
 
-multi select-columns(@data, @columns) {
+multi select-columns(@data, %mapper) {
+    return rename-columns(select-columns(@data, %mapper.keys), %mapper)
+}
+
+multi select-columns(@data, @vars) {
     if is-array-of-hashes(@data) {
-        my %colSet = Set(@columns);
+        my %colSet = Set(@vars);
         my $res = @data>>.grep({ $_.key (elem) %colSet })>>.Hash;
         return $res;
     } else {
@@ -161,7 +165,7 @@ multi select-columns(@data, @columns) {
 }
 
 multi select-columns(%data, %mapper) {
-    rename-columns(select-columns(%data, %mapper.keys), %mapper)
+    return rename-columns(select-columns(%data, %mapper.keys), %mapper)
 }
 
 multi select-columns(%data, @columns) {
@@ -198,14 +202,22 @@ multi rename-columns(%data, %mapper) {
 #===========================================================
 our proto summarize-at(|) is export {*}
 
-multi summarize-at($data, @vars, @funcs) {
+multi summarize-at($data, Str $var, @funcs, Str :$sep = '.') {
+    return summarize-at($data, [$var, ], @funcs, :$sep)
+}
+
+multi summarize-at($data, @vars, &func, Str :$sep = '.') {
+    return summarize-at($data, @vars, [&func,], :$sep)
+}
+
+multi summarize-at($data, @vars, @funcs, Str :$sep = '.') {
     if @funcs.all ~~ Callable {
 
         if is-hash-of-hashes($data) {
 
             my %res = infix:<X>(transpose(select-columns($data, @vars)),
                     @funcs,
-                    :with(-> $c, &f { $c.key ~ '.' ~ &f.name => $c.value.values.Array.&f }));
+                    :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.values.Array.&f }));
 
             return %res;
 
@@ -213,16 +225,40 @@ multi summarize-at($data, @vars, @funcs) {
 
             my %res = infix:<X>(transpose(select-columns($data, @vars)),
                     @funcs,
-                    :with(-> $c, &f { $c.key ~ '.' ~ &f.name => $c.value.Array.&f }));
+                    :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.Array.&f }));
 
             return %res;
 
         } else {
-            die "The first argument is expected to be an array of hashes or a hashs of hashes."
+            die "The first argument is expected to be an array of hashes or a hash of hashes."
         }
 
     } else {
         die "The third argument is expected to be a list of functions."
+    }
+}
+
+#===========================================================
+our proto group-by(|) is export {*}
+
+multi group-by($data, Str $var, Str :$sep = '.') {
+    return group-by($data, [$var, ], :$sep)
+}
+
+multi group-by($data, @vars, Str :$sep = '.') {
+
+    if is-array-of-hashes($data) {
+
+        my %res = $data.classify(-> $row { @vars.map({ $row{$_} }).join($sep) });
+        return %res;
+
+    } elsif is-hash-of-hashes($data) {
+
+        my %res = $data.pairs.classify(-> $row { @vars.map({ $row.value{$_} }).join($sep) })>>.Hash;
+        return %res;
+
+    } else {
+        die "The first argument is expected to be an array of hashes or a hash of hashes."
     }
 }
 
