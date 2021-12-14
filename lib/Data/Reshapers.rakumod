@@ -151,12 +151,12 @@ multi select-columns(@data, %mapper) {
 }
 
 multi select-columns(@data, @columns) {
-    if has-homogeneous-hash-types(@data) {
+    if is-array-of-hashes(@data) {
         my %colSet = Set(@columns);
-        my $res = @data>>.grep({ $_.key (elem) %colSet})>>.Hash;
+        my $res = @data>>.grep({ $_.key (elem) %colSet })>>.Hash;
         return $res;
     } else {
-        die "If the first argument is an array then it is expected to be an array of hashes with same keys."
+        die "If the first argument is an array then it is expected to be an array of hashes."
     }
 }
 
@@ -165,12 +165,12 @@ multi select-columns(%data, %mapper) {
 }
 
 multi select-columns(%data, @columns) {
-    if has-homogeneous-hash-types(%data) {
+    if is-hash-of-hashes(%data) {
         my %colSet = Set(@columns);
         my %res = %data.pairs.map({ $_.key => $_.value.pairs.grep({ $_.key (elem) %colSet }).Hash })>>.Hash;
         return %res;
     } else {
-        die "If the first argument is a hash then it is expected to be a hash of hashes with same keys."
+        die "If the first argument is a hash then it is expected to be a hash of hashes."
     }
 }
 
@@ -178,20 +178,51 @@ multi select-columns(%data, @columns) {
 our proto rename-columns(|) is export {*}
 
 multi rename-columns(@data, %mapper) {
-    if has-homogeneous-hash-types(@data) {
+    if is-array-of-hashes(@data) {
         my $res = @data>>.map({ %mapper{.key}:exists ?? (%mapper{.key} => .value) !! $_ })>>.Hash;
         return $res;
     } else {
-        die "If the first argument is an array then it is expected to be an array of hashes with same keys."
+        die "If the first argument is an array then it is expected to be an array of hashes."
     }
 }
 
 multi rename-columns(%data, %mapper) {
-    if has-homogeneous-hash-types(%data) {
+    if is-hash-of-hashes(%data) {
         my %res = %data.pairs>>.map({ $_.key => $_.value.map({ %mapper{.key}:exists ?? (%mapper{.key} => .value) !! $_ }).Hash })>>.Hash;
         return %res;
     } else {
-        die "If the first argument is a hash then it is expected to be a hash of hashes with same keys."
+        die "If the first argument is a hash then it is expected to be a hash of hashes."
+    }
+}
+
+#===========================================================
+our proto summarize-at(|) is export {*}
+
+multi summarize-at($data, @vars, @funcs) {
+    if @funcs.all ~~ Callable {
+
+        if is-hash-of-hashes($data) {
+
+            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+                    @funcs,
+                    :with(-> $c, &f { $c.key ~ '.' ~ &f.name => $c.value.values.Array.&f }));
+
+            return %res;
+
+        } elsif is-array-of-hashes($data) {
+
+            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+                    @funcs,
+                    :with(-> $c, &f { $c.key ~ '.' ~ &f.name => $c.value.Array.&f }));
+
+            return %res;
+
+        } else {
+            die "The first argument is expected to be an array of hashes or a hashs of hashes."
+        }
+
+    } else {
+        die "The third argument is expected to be a list of functions."
     }
 }
 
