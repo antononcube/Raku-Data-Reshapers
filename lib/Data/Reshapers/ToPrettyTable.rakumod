@@ -21,6 +21,12 @@ use Data::Reshapers::Predicates;
 
 unit module Data::Reshapers::ToPrettyTable;
 
+constant %tblParamDefaults =
+horizontal-char => '─',
+vertical-char => '│',
+junction-char => 'O', # '┼',
+float-format=> '.6f';
+
 #===========================================================
 #| Convert into a pretty table object.
 our proto ToPrettyTable(|) is export {*}
@@ -68,6 +74,7 @@ multi ToPrettyTable(%tbl, *%args) {
                 field-names => ['', |@colnames],
                 sort-by => '',
                 align => %('' => 'l'),
+                |%tblParamDefaults,
                 |%args;
 
         # Add each hash into the pretty table as table row
@@ -86,6 +93,7 @@ multi ToPrettyTable(%tbl, *%args) {
                 field-names => ['', |@colnames>>.Str],
                 sort-by => '',
                 align => %('' => 'l'),
+                |%tblParamDefaults,
                 |%args;
 
         # Add each hash into the pretty table as table row
@@ -144,6 +152,7 @@ multi ToPrettyTable(@tbl, *%args) {
         # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
                 field-names => @colnames,
+                |%tblParamDefaults,
                 |%args;
 
         # Add each hash into the pretty table as table row
@@ -159,6 +168,7 @@ multi ToPrettyTable(@tbl, *%args) {
         # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
                 field-names => @colnames>>.Str,
+                |%tblParamDefaults,
                 |%args;
 
         # Add each hash into the pretty table as table row
