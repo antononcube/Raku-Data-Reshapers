@@ -22,9 +22,9 @@ use Data::Reshapers::Predicates;
 unit module Data::Reshapers::ToPrettyTable;
 
 constant %tblParamDefaults =
-horizontal-char => '─',
-vertical-char => '│',
-junction-char => 'O', # '┼',
+horizontal-char => '-', # |'─',
+vertical-char => '|', #'│',
+junction-char => '+', #'O', # '┼',
 float-format=> '.6f';
 
 #===========================================================
