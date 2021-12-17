@@ -20,7 +20,7 @@ my %dfData1 = "0" => ${ :alpha(0.9038461749723564e0), :beta("Tacoma"), :delta("K
               "3" => ${ :alpha(0.8153474825814797e0), :beta("Tacoma"), :delta("Katphryn Vera Rose"), :gamma(0.5623954124920828e0) };
 
 
-plan 10;
+plan 14;
 
 ## 1
 is-deeply select-columns(@dfData0, <delta beta>)>>.keys>>.Array.unique(:as({ $_.sort.Array }):with(&[eqv]))>>.sort>>.List,
@@ -81,5 +81,28 @@ my $res10 = [(&)] rename-columns(%dfData1, 'beta' => 'CIGAR').values>>.Set;
 is-deeply $res10, Set(<alpha CIGAR gamma delta>),
         "Hash of hashes single pair ranaming.";
 
+## 11
+my $res11 = [(&)] delete-columns(@dfData0, 'beta')>>.Set;
+
+is-deeply $res11, Set(<alpha gamma delta>),
+        "Array of hashes single var delection.";
+
+## 12
+my $res12 = [(&)] delete-columns(%dfData1, 'beta').values>>.Set;
+
+is-deeply $res12, Set(<alpha gamma delta>),
+        "Hash of hashes single var deletion.";
+
+## 13
+my $res13 = [(&)] delete-columns(%dfData1, <delta beta>).values>>.Set;
+
+is-deeply $res13, Set(<alpha gamma>),
+        "Hash of hashes vars deletion.";
+
+## 14
+my $res14 = [(&)] delete-columns(%dfData1, <delta beta>).values>>.Set;
+
+is-deeply $res14, Set(<alpha gamma>),
+        "Hash of hashes vars deletion.";
 
 done-testing;
