@@ -146,7 +146,7 @@ multi dimensions(@arg -->List) {
 #===========================================================
 our proto select-columns(|) is export {*}
 
-multi select-columns($data, Str $var) {
+multi select-columns($data, Str $var, :&chooser = &infix:<(elem)>) {
     return select-columns($data, [$var,])
 }
 
@@ -154,10 +154,10 @@ multi select-columns(@data, %mapper) {
     return rename-columns(select-columns(@data, %mapper.keys), %mapper)
 }
 
-multi select-columns(@data, @vars) {
+multi select-columns(@data, @vars, :&chooser = &infix:<(elem)>) {
     if is-array-of-hashes(@data) {
         my %colSet = Set(@vars);
-        my $res = @data>>.grep({ $_.key (elem) %colSet })>>.Hash;
+        my $res = @data>>.grep({ &chooser($_.key, %colSet) })>>.Hash;
         return $res;
     } else {
         die "If the first argument is an array then it is expected to be an array of hashes."
@@ -168,10 +168,10 @@ multi select-columns(%data, %mapper) {
     return rename-columns(select-columns(%data, %mapper.keys), %mapper)
 }
 
-multi select-columns(%data, @columns) {
+multi select-columns(%data, @vars, :&chooser = &infix:<(elem)>) {
     if is-hash-of-hashes(%data) {
-        my %colSet = Set(@columns);
-        my %res = %data.pairs.map({ $_.key => $_.value.pairs.grep({ $_.key (elem) %colSet }).Hash })>>.Hash;
+        my %colSet = Set(@vars);
+        my %res = %data.pairs.map({ $_.key => $_.value.pairs.grep({ &chooser($_.key, %colSet) }).Hash })>>.Hash;
         return %res;
     } else {
         die "If the first argument is a hash then it is expected to be a hash of hashes."
@@ -205,6 +205,25 @@ multi rename-columns(%data, %mapper) {
     } else {
         die "If the first argument is a hash then it is expected to be a hash of hashes."
     }
+}
+
+#===========================================================
+our proto delete-columns(|) is export {*}
+
+multi delete-columns($data, Str $var) {
+    return delete-columns($data, [$var,])
+}
+
+multi delete-columns(@data, @vars) {
+    return select-columns(@data, @vars, chooser => &infix:<∉>)
+}
+
+multi delete-columns(%data, Str $var) {
+    return delete-columns(%data, [$var,])
+}
+
+multi delete-columns(%data, @vars) {
+    return select-columns(%data, @vars, chooser => &infix:<∉>)
 }
 
 #===========================================================
