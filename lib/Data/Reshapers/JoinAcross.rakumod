@@ -12,18 +12,40 @@ use Data::Reshapers::Predicates;
 unit module Data::Reshapers::JoinAcross;
 
 #===========================================================
+sub make-combined-key( %h, @keys, Str :$sep = ':::' ) {
+    return @keys.map({ %h{$_} }).join($sep)
+}
+
+#===========================================================
 our proto JoinAcross(|) is export {*}
 
 #-----------------------------------------------------------
 #| Join across (SQL JOIN) for arrays of hashes.
-multi JoinAcross(@a, @b, Str $key, Str :$join-spec= 'Inner',
-                 Bool :$fill = True, :$missing-value = Whatever,
-                 :&key-collision-function = WhateverCode) {
-    return JoinAcross(@a, @b, $key => $key, :$join-spec, :$fill, :$missing-value, :&key-collision-function)
+multi JoinAcross(@a, @b, Str $key, *%args) {
+    return JoinAcross(@a, @b, $key => $key, |%args)
 }
 
 #| Join across (SQL JOIN) for arrays of hashes.
-multi JoinAcross(@a, @b, Pair $keyMap, Str :$join-spec= 'Inner',
+multi JoinAcross(@a, @b, @keys, *%args) {
+    my %keyMap;
+    if @keys.all ~~ Str {
+        %keyMap = @keys.map({ $_ => $_ })
+    } elsif @keys.all ~~ Pair  {
+        %keyMap = @keys
+    } else {
+        die 'When the third argument is an array then it is expected to be an array of strings or an array of pairs.'
+    }
+
+    return JoinAcross(@a, @b, %keyMap, |%args)
+}
+
+#| Join across (SQL JOIN) for arrays of hashes.
+multi JoinAcross(@a, @b, Pair $keyMap, *%args) {
+    return JoinAcross(@a, @b, %($keyMap), |%args)
+}
+
+#| Join across (SQL JOIN) for arrays of hashes.
+multi JoinAcross(@a, @b, %keyMap, Str :$join-spec= 'Inner',
                  Bool :$fill = True, :$missing-value = Whatever,
                  :&key-collision-function = WhateverCode) {
 
@@ -39,11 +61,19 @@ multi JoinAcross(@a, @b, Pair $keyMap, Str :$join-spec= 'Inner',
         die "The second argument is expected to be an array of hashes."
     }
 
-    my $akey = $keyMap.key;
-    my $bkey = $keyMap.value;
+    my (%ah, %bh);
+    if %keyMap.elems == 1 {
+        my $akey = %keyMap.first.key;
+        my $bkey = %keyMap.first.value;
 
-    my %ah = @a.map({ $_{$akey} => $_ });
-    my %bh = @b.map({ $_{$bkey} => $_ });
+        %ah = @a.map({ $_{$akey} => $_ });
+        %bh = @b.map({ $_{$bkey} => $_ });
+    } elsif %keyMap.elems > 1 {
+        %ah = @a.map({ make-combined-key($_, %keyMap.keys) => $_ });
+        %bh = @b.map({ make-combined-key($_, %keyMap.values) => $_ });
+    } else {
+        die 'The third argument is expected to be non-empty value.'
+    }
 
     my $commonKeys =
             do if $join-spec.lc eq 'inner' {
