@@ -155,12 +155,17 @@ multi select-columns(@data, %mapper) {
 }
 
 multi select-columns(@data, @vars, :&chooser = &infix:<(elem)>) {
+    my %colSet = Set(@vars);
     if is-array-of-hashes(@data) {
-        my %colSet = Set(@vars);
-        my $res = @data>>.grep({ &chooser($_.key, %colSet) })>>.Hash;
-        return $res;
+        my @res = @data>>.grep({ &chooser($_.key, %colSet) })>>.Hash;
+        return @res;
+    } elsif is-array-of-key-hash-pairs(@data) {
+        # Very similar to the hash-of-hashes case, but since Raku
+        # does not support ordered hashes no delegation is used.
+        my @res = @data.map({ $_.key => $_.value.pairs.grep({ &chooser($_.key, %colSet) }).Hash });
+        return @res;
     } else {
-        die "If the first argument is an array then it is expected to be an array of hashes."
+        die "If the first argument is an array then it is expected to be an array of hashes or an array of key-hash pairs."
     }
 }
 
