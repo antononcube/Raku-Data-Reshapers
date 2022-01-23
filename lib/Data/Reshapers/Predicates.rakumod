@@ -63,3 +63,8 @@ sub is-array-of-hashes($arr) is export {
 sub is-hash-of-hashes($obj) is export {
     $obj ~~ Map and ( [and] $obj.values.map({ $_ ~~ Map }) )
 }
+
+#------------------------------------------------------------
+sub is-array-of-pairs($obj) is export {
+    $obj ~~ Positional and ( [and] $obj.map({ $_ ~~ Pair }) )
+}
