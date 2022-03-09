@@ -18,6 +18,17 @@ multi ToLongFormat(@tbl) {
 }
 
 #-----------------------------------------------------------
+multi ToLongFormat(@tbl,
+                   :$identifierColums = Whatever,
+                   :$variableColumns = Whatever,
+                   Str:D :$automaticKeysTo = 'AutomaticKey',
+                   Str:D :$variablesTo = 'Variable',
+                   Str:D :$valuesTo = 'Value') {
+
+       ToLongFormat(  @tbl, $identifierColums, $variableColumns, :$automaticKeysTo, :$valuesTo, :$variablesTo)
+}
+
+#-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
 multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
                      Str:D :$automaticKeysTo = 'AutomaticKey',
@@ -41,7 +52,7 @@ multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
     # Determine ID columns
     my Str @idColsLocal;
 
-    if !(so $idColsSpec) or $idColsSpec eq $[] {
+    if !(so $idColsSpec) or $idColsSpec eq $[] or $idColsSpec.isa(Whatever) {
 
         @idColsLocal = [$automaticKeysTo];
 
@@ -75,7 +86,7 @@ multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
     # Determine value columns
     my Str @valColsLocal;
 
-    if !(so $valColsSpec) or $valColsSpec eq $[] {
+    if !(so $valColsSpec) or $valColsSpec eq $[] or $valColsSpec.isa(Whatever) {
 
         @valColsLocal = (@allCols (-) @idColsLocal).keys;
 
