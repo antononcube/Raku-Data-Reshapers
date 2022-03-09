@@ -1,8 +1,5 @@
 use Test;
 
-use lib './lib';
-use lib '.';
-
 use Data::Reshapers;
 
 my @tblHeaders = Data::Reshapers::get-titanic-dataset(headers => 'auto');
@@ -20,7 +17,7 @@ ResourceFunction["LongFormDataset"][dfTitanic, "VariablesTo"->"VAR", "ValuesTo"-
 ```
 )
 
-plan 11;
+plan 12;
 
 ## 1
 ok @tblHeaders.isa(Array);
@@ -86,5 +83,13 @@ is-deeply
         @lfRes4.elems,
         @array-of-hashes.elems * <passengerSex passengerClass>.elems,
         'long-format conversion expected size, specified id and variables';
+
+## 12
+## Same as #6 but using Whatever instead [].
+my @lfRes12 = to-long-format( @array-of-hashes, Whatever, Whatever, variablesTo => "VAR", valuesTo => "VAL2" );
+is-deeply
+        @lfRes2.sort,
+        @lfRes12.sort,
+        'long-format conversion using Whatever for 2nd and 3rd arguments.';
 
 done-testing;
