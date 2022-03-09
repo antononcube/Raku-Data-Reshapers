@@ -29,6 +29,18 @@ our proto ToWideFormat(|) is export {*}
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
+multi ToWideFormat(@tbl,
+                   :$identifierColName = Whatever,
+                   Str:D :$variablesFrom,
+                   Str:D :$valuesFrom,
+                   Str:D :$automaticKeysTo = 'AutomaticKey',
+                   :&aggregationFunction = &auto-aggregator) {
+
+    ToWideFormat( @tbl, $identifierColName, $variablesFrom, $valuesFrom, :$automaticKeysTo, :&aggregationFunction)
+}
+
+#-----------------------------------------------------------
+#| To long form conversion for arrays of hashes.
 multi ToWideFormat(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColName,
                      Str:D :$automaticKeysTo = 'AutomaticKey', :&aggregationFunction = &auto-aggregator) {
 
@@ -49,7 +61,7 @@ multi ToWideFormat(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColNam
     # Determine ID columns
     my Str @idColsLocal;
 
-    if !(so $idColsSpec) or $idColsSpec eq $[] {
+    if !(so $idColsSpec) or $idColsSpec eq $[] or $idColsSpec.isa(Whatever) {
 
         @idColsLocal = [$automaticKeysTo];
 
