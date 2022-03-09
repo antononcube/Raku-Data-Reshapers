@@ -1,8 +1,5 @@
 use Test;
 
-use lib './lib';
-use lib '.';
-
 use Data::Reshapers;
 
 my @tblHeaders = Data::Reshapers::get-titanic-dataset(headers => 'auto');

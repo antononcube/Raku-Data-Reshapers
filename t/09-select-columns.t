@@ -1,8 +1,5 @@
 use Test;
 
-use lib './lib';
-use lib '.';
-
 use Data::Reshapers;
 
 # The test data was generated with the package Data::Generators.

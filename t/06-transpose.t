@@ -1,8 +1,5 @@
 use Test;
 
-use lib './lib';
-use lib '.';
-
 use Data::Reshapers;
 
 #my %hash-of-hashes = cross-tabulate( get-titanic-dataset(), 'passengerSex', 'passengerClass');
