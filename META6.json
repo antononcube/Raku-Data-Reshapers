@@ -26,6 +26,7 @@
     "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
   },
   "resources": [
+    "dfLakeMeadLevels.csv",
     "dfTitanic.csv"
   ],
   "license": "Artistic-2.0",
