@@ -1,25 +1,12 @@
 {
-  "perl": "6.d",
   "name": "Data::Reshapers",
-  "api": "1",
-  "auth": "github:antononcube",
-  "version": "0.1.7",
   "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
+  "version": "0.1.7",
+  "perl": "6.d",
   "authors": [
     "Anton Antonov"
   ],
-  "license": "Artistic-2.0",
-  "provides": {
-    "Data::Reshapers": "lib/Data/Reshapers.rakumod",
-    "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
-    "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
-    "Data::Reshapers::Predicates": "lib/Data/Reshapers/Predicates.rakumod",
-    "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
-    "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
-    "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
-    "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
-    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
-  },
+  "auth": "github:antononcube",
   "depends": [
     "Hash::Merge",
     "Text::CSV",
@@ -27,9 +14,21 @@
   ],
   "build-depends": [],
   "test-depends": [],
+  "provides": {
+    "Data::Reshapers": "lib/Data/Reshapers.rakumod",
+    "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
+    "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
+    "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
+    "Data::Reshapers::Predicates": "lib/Data/Reshapers/Predicates.rakumod",
+    "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
+    "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
+    "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
+    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
+  },
   "resources": [
     "dfTitanic.csv"
   ],
+  "license": "Artistic-2.0",
   "tags": [
     "contingency table",
     "data",
@@ -43,5 +42,6 @@
     "wide form",
     "wide format"
   ],
+  "api": "1",
   "source-url": "https://github.com/antononcube/Raku-Data-Reshapers.git"
 }
