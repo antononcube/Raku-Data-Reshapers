@@ -18,6 +18,7 @@ different data structures coercible to full-arrays.
 use Pretty::Table;
 use Data::Reshapers::Adapters;
 use Data::Reshapers::Predicates;
+use Hash::Merge;
 
 unit module Data::Reshapers::ToPrettyTable;
 
@@ -26,6 +27,31 @@ horizontal-char => '-', # |'─',
 vertical-char => '|', #'│',
 junction-char => '+', #'O', # '┼',
 float-format=> '.6f';
+
+#===========================================================
+#| Complete column names
+our proto CompleteColumnNames(|) is export {*}
+
+multi sub CompleteColumnNames($dataset, :$missing-value = '') {
+
+    my @allColnames;
+    if is-array-of-hashes($dataset) {
+
+        @allColnames = $dataset>>.keys.flat.unique;
+        my %emptyRow = @allColnames X=> $missing-value;
+        return $dataset.map({ merge-hash(%emptyRow, $_) }).Array;
+
+    } elsif is-hash-of-hashes($dataset) {
+
+        @allColnames = $dataset.values>>.keys.flat.unique;
+        my %emptyRow = @allColnames X=> $missing-value;
+        return $dataset.map({ $_.key => merge-hash(%emptyRow, $_.value) }).Hash;
+
+    } else {
+        warn 'Do not know how to process the dataset argument.';
+        return $dataset;
+    }
+}
 
 #===========================================================
 #| Convert into a pretty table object.
@@ -43,6 +69,8 @@ my Str $arrayArgErrMsg =
 
 #-----------------------------------------------------------
 multi ToPrettyTable(%tbl, *%args) {
+
+    my $missing-value = %args<missing-value>:exists ?? %args<missing-value> !! '';
 
     my Hash %hash-of-hashes;
     my Positional %hash-of-arrays;
@@ -65,6 +93,8 @@ multi ToPrettyTable(%tbl, *%args) {
     }
 
     if %hash-of-hashes.defined and %hash-of-hashes {
+
+        %hash-of-hashes = CompleteColumnNames(%hash-of-hashes, :$missing-value);
 
         # Column names of the pretty table
         my @colnames = %hash-of-hashes{%hash-of-hashes.keys[0]}.keys;
@@ -110,6 +140,8 @@ multi ToPrettyTable(%tbl, *%args) {
 #-----------------------------------------------------------
 multi ToPrettyTable(@tbl, *%args) {
 
+    my $missing-value = %args<missing-value>:exists ?? %args<missing-value> !! '';
+
     my Hash @arr-of-hashes;
     my Positional @arr-of-arrays;
 
@@ -145,6 +177,8 @@ multi ToPrettyTable(@tbl, *%args) {
 
     # Convert to table
     if @arr-of-hashes.defined and @arr-of-hashes {
+
+        @arr-of-hashes = CompleteColumnNames(@arr-of-hashes, :$missing-value);
 
         # Column names of the pretty table
         my @colnames = @arr-of-hashes[0].keys;
