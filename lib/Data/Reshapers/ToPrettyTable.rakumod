@@ -10,7 +10,7 @@ different data structures coercible to full-arrays.
     use Data::Reshapers;
     use Data::Reshapers::ToPrettyTable;
 
-    my @tbl = get-titanic-data(headers => "auto");
+    my @tbl = get-titanic-dataset(headers => "auto");
     say ToPrettyTable(@tbl);
 
 =end pod
