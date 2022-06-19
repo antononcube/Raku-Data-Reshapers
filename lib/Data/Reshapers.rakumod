@@ -296,17 +296,35 @@ multi group-by($data, @vars, Str :$sep = '.') {
 
 #===========================================================
 #| Completely flattens a data structure even when sub-lists are wrapped in item containers.
-our proto really-flat(|) is export {*}
+our proto flatten(|) is export {*}
 
 # Taken from
 # https://stackoverflow.com/q/41648119/
 # https://stackoverflow.com/a/41649110/
-multi really-flat (+@list) {
-    gather @list.deepmap: *.take
+#multi flatten(+@list) {
+#    gather @list.deepmap: *.take
+#}
+
+multi flatten(\leaf, :$max-level = Inf) { leaf }
+multi flatten(@list, :$max-level = Inf) {
+    if ! ( $max-level ~~ UInt || $max-level === Inf ) {
+        die 'The argument max-level is expected to be a non-negative integer or Inf.';
+    }
+    flatten-rec(@list, $max-level, 0);
 }
 
-multi really-flat (%h) {
-    %h.keys Z=> %h.values.map({ ($_ ~~ Positional || $_ ~~ Map) ?? really-flat($_) !! $_ }).Array
+multi flatten-rec(@list, $maxLevel, UInt $lvl) {
+    if $maxLevel > $lvl {
+        @list.map: { slip flatten-rec($_, $maxLevel, $lvl+1) }
+    } else {
+        @list
+    }
+}
+
+multi flatten-rec(\leaf, $maxLevel, UInt $lvl) { leaf }
+
+multi flatten (%h) {
+    %h.keys Z=> %h.values.map({ ($_ ~~ Positional || $_ ~~ Map) ?? flatten($_) !! $_ }).Array
 }
 
 #===========================================================
