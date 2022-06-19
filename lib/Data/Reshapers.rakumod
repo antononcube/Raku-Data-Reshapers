@@ -295,6 +295,21 @@ multi group-by($data, @vars, Str :$sep = '.') {
 }
 
 #===========================================================
+#| Completely flattens a data structure even when sub-lists are wrapped in item containers.
+our proto really-flat(|) is export {*}
+
+# Taken from
+# https://stackoverflow.com/q/41648119/
+# https://stackoverflow.com/a/41649110/
+multi really-flat (+@list) {
+    gather @list.deepmap: *.take
+}
+
+multi really-flat (%h) {
+    %h.keys Z=> %h.values.map({ ($_ ~~ Positional || $_ ~~ Map) ?? really-flat($_) !! $_ }).Array
+}
+
+#===========================================================
 our proto to-pretty-table(|) is export {*}
 
 multi to-pretty-table(**@args, *%args) {
