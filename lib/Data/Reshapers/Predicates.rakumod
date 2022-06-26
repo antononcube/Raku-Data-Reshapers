@@ -18,17 +18,6 @@ sub has-homogeneous-keys(\l) is export {
 }
 
 #------------------------------------------------------------
-sub record-types(\l) is export {
-    if l[*].all ~~ Positional or l[*].all ~~ Map {
-
-        l[*].&{ $_.map({ $_.deepmap({ $_.^name }) }) }
-
-    } else {
-        Nil
-    }
-}
-
-#------------------------------------------------------------
 #| Returns True if the argument is a positional of Hashes and the value types of all hashes are the same.
 sub has-homogeneous-hash-types(\l) is export {
     l[0].isa(Hash) and so l[*].&{ $_.map({ $_.values.map({ $_.^name }) }).all == $_[0].values.map({ $_.^name }) }
