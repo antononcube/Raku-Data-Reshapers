@@ -30,6 +30,7 @@ use Data::Reshapers::JoinAcross;
 use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
 use Data::Reshapers::Predicates;
+use Data::Reshapers::TypeSystem;
 
 #===========================================================
 
@@ -325,6 +326,24 @@ multi flatten-rec(\leaf, $maxLevel, UInt $lvl) { leaf }
 
 multi flatten (%h) {
     %h.keys Z=> %h.values.map({ ($_ ~~ Positional || $_ ~~ Map) ?? flatten($_) !! $_ }).Array
+}
+
+#===========================================================
+our proto is-reshapable($data, |) is export {*}
+
+multi is-reshapable($data, *%args) {
+    return Data::Reshapers::TypeSystem.is-reshapable($data, |%args);
+}
+
+multi is-reshapable($iterable-type, $record-type, $data) {
+    Data::Reshapers::TypeSystem.is-reshapable($data, :$iterable-type, :$record-type)
+}
+
+#===========================================================
+our proto record-types($data) is export {*}
+
+multi record-types($data) {
+    return Data::Reshapers::TypeSystem.record-types($data);
 }
 
 #===========================================================
