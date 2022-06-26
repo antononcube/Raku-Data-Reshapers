@@ -77,7 +77,8 @@ class Data::Reshapers::TypeSystem::Struct
 #===========================================================
 class Data::Reshapers::TypeSystem {
 
-    my UInt $max-struct-elems = 16;
+    has UInt $.max-struct-elems is rw = 16;
+    has UInt $.max-enum-elems is rw = 6;
 
     #------------------------------------------------------------
     method has-homogeneous-shape($l) {
@@ -166,7 +167,7 @@ class Data::Reshapers::TypeSystem {
 
             when $_ ~~ Hash {
                 my @res = |$_>>.are.sort({ $_.key });
-                if !self.has-homogeneous-type($_.values) && $_.elems ≤ $max-struct-elems  {
+                if !self.has-homogeneous-type($_.values) && $_.elems ≤ self.max-struct-elems  {
                     return Data::Reshapers::TypeSystem::Struct.new(keys => @res>>.key.List, values => @res>>.value.List);
                 } elsif self.has-homogeneous-type($_.values) {
                     return Data::Reshapers::TypeSystem::Assoc.new(keyType => self.deduce-type($_.keys[0]), type => self.deduce-type($_.values[0]), count => $_.elems);

@@ -347,6 +347,14 @@ multi record-types($data) {
 }
 
 #===========================================================
+our proto deduce-type($data,|) is export {*}
+
+multi deduce-type($data, UInt :$max-struct-elems = 16, UInt :$max-enum-elems = 6) {
+    my $ts = Data::Reshapers::TypeSystem.new(:$max-struct-elems, :$max-enum-elems);
+    return $ts.deduce-type($data);
+}
+
+#===========================================================
 our proto to-pretty-table(|) is export {*}
 
 multi to-pretty-table(**@args, *%args) {
