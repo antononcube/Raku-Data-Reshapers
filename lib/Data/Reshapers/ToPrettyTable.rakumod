@@ -98,6 +98,15 @@ multi ToPrettyTable(%tbl, *%args) {
 
         # Column names of the pretty table
         my @colnames = %hash-of-hashes{%hash-of-hashes.keys[0]}.keys;
+        if %args<field-names>:exists {
+            @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
+
+            if @colnames.elems == 0 {
+                warn 'None of the specified field names are known.'
+            } elsif @colnames.elems < %args<field-names>.elems {
+                warn 'Some of the specified field names are not known.'
+            }
+        }
 
         # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
@@ -105,7 +114,7 @@ multi ToPrettyTable(%tbl, *%args) {
                 sort-by => '',
                 align => %('' => 'l'),
                 |%tblParamDefaults,
-                |%args;
+                |%args.grep({ $_.key ne 'field-names' }).Hash;
 
         # Add each hash into the pretty table as table row
         %hash-of-hashes.map({ $tableObj.add-row([$_.key, |$_.value{|@colnames}]) });
@@ -182,12 +191,22 @@ multi ToPrettyTable(@tbl, *%args) {
 
         # Column names of the pretty table
         my @colnames = @arr-of-hashes[0].keys;
+        if %args<field-names>:exists {
+            @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
+
+            if @colnames.elems == 0 {
+                warn 'None of the specified field names are known.'
+            } elsif @colnames.elems < %args<field-names>.elems {
+                warn 'Some of the specified field names are not known.'
+            }
+        }
+
 
         # Initialize the pretty table object
         my $tableObj = Pretty::Table.new:
                 field-names => @colnames,
                 |%tblParamDefaults,
-                |%args;
+                |%args.grep({ $_.key ne 'field-names' }).Hash;
 
         # Add each hash into the pretty table as table row
         @arr-of-hashes.map({ $tableObj.add-row($_{|@colnames}) });
