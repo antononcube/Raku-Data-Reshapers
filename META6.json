@@ -23,7 +23,8 @@
     "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
     "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
     "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
-    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
+    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod",
+    "Data::Reshapers::TypeSystem": "lib/Data/Reshapers/TypeSystem.rakumod"
   },
   "resources": [
     "dfLakeMeadLevels.csv",
