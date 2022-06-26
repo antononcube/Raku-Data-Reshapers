@@ -19,27 +19,40 @@ role Data::Reshapers::TypeSystem::Type {
 class Data::Reshapers::TypeSystem::Atom
         does Data::Reshapers::TypeSystem::Type {
     method gist(-->Str) {
-        'Atom[' ~ $.type.^name ~ ']'
+        'Atom(' ~ $.type.gist ~ ')'
     }
 };
 
 class Data::Reshapers::TypeSystem::Vector
         does Data::Reshapers::TypeSystem::Type {
     method gist(-->Str) {
-        'Vector[(' ~ $.type>>.gist.join(', ') ~ ')]'
+        if $.type.elems == 1 {
+            'Vector(' ~ $.type>>.gist.join(', ') ~ ', ' ~ $.count.gist ~ ')'
+        } else {
+            'Vector([' ~ $.type>>.gist.join(', ') ~ '], ' ~ $.count.gist ~ ')'
+        }
     }
 };
 
 class Data::Reshapers::TypeSystem::Tuple
         does Data::Reshapers::TypeSystem::Type {
     method gist(-->Str) {
-        'Tuple[(' ~ $.type>>.gist.join(', ') ~ ')]'
+        'Tuple([' ~ $.type>>.gist.join(', ') ~ '])'
     }
 };
 
 class Data::Reshapers::TypeSystem::Assoc
         does Data::Reshapers::TypeSystem::Type {
+    has $.keyType;
 
+    submethod BUILD(:$!keyType = Any, :$!type = Any, :$!count = Any) {}
+    multi method new($keyType, $type, $count) {
+        self.bless(:$keyType, :$type, :$count)
+    }
+
+    method gist(-->Str) {
+        'Assoc(' ~ $.keyType.gist ~ ', ' ~ $.type.gist ~ ', ' ~ $.count.gist ~ ')'
+    }
 };
 
 class Data::Reshapers::TypeSystem::Struct
@@ -53,7 +66,7 @@ class Data::Reshapers::TypeSystem::Struct
     }
 
     method gist(-->Str) {
-        'Struct[(' ~ $!keys.join(', ') ~ '), (' ~ $!values.map({ $_.^name }).join(', ') ~ ')]';
+        'Struct([' ~ $!keys.join(', ') ~ '], [' ~ $!values.map({ $_.^name }).join(', ') ~ '])';
     }
 };
 
@@ -63,6 +76,8 @@ class Data::Reshapers::TypeSystem::Struct
 
 #===========================================================
 class Data::Reshapers::TypeSystem {
+
+    my UInt $max-struct-elems = 16;
 
     #------------------------------------------------------------
     method has-homogeneous-shape($l) {
@@ -123,6 +138,7 @@ class Data::Reshapers::TypeSystem {
     multi method deduce-type($data) {
         given $data {
             when $_ ~~ Int { return Data::Reshapers::TypeSystem::Atom.new(Int, 1) }
+            when $_ ~~ Numeric { return Data::Reshapers::TypeSystem::Atom.new(Numeric, 1) }
             when $_ ~~ Str { return Data::Reshapers::TypeSystem::Atom.new(Str, 1) }
 
             when $_ ~~ List && self.has-homogeneous-type($_) {
@@ -130,13 +146,33 @@ class Data::Reshapers::TypeSystem {
             }
 
             when $_ ~~ List {
-                my $t = $_.map({ self.deduce-type($_) }).List;
-                return Data::Reshapers::TypeSystem::Tuple.new($t, 1)
+                my @t = $_.map({ self.deduce-type($_) }).List;
+                my $tbag = @t>>.gist.BagHash;
+                if $tbag.elems == 1 {
+                    return Data::Reshapers::TypeSystem::Vector.new(@t[0], $_.elems)
+                }
+                return Data::Reshapers::TypeSystem::Tuple.new(@t, 1)
+            }
+
+            when is-hash-of-hashes($_) {
+                my $kType = self.deduce-type($_.keys[0]);
+                my $vType = self.deduce-type($_.values.List);
+
+                if $vType ~~ Data::Reshapers::TypeSystem::Vector {
+                    return Data::Reshapers::TypeSystem::Assoc.new( keyType => $kType, type => $vType.type, count => $_.elems)
+                }
+                return Data::Reshapers::TypeSystem::Assoc.new( keyType => $kType, type => $vType, count => $_.elems)
             }
 
             when $_ ~~ Hash {
                 my @res = |$_>>.are.sort({ $_.key });
-                return Data::Reshapers::TypeSystem::Struct.new(keys => @res>>.key.List, values => @res>>.value.List);
+                if !self.has-homogeneous-type($_.values) && $_.elems ≤ $max-struct-elems  {
+                    return Data::Reshapers::TypeSystem::Struct.new(keys => @res>>.key.List, values => @res>>.value.List);
+                } elsif self.has-homogeneous-type($_.values) {
+                    return Data::Reshapers::TypeSystem::Assoc.new(keyType => self.deduce-type($_.keys[0]), type => self.deduce-type($_.values[0]), count => $_.elems);
+                } else {
+                    return Data::Reshapers::TypeSystem::Assoc.new(keys => @res>>.key.List, values => Any);
+                }
             }
 
             default { return self.record-types($_) }
