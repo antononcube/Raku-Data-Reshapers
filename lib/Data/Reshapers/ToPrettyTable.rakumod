@@ -99,12 +99,14 @@ multi ToPrettyTable(%tbl, *%args) {
         # Column names of the pretty table
         my @colnames = %hash-of-hashes{%hash-of-hashes.keys[0]}.keys;
         if %args<field-names>:exists {
-            @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
+            if ! %args<field-names>.isa(Whatever) {
+                @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
 
-            if @colnames.elems == 0 {
-                warn 'None of the specified field names are known.'
-            } elsif @colnames.elems < %args<field-names>.elems {
-                warn 'Some of the specified field names are not known.'
+                if @colnames.elems == 0 {
+                    warn 'None of the specified field names are known.'
+                } elsif @colnames.elems < %args<field-names>.elems {
+                    warn 'Some of the specified field names are not known.'
+                }
             }
         }
 
@@ -192,12 +194,14 @@ multi ToPrettyTable(@tbl, *%args) {
         # Column names of the pretty table
         my @colnames = @arr-of-hashes[0].keys;
         if %args<field-names>:exists {
-            @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
+            if ! %args<field-names>.isa(Whatever) {
+                @colnames = %args<field-names>.grep({ $_ ∈ @colnames }).List;
 
-            if @colnames.elems == 0 {
-                warn 'None of the specified field names are known.'
-            } elsif @colnames.elems < %args<field-names>.elems {
-                warn 'Some of the specified field names are not known.'
+                if @colnames.elems == 0 {
+                    warn 'None of the specified field names are known.'
+                } elsif @colnames.elems < %args<field-names>.elems {
+                    warn 'Some of the specified field names are not known.'
+                }
             }
         }
 
