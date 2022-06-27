@@ -1,0 +1,54 @@
+use v6.d;
+
+use lib './lib';
+use lib '.';
+
+use Data::Reshapers;
+
+use Test;
+
+my @dsTitanic = get-titanic-dataset(headers => 'auto');
+
+@dsTitanic = @dsTitanic.map({
+    $_<passengerAge> = $_<passengerAge>.Numeric;
+    $_
+}).Array;
+
+my @dsRandNum =
+[{:A(5.295105534105463e0), :B(2.4765132431861057e0)},
+ {:A(5.504432770843629e0), :B(8.252672576017405e0)},
+ {:A(0.47585824504772667e0), :B(4.6263512559214215e0)},
+ {:A(3.5677811370087187e0), :B(6.861688593804621e0)},
+ {:A(8.069906679462077e0), :B(5.504368820762937e0)},
+ {:A(2.7870773247470213e0), :B(3.081614241542895e0)},
+ {:A(4.688921458531033e0), :B(8.881239727023592e0)}];
+
+my %dsRandNum = ('a'...'z')[^@dsRandNum.elems] Z=> @dsRandNum;
+
+plan 6;
+
+# 1
+is deduce-type(@dsTitanic),
+        'Vector(Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str]), 1309)';
+
+# 2
+is deduce-type(@dsTitanic[12]),
+        'Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str])';
+
+# 3
+is deduce-type(@dsTitanic[12].sort({ $_.key})>>.value.List),
+        'Tuple([Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str)), Atom((Str))])';
+
+# 4
+is deduce-type(@dsTitanic[12]<passengerClass>),
+        'Atom((Str))';
+
+# 5
+is deduce-type(@dsRandNum),
+        "Vector(Assoc(Atom((Str)), Atom((Numeric)), {@dsRandNum[0].elems}), {@dsRandNum.elems})";
+
+# 6;
+is deduce-type(%dsRandNum),
+	"Assoc(Atom((Str)), Assoc(Atom((Str)), Atom((Numeric)), {@dsRandNum[0].elems}), {@dsRandNum.elems})";
+
+done-testing;
