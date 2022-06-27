@@ -1,7 +1,6 @@
 use v6.d;
 
 use Data::Reshapers::Predicates;
-use Hash::Ordered;
 
 #===========================================================
 role Data::Reshapers::TypeSystem::Type {
