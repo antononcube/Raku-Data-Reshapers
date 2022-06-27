@@ -11,11 +11,11 @@ my Array @array-of-arrays = @tblNoHeaders;
 my %hash-of-hashes = cross-tabulate(@array-of-hashes, 'passengerSex', 'passengerClass');
 
 my %hash-of-arrays =
-    id => [372, 1111, 995],
-    passengerAge => [40, 30, -1],
-    passengerClass => <2nd 3rd 3rd>,
-    passengerSex => <female male male>,
-    passengerSurvival => <survived died died>;
+        id => [372, 1111, 995],
+        passengerAge => [40, 30, -1],
+        passengerClass => <2nd 3rd 3rd>,
+        passengerSex => <female male male>,
+        passengerSurvival => <survived died died>;
 
 my Pair @array-of-key-array-pairs =
         [:id($["745", "1092", "658"]),
@@ -37,7 +37,7 @@ my %irisCrossTabulated =
         :virginica(${ "1.4" => 1, "1.5" => 2, "1.6" => 1, "1.7" => 1, "1.8" => 11, "1.9" => 5, "2" => 6, "2.1" => 6,
                       "2.2" => 3, "2.3" => 8, "2.4" => 3, "2.5" => 3 });
 
-plan 14;
+plan 16;
 
 ## 1
 ok @tblHeaders.isa(Array) and
@@ -58,16 +58,16 @@ ok to-pretty-table(@array-of-hashes.roll(5)), 'pretty table of array-of-hashes';
 ok to-pretty-table(@array-of-arrays.roll(5)), 'pretty table of array-of-arrays';
 
 ## 6
-ok to-pretty-table( [[4, 3], [1, 3], [9, 3]], title => "Data test 1");
+ok to-pretty-table([[4, 3], [1, 3], [9, 3]], title => "Data test 1");
 
 ## 7
-ok to-pretty-table( [<4 3 6>, <1 3 7>, <9 3 232>], title => "Data test 2");
+ok to-pretty-table([<4 3 6>, <1 3 7>, <9 3 232>], title => "Data test 2");
 
 ## 8
-ok to-pretty-table( (<4 3 6>, <1 3 7>, <9 3 232>), title => "Data test 3");
+ok to-pretty-table((<4 3 6>, <1 3 7>, <9 3 232>), title => "Data test 3");
 
 ## 9
-ok to-pretty-table( @array-of-key-array-pairs, title => "Array of key-array pairs");
+ok to-pretty-table(@array-of-key-array-pairs, title => "Array of key-array pairs");
 
 ## 10
 fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
@@ -76,7 +76,7 @@ fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
         'data wrong 1';
 
 ## 11
-fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2") },
+fails-like { to-pretty-table([[1, 2, 2], [3, 3, 2], [3, 2]], title => "Data wrong 2") },
         X::AdHoc,
         :message(/'If the first argument is an array then it is expected'/),
         'data wrong 2';
@@ -90,7 +90,16 @@ ok to-pretty-table(%irisCrossTabulated),
         'pretty table hash-of-hashes with different keys';
 
 ## 14
-ok to-pretty-table(%irisCrossTabulated.values, missing-value=>'·'),
+ok to-pretty-table(%irisCrossTabulated.values, missing-value => '·'),
         'pretty table array-of-hashes with different keys';
+
+## 15
+ok to-pretty-table(@dfRand, field-types => <drink refinance>),
+        'pretty table specified columns';
+
+## 16
+ok to-pretty-table(@dfRand, field-types => Whatever),
+        'pretty table Whatever column names specification';
+
 
 done-testing;
