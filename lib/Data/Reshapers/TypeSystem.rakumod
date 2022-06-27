@@ -142,6 +142,8 @@ class Data::Reshapers::TypeSystem {
             when $_ ~~ Numeric { return Data::Reshapers::TypeSystem::Atom.new(Numeric, 1) }
             when $_ ~~ Str { return Data::Reshapers::TypeSystem::Atom.new(Str, 1) }
 
+            when $_ ~~ Seq { return self.deduce-type($data.List); }
+
             when $_ ~~ List && self.has-homogeneous-type($_) {
                 return Data::Reshapers::TypeSystem::Vector.new(self.deduce-type($_[0]), $_.elems)
             }
