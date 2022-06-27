@@ -90,7 +90,7 @@ multi JoinAcross(@a, @b, %keyMap, Str :$join-spec= 'Inner',
 
     my @res = push(%ah.grep({ $_.key (elem) $commonKeys }).Hash, %bh.grep({ $_.key (elem) $commonKeys }).Hash );
 
-    my @res2 = @res.map({ $_.value.reduce(&merge-hash) });
+    my @res2 = @res.map({ $_.value.reduce( { merge-hash($^a, $^b, :!deep) } ) });
 
     if $fill {
         my $allKeys = Set(@res2>>.keys);
