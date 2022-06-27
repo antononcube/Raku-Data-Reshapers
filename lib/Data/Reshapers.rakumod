@@ -329,6 +329,27 @@ multi flatten (%h) {
 }
 
 #===========================================================
+our proto sub take-drop(@data, $spec) is export {*}
+
+multi take-drop(@data, UInt $n) {
+    die "Invalid sequence specification $n for an expression of length {@data.elems}." when $n > @data.elems;
+    return (@data[^$n], @data[$n..^@data.elems]);
+}
+
+multi take-drop(@data, Seq $s) {
+    return take-drop(@data, $s.List);
+}
+
+multi take-drop(@data, Range $r) {
+    return take-drop(@data, $r.List);
+}
+
+multi take-drop(@data, @pos) {
+    my @dropTake = ((^@data.elems) (-) @pos).keys;
+    return (@data[@pos], @data[@dropTake]);
+}
+
+#===========================================================
 our proto is-reshapable($data, |) is export {*}
 
 multi is-reshapable($data, *%args) {
