@@ -8,7 +8,7 @@
   ],
   "auth": "zef:antononcube",
   "depends": [
-    "Hash::Merge",
+    "Hash::Merge:ver<2.0.0+>:api<2+>",
     "Text::CSV",
     "Pretty::Table"
   ],
