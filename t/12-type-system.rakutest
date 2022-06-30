@@ -25,7 +25,7 @@ my @dsRandNum =
 
 my %dsRandNum = ('a'...'z')[^@dsRandNum.elems] Z=> @dsRandNum;
 
-plan 6;
+plan 7;
 
 # 1
 is deduce-type(@dsTitanic),
@@ -50,5 +50,9 @@ is deduce-type(@dsRandNum),
 # 6;
 is deduce-type(%dsRandNum),
 	"Assoc(Atom((Str)), Assoc(Atom((Str)), Atom((Numeric)), {@dsRandNum[0].elems}), {@dsRandNum.elems})";
+
+# 7;
+is deduce-type(@dsTitanic.pick(3).map({ $_.sort({$_.key}) })>>.Array),
+        "Vector(Vector(Pair(Atom((Str)), Atom((Str))), 5), 3)";
 
 done-testing;
