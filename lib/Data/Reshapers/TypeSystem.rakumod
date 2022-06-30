@@ -22,6 +22,20 @@ class Data::Reshapers::TypeSystem::Atom
     }
 };
 
+class Data::Reshapers::TypeSystem::Pair
+        does Data::Reshapers::TypeSystem::Type {
+    has $.keyType;
+
+    submethod BUILD(:$!keyType = Any, :$!type = Any, :$!count = Any) {}
+    multi method new($keyType, $type) {
+        self.bless(:$keyType, :$type)
+    }
+    method gist(-->Str) {
+        'Pair(' ~ $.keyType.gist ~ ', ' ~ $.type.gist ~ ')'
+    }
+};
+
+
 class Data::Reshapers::TypeSystem::Vector
         does Data::Reshapers::TypeSystem::Type {
     method gist(-->Str) {
@@ -140,6 +154,7 @@ class Data::Reshapers::TypeSystem {
             when $_ ~~ Int { return Data::Reshapers::TypeSystem::Atom.new(Int, 1) }
             when $_ ~~ Numeric { return Data::Reshapers::TypeSystem::Atom.new(Numeric, 1) }
             when $_ ~~ Str { return Data::Reshapers::TypeSystem::Atom.new(Str, 1) }
+            when $_ ~~ Pair { return Data::Reshapers::TypeSystem::Pair.new(self.deduce-type($_.key), self.deduce-type($_.value)) }
 
             when $_ ~~ Seq { return self.deduce-type($data.List); }
 
@@ -177,7 +192,7 @@ class Data::Reshapers::TypeSystem {
                 }
             }
 
-            default { return self.record-types($_) }
+            default { Any }
         }
     }
 }
