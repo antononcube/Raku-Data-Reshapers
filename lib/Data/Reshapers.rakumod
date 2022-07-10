@@ -329,6 +329,10 @@ multi flatten (%h) {
 }
 
 #===========================================================
+#| C<take-drop(@list, $n)> gives the pair C<($list1, $list2)>,
+#| where C<$list1> contains the first C<$n> elements of C<@list> and C<$list2> contains the rest.
+#| C<take-drop(@list, @pos)> finds the complement C<@not-pos=((^@list.elems) (-) @pos).keys>
+#| and gives the pair C<(@list[@pos], @list[@not-pos])>.
 our proto sub take-drop(@data, $spec) is export {*}
 
 multi take-drop(@data, Numeric $ratio where 0 ≤ $ratio < 1) {
@@ -351,6 +355,24 @@ multi take-drop(@data, Range $r) {
 multi take-drop(@data, @pos) {
     my @dropTake = ((^@data.elems) (-) @pos).keys;
     return (@data[@pos], @data[@dropTake]);
+}
+
+#===========================================================
+#| C<stratified-take-drop(@data, $spec, $labels)> applies the function C<take-drop($_, $spec)>
+#| over stratified @data groups.
+our proto sub stratified-take-drop(@data, $spec, $labels, Bool :$hash = True) is export {*}
+
+multi stratified-take-drop(@data, $spec, @labels, Bool :$hash = True) {
+
+    my @tdSplit =
+        group-by(@data, @labels).map({
+            my ($take, $drop) = take-drop($_.value.Array, $spec)>>.Array;
+            { :$take, :$drop } }).Array;
+
+    my %split = take => @tdSplit.map({ $_.<take> }).&flatten.Array,
+                drop => @tdSplit.map({ $_.<drop> }).&flatten.Array;
+
+    return $hash ?? %split !! (%split<take>, %split<drop>);
 }
 
 #===========================================================
