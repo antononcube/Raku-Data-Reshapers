@@ -7,16 +7,16 @@ use Data::Reshapers;
 
 use Test;
 
-my @list = 0...20;
+my @list = 0 ... 20;
 my @list2 = 'a' ... 'z';
 
-plan 9;
+plan 12;
 
 # 1
-dies-ok {take-drop([], 12)}, '[] 12';
+dies-ok { take-drop([], 12) }, '[] 12';
 
 # 2
-dies-ok {take-drop(^5, 12)}, '^5 12';
+dies-ok { take-drop(^5, 12) }, '^5 12';
 
 # 3
 is take-drop([], 0), ((), ()), '[] 0';
@@ -28,19 +28,34 @@ ok take-drop(^15, 12);
 ok take-drop(@list, 12);
 
 # 6
-ok take-drop(@list, (1,3,5,7,11));
+ok take-drop(@list, (1, 3, 5, 7, 11));
 
 # 7
 ok take-drop(@list, ^12);
 
 # 8
 is take-drop(@list2, 7)[0],
-        ('a'...'g'),
+        ('a' ... 'g'),
         'first 7 of a-z';
 
 # 9
-is take-drop(@list2, (0...7))[0],
-        ('a'...'h'),
+is take-drop(@list2, (0 ... 7))[0],
+        ('a' ... 'h'),
         '0...7 of a-z';
+
+# 10
+is take-drop(@list2, 0.6)[0],
+        take-drop(@list2, round(@list2.elems * 0.6))[0],
+        '0.6 of a-z';
+
+# 11
+is take-drop(@list, 0.3)[0],
+        (0...5).List,
+        '0.3 of 0...20';
+
+# 12
+is take-drop(@list2, 1)[0],
+        ('a',),
+        '0.6 of a-z';
 
 done-testing;
