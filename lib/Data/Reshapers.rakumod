@@ -362,6 +362,10 @@ multi take-drop(@data, @pos) {
 #| over stratified @data groups.
 our proto sub stratified-take-drop(@data, $spec, $labels, Bool :$hash = True) is export {*}
 
+multi stratified-take-drop(@data, $spec, Str $label, Bool :$hash = True) {
+    return stratified-take-drop(@data, $spec, [$label, ], :$hash);
+}
+
 multi stratified-take-drop(@data, $spec, @labels, Bool :$hash = True) {
 
     my @tdSplit =
