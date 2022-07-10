@@ -331,6 +331,10 @@ multi flatten (%h) {
 #===========================================================
 our proto sub take-drop(@data, $spec) is export {*}
 
+multi take-drop(@data, Numeric $ratio where 0 ≤ $ratio < 1) {
+    return take-drop(@data, round($ratio * @data.elems));
+}
+
 multi take-drop(@data, UInt $n) {
     die "Invalid sequence specification $n for an expression of length {@data.elems}." when $n > @data.elems;
     return (@data[^$n], @data[$n..^@data.elems]);
