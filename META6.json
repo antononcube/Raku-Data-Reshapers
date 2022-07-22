@@ -9,8 +9,8 @@
   "auth": "zef:antononcube",
   "depends": [
     "Hash::Merge:ver<2.0.0+>:api<2+>",
-    "Text::CSV",
-    "Pretty::Table"
+    "Text::CSV:ver<0.010+>",
+    "Pretty::Table:ver<0.0.4+>"
   ],
   "build-depends": [],
   "test-depends": [],
