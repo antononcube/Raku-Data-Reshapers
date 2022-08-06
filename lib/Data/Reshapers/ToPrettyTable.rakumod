@@ -88,7 +88,8 @@ multi ToPrettyTable(%tbl, *%args) {
         }
 
         if $! {
-            fail $hashArgErrMsg;
+            #fail $hashArgErrMsg;
+            return ToPrettyTable( %tbl.map({ %( Key => $_.key, Value => $_.value ) }).Array, |%args);
         }
     }
 
