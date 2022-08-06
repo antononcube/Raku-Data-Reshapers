@@ -181,6 +181,8 @@ multi ToPrettyTable(@tbl, *%args) {
                 my %res = convert-to-hash-of-hashes(@tbl);
 
                 return ToPrettyTable(%res, |%args)
+            } elsif is-array-of-pairs(@tbl) {
+                return ToPrettyTable(@tbl.map({ %( Key => $_.key, Value => $_.value ) }).Array, |%args)
             }
 
             fail $arrayArgErrMsg;
