@@ -41,7 +41,7 @@ my %rhash = :Upper-Normandy(1.887520717907405e0), :boldface(5.495080729643178e0)
             :colonnade(6.473104801867064e0), :decelerate(1.5156712929810146e0), :educationist(0.6546016136099475e0), :fable(7.5047824320908765e0),
             :lymphedema(4.765794494195529e0), :psoriasis(5.685906039005016e0), :signatory(5.677391646180832e0), :teasingly(3.8987547036804706e0);
 
-plan 16;
+plan 17;
 
 ## 1
 ok @tblHeaders.isa(Array) and
