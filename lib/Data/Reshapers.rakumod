@@ -406,6 +406,13 @@ multi deduce-type($data, UInt :$max-struct-elems = 16, UInt :$max-enum-elems = 6
 }
 
 #===========================================================
+our proto complete-column-names(|) is export {*}
+
+multi complete-column-names(**@args, *%args) {
+    Data::Reshapers::ToPrettyTable::CompleteColumnNames(|@args, |%args)
+}
+
+#===========================================================
 our proto to-pretty-table(|) is export {*}
 
 multi to-pretty-table(**@args, *%args) {
