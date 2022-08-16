@@ -297,6 +297,8 @@ multi group-by($data, @vars, Str :$sep = '.') {
 
 #===========================================================
 #| Completely flattens a data structure even when sub-lists are wrapped in item containers.
+#| C<@data> -- data to be flatten.
+#| C<:$max-level> -- max level to flatten to.
 our proto flatten(|) is export {*}
 
 # Taken from
@@ -305,6 +307,8 @@ our proto flatten(|) is export {*}
 #multi flatten(+@list) {
 #    gather @list.deepmap: *.take
 #}
+
+multi flatten($data, $maxLevel = Inf) { flatten($data, max-level => $maxLevel ) }
 
 multi flatten(\leaf, :$max-level = Inf) { leaf }
 multi flatten(@list, :$max-level = Inf) {
