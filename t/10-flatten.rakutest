@@ -10,7 +10,7 @@ use Test;
 my @list = [4, [5, [8, 9, [4, 5, 5, 2]], 2], [2, 3], 3];
 my @list2 = [[[5, 8], [5, 9]], [[4, 5], [2, 3]]];
 
-plan 11;
+plan 13;
 
 is flatten([]), ().Seq, '[]';
 
@@ -33,5 +33,9 @@ is flatten(@list2), (5, 8, 5, 9, 4, 5, 2, 3).Seq;
 is flatten(@list2, max-level => 1), ($[5, 8], $[5, 9], $[4, 5], $[2, 3]).Seq;
 
 dies-ok { flatten(@list, max-level => -3) };
+
+is-deeply flatten(@list, 2), flatten(@list, max-level => 2);
+
+is-deeply flatten(@list2, 1), flatten(@list2, max-level => 1);
 
 done-testing;
