@@ -50,7 +50,11 @@ class Data::Reshapers::TypeSystem::Vector
 class Data::Reshapers::TypeSystem::Tuple
         does Data::Reshapers::TypeSystem::Type {
     method gist(-->Str) {
-        'Tuple([' ~ $.type>>.gist.join(', ') ~ '])'
+        if $!count == 1 {
+            'Tuple([' ~ $.type>>.gist.join(', ') ~ '])'
+        } else {
+            'Tuple([' ~ $.type>>.gist.join(', ') ~ '], ' ~ $.count.gist ~ ')'
+        }
     }
 };
 
@@ -162,7 +166,7 @@ class Data::Reshapers::TypeSystem {
 
             when $_ ~~ Seq { return self.deduce-type($data.List); }
 
-            when $_ ~~ List && self.has-homogeneous-type($_) {
+            when $_ ~~ List && self.has-homogeneous-type($_) && !($_[0] ~~ Pair || $_[0] ~~ Hash) {
                 return Data::Reshapers::TypeSystem::Vector.new(self.deduce-type($_[0]), $_.elems)
             }
 
@@ -172,7 +176,7 @@ class Data::Reshapers::TypeSystem {
                 if $tbag.elems == 1 && !$tally {
                     return Data::Reshapers::TypeSystem::Vector.new(@t[0], $_.elems)
                 } elsif $tally {
-                    return Data::Reshapers::TypeSystem::Vector.new($tbag.pairs.sort({ $_.key }), $_.elems)
+                    return Data::Reshapers::TypeSystem::Tuple.new($tbag.pairs.sort({ $_.key }), $_.elems)
                 }
                 return Data::Reshapers::TypeSystem::Tuple.new(@t, 1)
             }
