@@ -28,7 +28,9 @@
   },
   "resources": [
     "dfLakeMeadLevels.csv",
-    "dfTitanic.csv"
+    "dfTitanic.csv",
+    "Data-Reshapers.puml",
+    "Data-Reshapers-TypeSystem.puml"
   ],
   "license": "Artistic-2.0",
   "tags": [
