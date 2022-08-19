@@ -15,17 +15,29 @@ my @dsTitanic = get-titanic-dataset(headers => 'auto');
 }).Array;
 
 my @dsRandNum =
-[{:A(5.295105534105463e0), :B(2.4765132431861057e0)},
- {:A(5.504432770843629e0), :B(8.252672576017405e0)},
- {:A(0.47585824504772667e0), :B(4.6263512559214215e0)},
- {:A(3.5677811370087187e0), :B(6.861688593804621e0)},
- {:A(8.069906679462077e0), :B(5.504368820762937e0)},
- {:A(2.7870773247470213e0), :B(3.081614241542895e0)},
- {:A(4.688921458531033e0), :B(8.881239727023592e0)}];
+        [{ :A(5.295105534105463e0), :B(2.4765132431861057e0) },
+         { :A(5.504432770843629e0), :B(8.252672576017405e0) },
+         { :A(0.47585824504772667e0), :B(4.6263512559214215e0) },
+         { :A(3.5677811370087187e0), :B(6.861688593804621e0) },
+         { :A(8.069906679462077e0), :B(5.504368820762937e0) },
+         { :A(2.7870773247470213e0), :B(3.081614241542895e0) },
+         { :A(4.688921458531033e0), :B(8.881239727023592e0) }];
 
-my %dsRandNum = ('a'...'z')[^@dsRandNum.elems] Z=> @dsRandNum;
+my %hRand = :Aleppo("Zealander"), :Karaites(5.512476726477258e0),
+            :McGraw(4.141810176531181e0), :angioplasty("audit"),
+            :atheism("chow"), :brake("problematical"),
+            :cardiology(8.947919113468533e0), :commination(2.619295707156705e0),
+            :eschatological(7.442247882717225e0), :handwriting("Helios"),
+            :koudou(3.4686291412158865e0), :masturbate(8.026980830683481e0),
+            :politically(0.4971539286542881e0), :pyridoxamine("thriftiness"),
+            :retired("gripes"), :scrumpy("Paternoster"),
+            :sojourner("overrefinement"), :tortfeasor(1.726557224751012e0),
+            :usage(8.428214682624322e0), :xcviii("sandfly");
 
-plan 7;
+
+my %dsRandNum = ('a' ... 'z')[^@dsRandNum.elems] Z=> @dsRandNum;
+
+plan 9;
 
 # 1
 is deduce-type(@dsTitanic),
@@ -36,7 +48,7 @@ is deduce-type(@dsTitanic[12]),
         'Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str])';
 
 # 3
-is deduce-type(@dsTitanic[12].sort({ $_.key})>>.value.List),
+is deduce-type(@dsTitanic[12].sort({ $_.key })>>.value.List),
         'Tuple([Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str)), Atom((Str))])';
 
 # 4
@@ -45,14 +57,22 @@ is deduce-type(@dsTitanic[12]<passengerClass>),
 
 # 5
 is deduce-type(@dsRandNum),
-        "Vector(Assoc(Atom((Str)), Atom((Numeric)), {@dsRandNum[0].elems}), {@dsRandNum.elems})";
+        "Vector(Assoc(Atom((Str)), Atom((Numeric)), { @dsRandNum[0].elems }), { @dsRandNum.elems })";
 
-# 6;
+# 6
 is deduce-type(%dsRandNum),
-	"Assoc(Atom((Str)), Assoc(Atom((Str)), Atom((Numeric)), {@dsRandNum[0].elems}), {@dsRandNum.elems})";
+        "Assoc(Atom((Str)), Assoc(Atom((Str)), Atom((Numeric)), { @dsRandNum[0].elems }), { @dsRandNum.elems })";
 
-# 7;
-is deduce-type(@dsTitanic.pick(3).map({ $_.sort({$_.key}) })>>.Array),
-        "Vector(Vector(Pair(Atom((Str)), Atom((Str))), 5), 3)";
+# 7
+is deduce-type(@dsTitanic.pick(3).map({ $_.sort({ $_.key }) })>>.Array),
+        "Vector(Tuple([Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Int))), Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Str)))]), 3)";
+
+# 8
+is deduce-type(%hRand.pairs.List):!tally,
+        'Vector((Any), 20)';
+
+# 9
+is deduce-type(%hRand.pairs.List):tally,
+        'Tuple([Pair(Atom((Str)), Atom((Numeric))) => 10, Pair(Atom((Str)), Atom((Str))) => 10], 20)';
 
 done-testing;
