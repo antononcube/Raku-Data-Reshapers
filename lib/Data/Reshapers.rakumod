@@ -404,9 +404,9 @@ multi record-types($data) {
 #===========================================================
 our proto deduce-type($data,|) is export {*}
 
-multi deduce-type($data, UInt :$max-struct-elems = 16, UInt :$max-enum-elems = 6) {
+multi deduce-type($data, UInt :$max-struct-elems = 16, UInt :$max-enum-elems = 6, Bool :$tally = False) {
     my $ts = Data::Reshapers::TypeSystem.new(:$max-struct-elems, :$max-enum-elems);
-    return $ts.deduce-type($data);
+    return $ts.deduce-type($data, :$tally);
 }
 
 #===========================================================

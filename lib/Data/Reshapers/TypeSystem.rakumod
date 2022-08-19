@@ -64,7 +64,11 @@ class Data::Reshapers::TypeSystem::Assoc
     }
 
     method gist(-->Str) {
-        'Assoc(' ~ $.keyType.gist ~ ', ' ~ $.type.gist ~ ', ' ~ $.count.gist ~ ')'
+        if $!keyType eq 'Tally' {
+            'Assoc([' ~ $.type>>.gist.join(', ') ~ '], ' ~ $.count.gist ~ ')'
+        } else {
+            'Assoc(' ~ $.keyType.gist ~ ', ' ~ $.type.gist ~ ', ' ~ $.count.gist ~ ')'
+        }
     }
 };
 
@@ -149,7 +153,7 @@ class Data::Reshapers::TypeSystem {
     }
 
     #------------------------------------------------------------
-    multi method deduce-type($data) {
+    multi method deduce-type($data, Bool :$tally = False) {
         given $data {
             when $_ ~~ Int { return Data::Reshapers::TypeSystem::Atom.new(Int, 1) }
             when $_ ~~ Numeric { return Data::Reshapers::TypeSystem::Atom.new(Numeric, 1) }
@@ -165,8 +169,10 @@ class Data::Reshapers::TypeSystem {
             when $_ ~~ List {
                 my @t = $_.map({ self.deduce-type($_) }).List;
                 my $tbag = @t>>.gist.BagHash;
-                if $tbag.elems == 1 {
+                if $tbag.elems == 1 && !$tally {
                     return Data::Reshapers::TypeSystem::Vector.new(@t[0], $_.elems)
+                } elsif $tally {
+                    return Data::Reshapers::TypeSystem::Vector.new($tbag.pairs.sort({ $_.key }), $_.elems)
                 }
                 return Data::Reshapers::TypeSystem::Tuple.new(@t, 1)
             }
@@ -187,8 +193,12 @@ class Data::Reshapers::TypeSystem {
                     return Data::Reshapers::TypeSystem::Struct.new(keys => @res>>.key.List, values => @res>>.value.List);
                 } elsif self.has-homogeneous-type($_.values) {
                     return Data::Reshapers::TypeSystem::Assoc.new(keyType => self.deduce-type($_.keys[0]), type => self.deduce-type($_.values[0]), count => $_.elems);
+                } elsif $tally {
+                    my @t = $_.pairs.map({ self.deduce-type($_) });
+                    my $tbag = @t>>.gist.BagHash;
+                    return Data::Reshapers::TypeSystem::Assoc.new(keyType => 'Tally', type => $tbag.pairs.sort(*.key), count => $_.elems );
                 } else {
-                    return Data::Reshapers::TypeSystem::Assoc.new(keys => @res>>.key.List, values => Any);
+                    return Data::Reshapers::TypeSystem::Assoc.new(keyType => self.deduce-type($_.keys.List):tally, type => self.deduce-type($_.values.List):tally, count => $_.elems);
                 }
             }
 
