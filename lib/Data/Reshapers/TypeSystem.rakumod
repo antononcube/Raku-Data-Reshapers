@@ -98,8 +98,9 @@ class Data::Reshapers::TypeSystem::Struct
 #===========================================================
 class Data::Reshapers::TypeSystem {
 
-    has UInt $.max-struct-elems is rw = 16;
     has UInt $.max-enum-elems is rw = 6;
+    has UInt $.max-struct-elems is rw = 16;
+    has UInt $.max-tuple-elems is rw = 16;
 
     #------------------------------------------------------------
     method has-homogeneous-shape($l) {
@@ -178,7 +179,11 @@ class Data::Reshapers::TypeSystem {
                 } elsif $tally {
                     return Data::Reshapers::TypeSystem::Tuple.new($tbag.pairs.sort({ $_.key }), $_.elems)
                 }
-                return Data::Reshapers::TypeSystem::Tuple.new(@t, 1)
+                if $_.elems ≤ self.max-tuple-elems {
+                    return Data::Reshapers::TypeSystem::Tuple.new(@t, 1)
+                } else {
+                    return Data::Reshapers::TypeSystem::Vector.new(Nil, $_.elems)
+                }
             }
 
             when is-hash-of-hashes($_) {
