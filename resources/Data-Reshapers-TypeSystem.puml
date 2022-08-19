@@ -1,0 +1,115 @@
+@startuml
+
+class Data::Reshapers::TypeSystem::Struct  {
+  {field} $!count
+  {field} $!keys
+  {field} $!type
+  {field} $!values
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} keys
+  {method} new
+  {method} type
+  {method} values
+}
+Data::Reshapers::TypeSystem::Struct --|> Data::Reshapers::TypeSystem::Type
+
+
+class Data::Reshapers::TypeSystem::Pair  {
+  {field} $!count
+  {field} $!keyType
+  {field} $!type
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} keyType
+  {method} new
+  {method} type
+}
+Data::Reshapers::TypeSystem::Pair --|> Data::Reshapers::TypeSystem::Type
+
+
+class Data::Reshapers::TypeSystem::Assoc  {
+  {field} $!count
+  {field} $!keyType
+  {field} $!type
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} keyType
+  {method} new
+  {method} type
+}
+Data::Reshapers::TypeSystem::Assoc --|> Data::Reshapers::TypeSystem::Type
+
+
+class Data::Reshapers::TypeSystem::Type <<role>> {
+  {field} $!count
+  {field} $!type
+  {method} BUILD
+  {method} Str
+}
+
+
+class Data::Reshapers::TypeSystem::Atom  {
+  {field} $!count
+  {field} $!type
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} new
+  {method} type
+}
+Data::Reshapers::TypeSystem::Atom --|> Data::Reshapers::TypeSystem::Type
+
+
+class Data::Reshapers::TypeSystem::Vector  {
+  {field} $!count
+  {field} $!type
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} new
+  {method} type
+}
+Data::Reshapers::TypeSystem::Vector --|> Data::Reshapers::TypeSystem::Type
+
+
+class Data::Reshapers::TypeSystem::Tuple  {
+  {field} $!count
+  {field} $!type
+  {method} BUILD
+  {method} BUILDALL
+  {method} Str
+  {method} count
+  {method} gist
+  {method} new
+  {method} type
+}
+Data::Reshapers::TypeSystem::Tuple --|> Data::Reshapers::TypeSystem::Type
+
+class Data::Reshapers::TypeSystem  {
+  {field} $!max-enum-elems
+  {field} $!max-struct-elems
+  {method} BUILDALL
+  {method} deduce-type
+  {method} has-homogeneous-shape
+  {method} has-homogeneous-type
+  {method} is-reshapable
+  {method} max-enum-elems
+  {method} max-struct-elems
+  {method} record-types
+}
+
+@enduml
