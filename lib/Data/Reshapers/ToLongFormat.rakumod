@@ -19,21 +19,22 @@ multi ToLongFormat(@tbl) {
 
 #-----------------------------------------------------------
 multi ToLongFormat(@tbl,
-                   :$identifierColums = Whatever,
-                   :$variableColumns = Whatever,
+                   :idColumns(:$identifierColumns) = Whatever,
+                   :varColumns(:$variableColumns) = Whatever,
                    Str:D :$automaticKeysTo = 'AutomaticKey',
                    Str:D :$variablesTo = 'Variable',
                    Str:D :$valuesTo = 'Value') {
-
-       ToLongFormat(  @tbl, $identifierColums, $variableColumns, :$automaticKeysTo, :$valuesTo, :$variablesTo)
+    ToLongFormat(@tbl, $identifierColumns, $variableColumns, :$automaticKeysTo, :$valuesTo, :$variablesTo)
 }
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
-multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
-                     Str:D :$automaticKeysTo = 'AutomaticKey',
-                     Str:D :$variablesTo = 'Variable',
-                     Str:D :$valuesTo = 'Value') {
+multi ToLongFormat(@tbl,
+                   $idColsSpec,
+                   $valColsSpec = Whatever,
+                   Str:D :$automaticKeysTo = 'AutomaticKey',
+                   Str:D :$variablesTo = 'Variable',
+                   Str:D :$valuesTo = 'Value') {
 
     # Coerce into array-of-hashes
     my Hash @arr-of-hashes;
@@ -59,9 +60,9 @@ multi ToLongFormat(@tbl, $idColsSpec, $valColsSpec,
         # Add automatic IDs.
         # Note the cloning of each record -- this might be reconsidered for optimization purposes.
         my $k = 0;
-        @arr-of-hashes = @arr-of-hashes.map({ $_.clone.push( [$automaticKeysTo] Z=> [$k++] ) });
+        @arr-of-hashes = @arr-of-hashes.map({ $_.clone.push([$automaticKeysTo] Z=> [$k++]) });
 
-        @allCols.push( $automaticKeysTo );
+        @allCols.push($automaticKeysTo);
 
     } elsif $idColsSpec.isa(Str) and $idColsSpec.lc (elem) @allCols {
 
