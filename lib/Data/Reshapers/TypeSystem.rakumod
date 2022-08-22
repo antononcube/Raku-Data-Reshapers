@@ -109,7 +109,11 @@ class Data::Reshapers::TypeSystem {
 
     #------------------------------------------------------------
     method has-homogeneous-type($l) {
-        so $l[*].&{ $_».are.all eqv $_[0].are }
+        if $l.elems > 0 && ($l[0] ~~ Map || $l[0] ~~ List) {
+            so $l[*].&{ $_».are.all eqv $_[0]>>.are }
+        } else {
+            so $l[*].&{ $_».are.all eqv $_[[0,]].are }
+        }
     }
 
     #------------------------------------------------------------
@@ -167,7 +171,7 @@ class Data::Reshapers::TypeSystem {
 
             when $_ ~~ Seq { return self.deduce-type($data.List); }
 
-            when $_ ~~ List && self.has-homogeneous-type($_) && !($_[0] ~~ Pair || $_[0] ~~ Hash) {
+            when $_ ~~ List && self.has-homogeneous-type($_) && !($_[0] ~~ Pair) {
                 return Data::Reshapers::TypeSystem::Vector.new(self.deduce-type($_[0]), $_.elems)
             }
 
