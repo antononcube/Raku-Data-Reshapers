@@ -31,6 +31,7 @@ use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
 use Data::Reshapers::Predicates;
 use Data::Reshapers::TypeSystem;
+use Hash::Merge;
 
 #===========================================================
 
@@ -293,6 +294,17 @@ multi group-by($data, @vars, Str :$sep = '.') {
     } else {
         die "The first argument is expected to be an array of hashes or a hash of hashes."
     }
+}
+
+#===========================================================
+our proto separate-column(|) is export {*}
+
+multi separate-column($data, Str :$from, :$to, Str :$sep) {
+    return separate-column($data, $from, $to, :$sep);
+}
+
+multi separate-column($data, Str $from, @to, Str :$sep) {
+    return $data.map({ merge-hash($_, %( @to Z=> $_{$from}.split($sep):skip-empty)) }).List;
 }
 
 #===========================================================
