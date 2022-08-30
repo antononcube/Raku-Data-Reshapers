@@ -26,7 +26,7 @@ ok @tblHeaders.isa(Array) and
 ## 2
 my @lfRes1 = to-long-format( @array-of-hashes, [], []);
 my @wfRes1 = to-wide-format( @lfRes1, "AutomaticKey", "Variable", "Value");
-my @wfRes2 = to-wide-format( @lfRes1, identifierColName => "AutomaticKey", variablesFrom => "Variable", valuesFrom => "Value");
+my @wfRes2 = to-wide-format( @lfRes1, identifierColumns => "AutomaticKey", variablesFrom => "Variable", valuesFrom => "Value");
 
 is-deeply
         (@wfRes1.elems, @wfRes1[0].elems),
