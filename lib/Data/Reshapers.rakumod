@@ -299,8 +299,8 @@ multi group-by($data, @vars, Str :$sep = '.') {
 #===========================================================
 our proto separate-column(|) is export {*}
 
-multi separate-column($data, Str :$from, :$to, Str :$sep) {
-    return separate-column($data, $from, $to, :$sep);
+multi separate-column($data, Str :$from, :@to, Str :$sep) {
+    return separate-column($data, $from, @to, :$sep);
 }
 
 multi separate-column($data, Str $from, @to, Str :$sep) {
