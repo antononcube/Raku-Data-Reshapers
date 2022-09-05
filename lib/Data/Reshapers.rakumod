@@ -148,6 +148,10 @@ multi dimensions(@arg -->List) {
 #===========================================================
 our proto select-columns(|) is export {*}
 
+multi select-columns($data, Whatever, :&chooser = &infix:<(elem)>) {
+    return $data;
+}
+
 multi select-columns($data, Str $var, :&chooser = &infix:<(elem)>) {
     return select-columns($data, [$var,])
 }
@@ -236,20 +240,16 @@ multi delete-columns(%data, @vars) {
 #===========================================================
 our proto summarize-at(|) is export {*}
 
-multi summarize-at($data, Str $var, @funcs, Str :$sep = '.') {
-    return summarize-at($data, [$var, ], @funcs, :$sep)
+multi summarize-at($data, $vars, &func, Str :$sep = '.') {
+    return summarize-at($data, $vars, [&func,], :$sep)
 }
 
-multi summarize-at($data, @vars, &func, Str :$sep = '.') {
-    return summarize-at($data, @vars, [&func,], :$sep)
-}
-
-multi summarize-at($data, @vars, @funcs, Str :$sep = '.') {
+multi summarize-at($data, $vars, @funcs, Str :$sep = '.') {
     if @funcs.all ~~ Callable {
 
         if is-hash-of-hashes($data) {
 
-            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+            my %res = infix:<X>(transpose(select-columns($data, $vars)),
                     @funcs,
                     :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.values.Array.&f }));
 
@@ -257,7 +257,7 @@ multi summarize-at($data, @vars, @funcs, Str :$sep = '.') {
 
         } elsif is-array-of-hashes($data) {
 
-            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+            my %res = infix:<X>(transpose(select-columns($data, $vars)),
                     @funcs,
                     :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.Array.&f }));
 
