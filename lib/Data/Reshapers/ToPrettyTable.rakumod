@@ -232,7 +232,7 @@ multi ToPrettyTable(@tbl, *%args) {
                 |%args;
 
         # Add each hash into the pretty table as table row
-        @arr-of-arrays.map({ $tableObj.add-row($_[|@colnames]) });
+        @arr-of-arrays.map({ $tableObj.add-row($_[|@colnames]>>.gist) });
 
         return $tableObj;
 
