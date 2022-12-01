@@ -24,7 +24,7 @@ my @b = [{ :A("a"), :D("k"), :E(15) },
          { :A("a"), :D("i"), :E(13) },
          { :A("l"), :D("i"), :E(13) }];
 
-plan 7;
+plan 9;
 
 ## 1
 is-deeply join-across(@a, @b, 'A', join-spec => 'Inner').sort,
@@ -41,7 +41,7 @@ is-deeply join-across(@a, @b, 'A', join-spec => 'Left', :!fill).sort,
 
 
 ## 3
-is-deeply join-across(@a, @b, 'A', join-spec => 'Left', :fill, missing-value=>'Whatever').sort,
+is-deeply join-across(@a, @b, 'A', join-spec => 'Left', :fill, missing-value => 'Whatever').sort,
         [{ :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
          { :A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever') },
          { :A("a"), :B("n"), :C(5), :D("i"), :E(13) }].sort,
@@ -57,7 +57,7 @@ is-deeply join-across(@a, @b, 'A', join-spec => 'Right', :!fill).sort,
 
 
 ## 5
-is-deeply join-across(@a, @b, 'A', join-spec => 'Right', :fill, missing-value=>'Whatever').sort,
+is-deeply join-across(@a, @b, 'A', join-spec => 'Right', :fill, missing-value => 'Whatever').sort,
         [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
          { :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
          { :A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13) }].sort,
@@ -73,11 +73,25 @@ is-deeply join-across(@a, @b, 'A', join-spec => 'Outer', :!fill).sort,
         'join across inner, with fill';
 
 ## 7
-is-deeply join-across(@a, @b, 'A', join-spec => 'Outer', :fill, missing-value=>'Whatever').sort,
+is-deeply join-across(@a, @b, 'A', join-spec => 'Outer', :fill, missing-value => 'Whatever').sort,
         [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
          { :A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever') },
          { :A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13) },
          { :A("l"), :B("n"), :C(3), :D("i"), :E(13) }].sort,
         'join across inner, with fill';
+
+## 8
+is-deeply join-across(@a, @b, 'A', join-spec => 'Semi').sort,
+        [{ :A("a"), :B("i"), :C(4) },
+         { :A("l"), :B("n"), :C(3) },
+         { :A("a"), :B("n"), :C(5) },
+         { :A("a"), :B("n"), :C(5) }].sort,
+        'join across semi';
+
+## 9
+is-deeply join-across(@a, @b, 'A', join-spec => 'Anti').sort,
+        [{ :A("g"), :B("n"), :C(4) },
+         { :A("g"), :B("i"), :C(3) }].sort,
+        'join across anti';
 
 done-testing;
