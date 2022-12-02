@@ -11,11 +11,11 @@ my Array @array-of-arrays = @tblNoHeaders;
 my %hash-of-hashes = cross-tabulate(@array-of-hashes, 'passengerSex', 'passengerClass');
 
 my %hash-of-arrays =
-    id => [372, 1111, 995],
-    passengerAge => [40, 30, -1],
-    passengerClass => <2nd 3rd 3rd>,
-    passengerSex => <female male male>,
-    passengerSurvival => <survived died died>;
+        id => [372, 1111, 995],
+        passengerAge => [40, 30, -1],
+        passengerClass => <2nd 3rd 3rd>,
+        passengerSex => <female male male>,
+        passengerSurvival => <survived died died>;
 
 my Pair @array-of-key-array-pairs =
         [:id($["745", "1092", "658"]),
@@ -30,7 +30,18 @@ my @dfRand = ["2" => ${ :drink(121.67239295221576e0), :refinance(111.49589770601
               "4" => ${ :drink(124.73006527768604e0), :refinance(74.26748488483263e0), :uncompromisingly(150.10090828356613e0) },
               "3" => ${ :drink(102.0971638701688e0), :refinance(75.86794386663075e0), :uncompromisingly(114.90831504979715e0) }];
 
-plan 12;
+my %irisCrossTabulated =
+        :setosa(${ "0.1" => 5, "0.2" => 29, "0.3" => 7, "0.4" => 7, "0.5" => 1, "0.6" => 1 }),
+        :versicolor(${ "1" => 7, "1.1" => 3, "1.2" => 5, "1.3" => 13, "1.4" => 7, "1.5" => 10,
+                       "1.6" => 3, "1.7" => 1, "1.8" => 1 }),
+        :virginica(${ "1.4" => 1, "1.5" => 2, "1.6" => 1, "1.7" => 1, "1.8" => 11, "1.9" => 5, "2" => 6, "2.1" => 6,
+                      "2.2" => 3, "2.3" => 8, "2.4" => 3, "2.5" => 3 });
+
+my %rhash = :Upper-Normandy(1.887520717907405e0), :boldface(5.495080729643178e0), :booby(1.5856584974038501e0), :carbonisation(0.8061091853806934e0),
+            :colonnade(6.473104801867064e0), :decelerate(1.5156712929810146e0), :educationist(0.6546016136099475e0), :fable(7.5047824320908765e0),
+            :lymphedema(4.765794494195529e0), :psoriasis(5.685906039005016e0), :signatory(5.677391646180832e0), :teasingly(3.8987547036804706e0);
+
+plan 18;
 
 ## 1
 ok @tblHeaders.isa(Array) and
@@ -51,16 +62,16 @@ ok to-pretty-table(@array-of-hashes.roll(5)), 'pretty table of array-of-hashes';
 ok to-pretty-table(@array-of-arrays.roll(5)), 'pretty table of array-of-arrays';
 
 ## 6
-ok to-pretty-table( [[4, 3], [1, 3], [9, 3]], title => "Data test 1");
+ok to-pretty-table([[4, 3], [1, 3], [9, 3]], title => "Data test 1");
 
 ## 7
-ok to-pretty-table( [<4 3 6>, <1 3 7>, <9 3 232>], title => "Data test 2");
+ok to-pretty-table([<4 3 6>, <1 3 7>, <9 3 232>], title => "Data test 2");
 
 ## 8
-ok to-pretty-table( (<4 3 6>, <1 3 7>, <9 3 232>), title => "Data test 3");
+ok to-pretty-table((<4 3 6>, <1 3 7>, <9 3 232>), title => "Data test 3");
 
 ## 9
-ok to-pretty-table( @array-of-key-array-pairs, title => "Array of key-array pairs");
+ok to-pretty-table(@array-of-key-array-pairs, title => "Array of key-array pairs");
 
 ## 10
 fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
@@ -69,7 +80,7 @@ fails-like { to-pretty-table((4, 3, 3), title => "Data wrong 1") },
         'data wrong 1';
 
 ## 11
-fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2") },
+fails-like { to-pretty-table([[1, 2, 2], [3, 3, 2], [3, 2]], title => "Data wrong 2") },
         X::AdHoc,
         :message(/'If the first argument is an array then it is expected'/),
         'data wrong 2';
@@ -77,5 +88,29 @@ fails-like { to-pretty-table([[1,2,2], [3,3,2], [3,2]], title => "Data wrong 2")
 ## 12
 ok to-pretty-table(@dfRand),
         'pretty table of array of key-hash pairs';
+
+## 13
+ok to-pretty-table(%irisCrossTabulated),
+        'pretty table hash-of-hashes with different keys';
+
+## 14
+ok to-pretty-table(%irisCrossTabulated.values, missing-value => '·'),
+        'pretty table array-of-hashes with different keys';
+
+## 15
+ok to-pretty-table(@dfRand, field-types => <drink refinance>),
+        'pretty table specified columns';
+
+## 16
+ok to-pretty-table(@dfRand, field-types => Whatever),
+        'pretty table Whatever column names specification';
+
+## 17
+ok to-pretty-table(%rhash),
+        'pretty table over a hash';
+
+## 18
+ok to-pretty-table(%rhash.pairs),
+        'pretty table over an array of pairs';
 
 done-testing;

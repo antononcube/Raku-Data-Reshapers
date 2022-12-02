@@ -30,13 +30,13 @@ our proto ToWideFormat(|) is export {*}
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
 multi ToWideFormat(@tbl,
-                   :$identifierColName = Whatever,
+                   :$identifierColumns = Whatever,
                    Str:D :$variablesFrom,
                    Str:D :$valuesFrom,
                    Str:D :$automaticKeysTo = 'AutomaticKey',
                    :&aggregationFunction = &auto-aggregator) {
 
-    ToWideFormat( @tbl, $identifierColName, $variablesFrom, $valuesFrom, :$automaticKeysTo, :&aggregationFunction)
+    ToWideFormat( @tbl, $identifierColumns, $variablesFrom, $valuesFrom, :$automaticKeysTo, :&aggregationFunction)
 }
 
 #-----------------------------------------------------------

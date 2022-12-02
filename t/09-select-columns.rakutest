@@ -17,7 +17,7 @@ my %dfData1 = "0" => ${ :alpha(0.9038461749723564e0), :beta("Tacoma"), :delta("K
               "3" => ${ :alpha(0.8153474825814797e0), :beta("Tacoma"), :delta("Katphryn Vera Rose"), :gamma(0.5623954124920828e0) };
 
 
-plan 15;
+plan 17;
 
 ## 1
 is-deeply select-columns(@dfData0, <delta beta>)>>.keys>>.Array.unique(:as({ $_.sort.Array }):with(&[eqv]))>>.sort>>.List,
@@ -106,5 +106,16 @@ my $res14 = [(&)] delete-columns(%dfData1, <delta beta>).values>>.Set;
 
 is-deeply $res14, Set(<alpha gamma>),
         "Hash of hashes vars deletion.";
+
+## 16
+is-deeply select-columns(@dfData0, Whatever),
+        @dfData0,
+        "Selecte columns with Whatever for arrays.";
+
+## 17
+is-deeply select-columns(%dfData1, Whatever),
+        %dfData1,
+        "Selecte columns with Whatever for hashes.";
+
 
 done-testing;

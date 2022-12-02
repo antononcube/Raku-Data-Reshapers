@@ -45,20 +45,9 @@ my @tbl = get-titanic-dataset();
 my $res = cross-tabulate( @tbl, 'passengerSex', 'passengerClass');
 say $res;
 ```
-```
-# {female => {1st => 144, 2nd => 106, 3rd => 216}, male => {1st => 179, 2nd => 171, 3rd => 493}}
-```
 
 ```perl6
 to-pretty-table($res);
-```
-```
-# +--------+-----+-----+-----+
-# |        | 3rd | 1st | 2nd |
-# +--------+-----+-----+-----+
-# | female | 216 | 144 | 106 |
-# | male   | 493 | 179 | 171 |
-# +--------+-----+-----+-----+
 ```
 
 ### Long format
@@ -72,50 +61,14 @@ in a dedicated column, e.g. "Variable" in the long format.)
 my @tbl1 = @tbl.roll(3);
 .say for @tbl1;
 ```
-```
-# {id => 822, passengerAge => 30, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-# {id => 684, passengerAge => 40, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-# {id => 1243, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-```
 
 ```perl6
 .say for to-long-format( @tbl1 );
-```
-```
-# {AutomaticKey => 0, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 0, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 0, Value => male, Variable => passengerSex}
-# {AutomaticKey => 0, Value => 30, Variable => passengerAge}
-# {AutomaticKey => 0, Value => 822, Variable => id}
-# {AutomaticKey => 1, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 1, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 1, Value => male, Variable => passengerSex}
-# {AutomaticKey => 1, Value => 40, Variable => passengerAge}
-# {AutomaticKey => 1, Value => 684, Variable => id}
-# {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 2, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 2, Value => male, Variable => passengerSex}
-# {AutomaticKey => 2, Value => -1, Variable => passengerAge}
-# {AutomaticKey => 2, Value => 1243, Variable => id}
 ```
 
 ```perl6
 my @lfRes1 = to-long-format( @tbl1, 'id', [], variablesTo => "VAR", valuesTo => "VAL2" );
 .say for @lfRes1;
-```
-```
-# {VAL2 => male, VAR => passengerSex, id => 1243}
-# {VAL2 => -1, VAR => passengerAge, id => 1243}
-# {VAL2 => died, VAR => passengerSurvival, id => 1243}
-# {VAL2 => 3rd, VAR => passengerClass, id => 1243}
-# {VAL2 => male, VAR => passengerSex, id => 684}
-# {VAL2 => 40, VAR => passengerAge, id => 684}
-# {VAL2 => died, VAR => passengerSurvival, id => 684}
-# {VAL2 => 3rd, VAR => passengerClass, id => 684}
-# {VAL2 => male, VAR => passengerSex, id => 822}
-# {VAL2 => 30, VAR => passengerAge, id => 822}
-# {VAL2 => died, VAR => passengerSurvival, id => 822}
-# {VAL2 => 3rd, VAR => passengerClass, id => 822}
 ```
 
 ### Wide format
@@ -125,15 +78,6 @@ the result has the same records as the `@tbl1`:
 
 ```perl6
 to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
-```
-```
-# +----------------+-------------------+--------------+------+--------------+
-# | passengerClass | passengerSurvival | passengerSex |  id  | passengerAge |
-# +----------------+-------------------+--------------+------+--------------+
-# |      3rd       |        died       |     male     | 1243 |      -1      |
-# |      3rd       |        died       |     male     | 684  |      40      |
-# |      3rd       |        died       |     male     | 822  |      30      |
-# +----------------+-------------------+--------------+------+--------------+
 ```
 
 ### Transpose
@@ -145,30 +89,9 @@ my $tres = transpose( $res );
 
 to-pretty-table($res, title => "Original");
 ```
-```
-# +--------------------------+
-# |         Original         |
-# +--------+-----+-----+-----+
-# |        | 2nd | 1st | 3rd |
-# +--------+-----+-----+-----+
-# | female | 106 | 144 | 216 |
-# | male   | 171 | 179 | 493 |
-# +--------+-----+-----+-----+
-```
 
 ```perl6
 to-pretty-table($tres, title => "Transposed");
-```
-```
-# +---------------------+
-# |      Transposed     |
-# +-----+--------+------+
-# |     | female | male |
-# +-----+--------+------+
-# | 1st |  144   | 179  |
-# | 2nd |  106   | 171  |
-# | 3rd |  216   | 493  |
-# +-----+--------+------+
 ```
 
 ------
@@ -189,25 +112,11 @@ my @dsTitanic = get-titanic-dataset(headers => 'auto');
 @dsTitanic = @dsTitanic.map({$_<passengerAge> = $_<passengerAge>.Numeric; $_}).Array;
 dimensions(@dsTitanic)
 ```
-```
-# (1309 5)
-```
 
 Here is a sample of dataset's records:
 
 ```perl6
 to-pretty-table(@dsTitanic.pick(5), field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
-```
-```
-# +------+--------------+----------------+--------------+-------------------+
-# |  id  | passengerAge | passengerClass | passengerSex | passengerSurvival |
-# +------+--------------+----------------+--------------+-------------------+
-# | 1305 |      10      |      3rd       |    female    |        died       |
-# | 684  |      40      |      3rd       |     male     |        died       |
-# | 721  |      20      |      3rd       |     male     |        died       |
-# |  40  |      50      |      1st       |     male     |        died       |
-# | 399  |      10      |      2nd       |     male     |      survived     |
-# +------+--------------+----------------+--------------+-------------------+
 ```
 
 Here is the type of a single record:
@@ -215,26 +124,17 @@ Here is the type of a single record:
 ```perl6
 deduce-type(@dsTitanic[12])
 ```
-```
-# Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str])
-```
 
 Here is the type of single record's values:
 
 ```perl6
 deduce-type(@dsTitanic[12].values.List)
 ```
-```
-# Tuple([Atom((Str)), Atom((Str)), Atom((Str)), Atom((Str)), Atom((Int))])
-```
 
 Here is the type of the whole dataset:
 
 ```perl6
 deduce-type(@dsTitanic)
-```
-```
-# Vector(Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str]), 1309)
 ```
 
 ------

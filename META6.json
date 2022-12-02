@@ -1,16 +1,16 @@
 {
   "name": "Data::Reshapers",
   "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
-  "version": "0.1.8",
+  "version": "0.2.9",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
   ],
-  "auth": "github:antononcube",
+  "auth": "zef:antononcube",
   "depends": [
-    "Hash::Merge",
-    "Text::CSV",
-    "Pretty::Table"
+    "Hash::Merge:ver<2.0.0+>:api<2+>",
+    "Text::CSV:ver<0.010+>",
+    "Pretty::Table:ver<0.0.4+>"
   ],
   "build-depends": [],
   "test-depends": [],
@@ -23,15 +23,20 @@
     "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
     "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
     "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
-    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
+    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod",
+    "Data::Reshapers::TypeSystem": "lib/Data/Reshapers/TypeSystem.rakumod"
   },
   "resources": [
     "dfLakeMeadLevels.csv",
-    "dfTitanic.csv"
+    "dfTitanic.csv",
+    "Data-Reshapers.puml",
+    "Data-Reshapers-TypeSystem.puml"
   ],
   "license": "Artistic-2.0",
   "tags": [
     "contingency table",
+    "cross tabulate",
+    "cross tabulation",
     "data",
     "dataset",
     "long form",

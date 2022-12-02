@@ -1,0 +1,115 @@
+use v6.d;
+
+use lib './lib';
+use lib '.';
+
+use Data::Reshapers;
+
+use Test;
+
+# The array @dsRand below was created with this code:
+#use Data::Generators;
+#srand(323);
+#my @dsRand = random-tabular-dataset(60, <Word Pet Real Normal Label>,
+#        generators => { Word => random-word(2),
+#                        Pet => &random-pet-name,
+#                        Real => { &random-real(20, $_) },
+#                        Normal => { &random-variate(NormalDistribution.new(12, 2), $_) },
+#                        Label => <yes no mu>
+#        });
+
+my @dsRand = [{ :Label("yes"), :Normal(11.971013254520807e0), :Pet("Tommie"), :Real(7.568786136444652e0), :Word("review") },
+              { :Label("no"), :Normal(14.563505367619506e0), :Pet("Selene"), :Real(8.40217279323378e0), :Word("review") },
+              { :Label("no"), :Normal(9.464469205263297e0), :Pet("Beanie"), :Real(14.58521888592648e0), :Word("Carica") },
+              { :Label("yes"), :Normal(9.331693148597937e0), :Pet("Linda"), :Real(11.455909512237382e0), :Word("Carica") },
+              { :Label("mu"), :Normal(13.16997478184509e0), :Pet("Atticus"), :Real(6.346004154594473e0), :Word("review") },
+              { :Label("no"), :Normal(9.993594612492412e0), :Pet("Guinness"), :Real(19.330285588680823e0), :Word("Carica") },
+              { :Label("mu"), :Normal(12.155009082253253e0), :Pet("Jerome"), :Real(17.184985615943216e0), :Word("Carica") },
+              { :Label("no"), :Normal(13.235356064968139e0), :Pet("Linda"), :Real(11.273398567529258e0), :Word("review") },
+              { :Label("mu"), :Normal(12.234211058614557e0), :Pet("Guinness"), :Real(14.829637059993901e0), :Word("review") },
+              { :Label("yes"), :Normal(10.348663709355668e0), :Pet("Sassy"), :Real(6.264328007380011e0), :Word("Carica") },
+              { :Label("no"), :Normal(14.805903183558502e0), :Pet("Millie"), :Real(12.70303032713813e0), :Word("Carica") },
+              { :Label("no"), :Normal(13.785035399229859e0), :Pet("Millie"), :Real(9.92351442557947e0), :Word("review") },
+              { :Label("yes"), :Normal(12.182254256823771e0), :Pet("Tommie"), :Real(5.716651592709583e0), :Word("review") },
+              { :Label("yes"), :Normal(12.251218866811694e0), :Pet("Guinness"), :Real(15.243200709330099e0), :Word("Carica") },
+              { :Label("no"), :Normal(11.4295986537348e0), :Pet("Michi"), :Real(7.835869081376785e0), :Word("Carica") },
+              { :Label("mu"), :Normal(13.502752272146338e0), :Pet("Fawn"), :Real(9.737712653843932e0), :Word("Carica") },
+              { :Label("yes"), :Normal(10.984092124020417e0), :Pet("Atticus"), :Real(16.922483583615126e0), :Word("review") },
+              { :Label("mu"), :Normal(12.655049742309334e0), :Pet("Nick"), :Real(15.391689562530438e0), :Word("Carica") },
+              { :Label("no"), :Normal(11.29810008633956e0), :Pet("Moppet"), :Real(18.237216382366878e0), :Word("Carica") },
+              { :Label("no"), :Normal(14.724902159901394e0), :Pet("Buttergirl"), :Real(13.473268723182617e0), :Word("review") },
+              { :Label("no"), :Normal(12.481318899456607e0), :Pet("Moppet"), :Real(7.968762392299357e0), :Word("review") },
+              { :Label("yes"), :Normal(11.55156133106678e0), :Pet("Selene"), :Real(7.7022217005525135e0), :Word("review") },
+              { :Label("no"), :Normal(11.775828059969562e0), :Pet("Sassy"), :Real(10.444461511541277e0), :Word("review") },
+              { :Label("yes"), :Normal(13.278558544430826e0), :Pet("Kusi"), :Real(12.369506820713948e0), :Word("Carica") },
+              { :Label("yes"), :Normal(9.904930604390668e0), :Pet("Sister Bertrille"), :Real(15.208958774784255e0), :Word("Carica") },
+              { :Label("no"), :Normal(10.08855523625653e0), :Pet("Mollie"), :Real(6.555551451669645e0), :Word("review") },
+              { :Label("yes"), :Normal(13.655789270885052e0), :Pet("Snack"), :Real(10.267098866051299e0), :Word("review") },
+              { :Label("no"), :Normal(12.823822946684391e0), :Pet("Sister Bertrille"), :Real(6.178109456423806e0), :Word("Carica") },
+              { :Label("mu"), :Normal(13.413507675251992e0), :Pet("Atticus"), :Real(10.08192797821079e0), :Word("Carica") },
+              { :Label("mu"), :Normal(12.712197577350743e0), :Pet("Atticus"), :Real(9.31354914374014e0), :Word("Carica") },
+              { :Label("mu"), :Normal(13.24563187908062e0), :Pet("Sassy"), :Real(8.946496907044931e0), :Word("Carica") },
+              { :Label("yes"), :Normal(13.22584449611113e0), :Pet("Lemon Drop"), :Real(2.157539788698115e0), :Word("Carica") },
+              { :Label("mu"), :Normal(10.554119912836756e0), :Pet("Truffle"), :Real(15.19678751071869e0), :Word("Carica") },
+              { :Label("mu"), :Normal(12.777616337790496e0), :Pet("Buttergirl"), :Real(18.10104913775606e0), :Word("review") },
+              { :Label("yes"), :Normal(10.961406171244795e0), :Pet("Lu Lu Louise"), :Real(19.296704312030073e0), :Word("Carica") },
+              { :Label("yes"), :Normal(15.345983833074616e0), :Pet("Nick"), :Real(17.162340562713325e0), :Word("Carica") },
+              { :Label("no"), :Normal(11.316336147514694e0), :Pet("Brussels Sprout"), :Real(19.402098574148887e0), :Word("review") },
+              { :Label("yes"), :Normal(11.38970054842376e0), :Pet("Moppet"), :Real(15.273644480133441e0), :Word("Carica") },
+              { :Label("yes"), :Normal(12.270895935592595e0), :Pet("Sassy"), :Real(5.907004178397841e0), :Word("review") },
+              { :Label("mu"), :Normal(13.494987460110536e0), :Pet("Mollie"), :Real(18.713975022550045e0), :Word("review") },
+              { :Label("no"), :Normal(9.597751388629096e0), :Pet("Millie"), :Real(0.735008176261509e0), :Word("review") },
+              { :Label("yes"), :Normal(11.347492320257064e0), :Pet("Brussels Sprout"), :Real(18.578405342108674e0), :Word("review") },
+              { :Label("no"), :Normal(13.203027212950468e0), :Pet("Nagi"), :Real(3.3859996723203745e0), :Word("Carica") },
+              { :Label("no"), :Normal(12.04418548561709e0), :Pet("Snack"), :Real(7.241940290128306e0), :Word("review") },
+              { :Label("no"), :Normal(11.948337255465837e0), :Pet("Bugs Bunny"), :Real(11.657625586389628e0), :Word("review") },
+              { :Label("yes"), :Normal(9.783261844189006e0), :Pet("Schmidt"), :Real(10.247312970576626e0), :Word("Carica") },
+              { :Label("no"), :Normal(12.621605628096791e0), :Pet("Oliver Landon Carter"), :Real(18.49970852172885e0), :Word("Carica") },
+              { :Label("yes"), :Normal(10.575783691487981e0), :Pet("Schmidt"), :Real(6.391786172147489e0), :Word("review") },
+              { :Label("yes"), :Normal(12.115303102672776e0), :Pet("Dai"), :Real(14.64591568925024e0), :Word("Carica") },
+              { :Label("yes"), :Normal(13.913395409800215e0), :Pet("Millie"), :Real(15.253397182934732e0), :Word("Carica") },
+              { :Label("no"), :Normal(11.935722311438282e0), :Pet("Dai"), :Real(5.317216130219324e0), :Word("Carica") },
+              { :Label("yes"), :Normal(10.834529525945353e0), :Pet("Lemon Drop"), :Real(2.4077028762650388e0), :Word("review") },
+              { :Label("yes"), :Normal(10.398736240509862e0), :Pet("Millie"), :Real(10.596521834053945e0), :Word("review") },
+              { :Label("no"), :Normal(12.921740710806391e0), :Pet("Bourbon"), :Real(13.890886735667756e0), :Word("Carica") },
+              { :Label("yes"), :Normal(12.619854250891587e0), :Pet("Zibby"), :Real(15.325710090286726e0), :Word("Carica") },
+              { :Label("no"), :Normal(8.302893729219065e0), :Pet("Linda"), :Real(1.2030962141139967e0), :Word("Carica") },
+              { :Label("no"), :Normal(14.280114374474573e0), :Pet("Peanuts"), :Real(13.359134552768559e0), :Word("review") },
+              { :Label("yes"), :Normal(12.4181894762187e0), :Pet("Grace"), :Real(2.919672447043482e0), :Word("Carica") },
+              { :Label("mu"), :Normal(7.624713897290659e0), :Pet("Lone Ranger"), :Real(2.5827944915122836e0), :Word("review") },
+              { :Label("mu"), :Normal(11.02608935949652e0), :Pet("Molly"), :Real(6.9442655402459526e0), :Word("review") }];
+
+
+plan 7;
+
+# 1
+dies-ok { stratified-take-drop([{ Label => 1 },], 4, <Label>); }, '[{Label=>1},] 4, <Label>';
+
+# 2
+my $split2 = stratified-take-drop(@dsRand, 0.5, <Label Word>, :hash);
+isa-ok $split2, Hash, 'Hash result';
+
+# 3
+my $split3 = stratified-take-drop(@dsRand, 0.5, <Label Word>, :!hash);
+isa-ok $split3, List, 'List result';
+
+# 4
+is $split3.elems, 2, 'List result length';
+
+# 5
+is-deeply $split2.keys.sort.List,
+        <drop take>,
+        'Hash result key';
+
+# 6
+is-deeply group-by($split2<take>, <Label Word>)>>.elems,
+        {'mu.Carica' => 4, 'mu.review' => 3, 'no.Carica' => 6, 'no.review' => 6, 'yes.Carica' => 7, 'yes.review' => 5},
+        'Expected take elems of hash result';
+
+# 7
+is-deeply group-by($split2<drop>, <Label Word>)>>.elems,
+        {'mu.Carica' => 3, 'mu.review' => 3, 'no.Carica' => 5, 'no.review' => 6, 'yes.Carica' => 7, 'yes.review' => 5},
+        'Expected drop elems of hash result';
+
+
+done-testing;

@@ -1,0 +1,198 @@
+@startuml
+class "to-long-format" <<routine>> {
+}
+"to-long-format" --|> Routine
+"to-long-format" --|> Block
+"to-long-format" --|> Code
+"to-long-format" --|> Callable
+
+
+class "stratified-take-drop" <<routine>> {
+}
+"stratified-take-drop" --|> Routine
+"stratified-take-drop" --|> Block
+"stratified-take-drop" --|> Code
+"stratified-take-drop" --|> Callable
+
+
+class "record-types" <<routine>> {
+}
+"record-types" --|> Routine
+"record-types" --|> Block
+"record-types" --|> Code
+"record-types" --|> Callable
+
+
+class "complete-column-names" <<routine>> {
+}
+"complete-column-names" --|> Routine
+"complete-column-names" --|> Block
+"complete-column-names" --|> Code
+"complete-column-names" --|> Callable
+
+
+class "select-columns" <<routine>> {
+}
+"select-columns" --|> Routine
+"select-columns" --|> Block
+"select-columns" --|> Code
+"select-columns" --|> Callable
+
+
+class "delete-columns" <<routine>> {
+}
+"delete-columns" --|> Routine
+"delete-columns" --|> Block
+"delete-columns" --|> Code
+"delete-columns" --|> Callable
+
+
+class "deduce-type" <<routine>> {
+}
+"deduce-type" --|> Routine
+"deduce-type" --|> Block
+"deduce-type" --|> Code
+"deduce-type" --|> Callable
+
+
+class "transpose" <<routine>> {
+}
+"transpose" --|> Routine
+"transpose" --|> Block
+"transpose" --|> Code
+"transpose" --|> Callable
+
+
+class "take-drop" <<routine>> {
+}
+"take-drop" --|> Routine
+"take-drop" --|> Block
+"take-drop" --|> Code
+"take-drop" --|> Callable
+
+
+class "flatten" <<routine>> {
+}
+"flatten" --|> Routine
+"flatten" --|> Block
+"flatten" --|> Code
+"flatten" --|> Callable
+
+
+class "is-reshapable" <<routine>> {
+}
+"is-reshapable" --|> Routine
+"is-reshapable" --|> Block
+"is-reshapable" --|> Code
+"is-reshapable" --|> Callable
+
+
+class Data::Reshapers::TypeSystem  {
+  {field} $!max-enum-elems
+  {field} $!max-struct-elems
+  {field} $!max-tuple-elems
+  {method} BUILDALL
+  {method} deduce-type
+  {method} has-homogeneous-shape
+  {method} has-homogeneous-type
+  {method} is-reshapable
+  {method} max-enum-elems
+  {method} max-struct-elems
+  {method} max-tuple-elems
+  {method} record-types
+}
+
+
+class "rename-columns" <<routine>> {
+}
+"rename-columns" --|> Routine
+"rename-columns" --|> Block
+"rename-columns" --|> Code
+"rename-columns" --|> Callable
+
+
+class "get-lake-mead-levels-dataset" <<routine>> {
+}
+"get-lake-mead-levels-dataset" --|> Sub
+"get-lake-mead-levels-dataset" --|> Routine
+"get-lake-mead-levels-dataset" --|> Block
+"get-lake-mead-levels-dataset" --|> Code
+"get-lake-mead-levels-dataset" --|> Callable
+"get-lake-mead-levels-dataset" --|> "Callable[Positional]"
+
+
+class "group-by" <<routine>> {
+}
+"group-by" --|> Routine
+"group-by" --|> Block
+"group-by" --|> Code
+"group-by" --|> Callable
+
+
+class "dimensions" <<routine>> {
+}
+"dimensions" --|> Routine
+"dimensions" --|> Block
+"dimensions" --|> Code
+"dimensions" --|> Callable
+
+
+class "to-pretty-table" <<routine>> {
+}
+"to-pretty-table" --|> Routine
+"to-pretty-table" --|> Block
+"to-pretty-table" --|> Code
+"to-pretty-table" --|> Callable
+
+
+class "data-reshape" <<routine>> {
+}
+"data-reshape" --|> Routine
+"data-reshape" --|> Block
+"data-reshape" --|> Code
+"data-reshape" --|> Callable
+
+
+class "join-across" <<routine>> {
+}
+"join-across" --|> Routine
+"join-across" --|> Block
+"join-across" --|> Code
+"join-across" --|> Callable
+
+
+class "to-wide-format" <<routine>> {
+}
+"to-wide-format" --|> Routine
+"to-wide-format" --|> Block
+"to-wide-format" --|> Code
+"to-wide-format" --|> Callable
+
+
+class "cross-tabulate" <<routine>> {
+}
+"cross-tabulate" --|> Routine
+"cross-tabulate" --|> Block
+"cross-tabulate" --|> Code
+"cross-tabulate" --|> Callable
+
+
+class "get-titanic-dataset" <<routine>> {
+}
+"get-titanic-dataset" --|> Sub
+"get-titanic-dataset" --|> Routine
+"get-titanic-dataset" --|> Block
+"get-titanic-dataset" --|> Code
+"get-titanic-dataset" --|> Callable
+"get-titanic-dataset" --|> "Callable[Positional]"
+
+
+class "summarize-at" <<routine>> {
+}
+"summarize-at" --|> Routine
+"summarize-at" --|> Block
+"summarize-at" --|> Code
+"summarize-at" --|> Callable
+
+
+@enduml

@@ -1,5 +1,8 @@
 use Test;
 
+use lib './lib';
+use lib '.';
+
 use Data::Reshapers;
 
 my @tblHeaders = get-titanic-dataset(headers => 'auto');
@@ -21,7 +24,7 @@ dfTitanic[GroupBy[#passengerClass &], Total[#passengerAge & /@ #] &]
 ```
 )
 
-plan 23;
+plan 25;
 
 ## 1
 ok @tblHeaders.isa(Array) && @tblHeaders.elems >= 1300;
@@ -165,5 +168,23 @@ lives-ok
 ok
         [&&] (do for %res50.keys -> $k { %res50{$k} == %res51{$k} }),
                 "one-column-cross-tabulation sums expected equivalence for array of hashes";
+
+##-----------------------------------------------------------
+## Single argument
+##-----------------------------------------------------------
+
+## 24
+is-deeply
+        cross-tabulate(@tblNoHeaders.map({ $_[(3,4)] }).Array),
+        cross-tabulate(@tblNoHeaders, 3, 4),
+        "no-column-spec-cross-tabulation, 2 columns array";
+
+## 25
+my @tbl35 = @tblHeaders.map({ [$_<passengerSex>, $_<passengerSurvival>, $_<passengerAge>.Int] }).Array;
+is-deeply
+        cross-tabulate(@tbl35),
+        cross-tabulate(@tblHeaders, 'passengerSex', 'passengerSurvival', 'passengerAge'),
+        "no-column-spec-cross-tabulation, 3 columns array";
+
 
 done-testing;

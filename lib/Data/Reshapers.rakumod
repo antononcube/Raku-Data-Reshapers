@@ -30,6 +30,8 @@ use Data::Reshapers::JoinAcross;
 use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
 use Data::Reshapers::Predicates;
+use Data::Reshapers::TypeSystem;
+use Hash::Merge;
 
 #===========================================================
 
@@ -146,6 +148,10 @@ multi dimensions(@arg -->List) {
 #===========================================================
 our proto select-columns(|) is export {*}
 
+multi select-columns($data, Whatever, :&chooser = &infix:<(elem)>) {
+    return $data;
+}
+
 multi select-columns($data, Str $var, :&chooser = &infix:<(elem)>) {
     return select-columns($data, [$var,])
 }
@@ -234,20 +240,16 @@ multi delete-columns(%data, @vars) {
 #===========================================================
 our proto summarize-at(|) is export {*}
 
-multi summarize-at($data, Str $var, @funcs, Str :$sep = '.') {
-    return summarize-at($data, [$var, ], @funcs, :$sep)
+multi summarize-at($data, $vars, &func, Str :$sep = '.') {
+    return summarize-at($data, $vars, [&func,], :$sep)
 }
 
-multi summarize-at($data, @vars, &func, Str :$sep = '.') {
-    return summarize-at($data, @vars, [&func,], :$sep)
-}
-
-multi summarize-at($data, @vars, @funcs, Str :$sep = '.') {
+multi summarize-at($data, $vars, @funcs, Str :$sep = '.') {
     if @funcs.all ~~ Callable {
 
         if is-hash-of-hashes($data) {
 
-            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+            my %res = infix:<X>(transpose(select-columns($data, $vars)),
                     @funcs,
                     :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.values.Array.&f }));
 
@@ -255,7 +257,7 @@ multi summarize-at($data, @vars, @funcs, Str :$sep = '.') {
 
         } elsif is-array-of-hashes($data) {
 
-            my %res = infix:<X>(transpose(select-columns($data, @vars)),
+            my %res = infix:<X>(transpose(select-columns($data, $vars)),
                     @funcs,
                     :with(-> $c, &f { $c.key ~ $sep ~ &f.name => $c.value.Array.&f }));
 
@@ -292,6 +294,138 @@ multi group-by($data, @vars, Str :$sep = '.') {
     } else {
         die "The first argument is expected to be an array of hashes or a hash of hashes."
     }
+}
+
+#===========================================================
+our proto separate-column(|) is export {*}
+
+multi separate-column($data, Str :$from, :@to, Str :$sep) {
+    return separate-column($data, $from, @to, :$sep);
+}
+
+multi separate-column($data, Str $from, @to, Str :$sep) {
+    return $data.map({ merge-hash($_, %( @to Z=> $_{$from}.split($sep):skip-empty)) }).List;
+}
+
+#===========================================================
+#| Completely flattens a data structure even when sub-lists are wrapped in item containers.
+#| C<@data> -- data to be flatten.
+#| C<:$max-level> -- max level to flatten to.
+our proto flatten(|) is export {*}
+
+# Taken from
+# https://stackoverflow.com/q/41648119/
+# https://stackoverflow.com/a/41649110/
+#multi flatten(+@list) {
+#    gather @list.deepmap: *.take
+#}
+
+multi flatten($data, $maxLevel = Inf) { flatten($data, max-level => $maxLevel ) }
+
+multi flatten(\leaf, :$max-level = Inf) { leaf }
+multi flatten(@list, :$max-level = Inf) {
+    if ! ( $max-level ~~ UInt || $max-level === Inf ) {
+        die 'The argument max-level is expected to be a non-negative integer or Inf.';
+    }
+    flatten-rec(@list, $max-level, 0);
+}
+
+multi flatten-rec(@list, $maxLevel, UInt $lvl) {
+    if $maxLevel > $lvl {
+        @list.map: { slip flatten-rec($_, $maxLevel, $lvl+1) }
+    } else {
+        @list
+    }
+}
+
+multi flatten-rec(\leaf, $maxLevel, UInt $lvl) { leaf }
+
+multi flatten (%h) {
+    %h.keys Z=> %h.values.map({ ($_ ~~ Positional || $_ ~~ Map) ?? flatten($_) !! $_ }).Array
+}
+
+#===========================================================
+#| C<take-drop(@list, $n)> gives the pair C<($list1, $list2)>,
+#| where C<$list1> contains the first C<$n> elements of C<@list> and C<$list2> contains the rest.
+#| C<take-drop(@list, @pos)> finds the complement C<@not-pos=((^@list.elems) (-) @pos).keys>
+#| and gives the pair C<(@list[@pos], @list[@not-pos])>.
+our proto sub take-drop(@data, $spec) is export {*}
+
+multi take-drop(@data, Numeric $ratio where 0 ≤ $ratio < 1) {
+    return take-drop(@data, round($ratio * @data.elems));
+}
+
+multi take-drop(@data, UInt $n) {
+    die "Invalid sequence specification $n for an expression of length {@data.elems}." when $n > @data.elems;
+    return (@data[^$n], @data[$n..^@data.elems]);
+}
+
+multi take-drop(@data, Seq $s) {
+    return take-drop(@data, $s.List);
+}
+
+multi take-drop(@data, Range $r) {
+    return take-drop(@data, $r.List);
+}
+
+multi take-drop(@data, @pos) {
+    my @dropTake = ((^@data.elems) (-) @pos).keys;
+    return (@data[@pos], @data[@dropTake]);
+}
+
+#===========================================================
+#| C<stratified-take-drop(@data, $spec, $labels)> applies the function C<take-drop($_, $spec)>
+#| over stratified @data groups.
+our proto sub stratified-take-drop(@data, $spec, $labels, Bool :$hash = True) is export {*}
+
+multi stratified-take-drop(@data, $spec, Str $label, Bool :$hash = True) {
+    return stratified-take-drop(@data, $spec, [$label, ], :$hash);
+}
+
+multi stratified-take-drop(@data, $spec, @labels, Bool :$hash = True) {
+
+    my @tdSplit =
+        group-by(@data, @labels).map({
+            my ($take, $drop) = take-drop($_.value.Array, $spec)>>.Array;
+            { :$take, :$drop } }).Array;
+
+    my %split = take => @tdSplit.map({ $_.<take> }).&flatten.Array,
+                drop => @tdSplit.map({ $_.<drop> }).&flatten.Array;
+
+    return $hash ?? %split !! (%split<take>, %split<drop>);
+}
+
+#===========================================================
+our proto is-reshapable($data, |) is export {*}
+
+multi is-reshapable($data, *%args) {
+    return Data::Reshapers::TypeSystem.is-reshapable($data, |%args);
+}
+
+multi is-reshapable($iterable-type, $record-type, $data) {
+    Data::Reshapers::TypeSystem.is-reshapable($data, :$iterable-type, :$record-type)
+}
+
+#===========================================================
+our proto record-types($data) is export {*}
+
+multi record-types($data) {
+    return Data::Reshapers::TypeSystem.record-types($data);
+}
+
+#===========================================================
+our proto deduce-type($data,|) is export {*}
+
+multi deduce-type($data, UInt :$max-enum-elems = 6, UInt :$max-struct-elems = 16, UInt :$max-tuple-elems = 16, Bool :$tally = False) {
+    my $ts = Data::Reshapers::TypeSystem.new(:$max-enum-elems, :$max-struct-elems, :$max-tuple-elems);
+    return $ts.deduce-type($data, :$tally);
+}
+
+#===========================================================
+our proto complete-column-names(|) is export {*}
+
+multi complete-column-names(**@args, *%args) {
+    Data::Reshapers::ToPrettyTable::CompleteColumnNames(|@args, |%args)
 }
 
 #===========================================================

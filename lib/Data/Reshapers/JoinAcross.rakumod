@@ -17,6 +17,7 @@ sub make-combined-key( %h, @keys, Str :$sep = ':::' ) {
 }
 
 #===========================================================
+#| Join across (SQL JOIN) for arrays of hashes.
 our proto JoinAcross(|) is export {*}
 
 #-----------------------------------------------------------
@@ -44,13 +45,50 @@ multi JoinAcross(@a, @b, Pair $keyMap, *%args) {
     return JoinAcross(@a, @b, %($keyMap), |%args)
 }
 
+#| Anti join for arrays of hashes.
+multi JoinAcross(@a, @b, %keyMap, Str :$join-spec where *.lc (elem) <anti semi>, *%args) {
+
+    if !is-array-of-hashes(@a) {
+        die "The first argument is expected to be an array of hashes."
+    }
+
+    if !is-array-of-hashes(@b) {
+        die "The second argument is expected to be an array of hashes."
+    }
+
+    my (@ap, @bpKeys);
+    if %keyMap.elems == 1 {
+        my $akey = %keyMap.first.key;
+        my $bkey = %keyMap.first.value;
+
+        @ap = @a.map({ $_{$akey} => $_ });
+        @bpKeys = @b.map({ $_{$bkey} });
+    } elsif %keyMap.elems > 1 {
+        @ap = @a.map({ make-combined-key($_, %keyMap.keys) => $_ });
+        @bpKeys = @b.map({ make-combined-key($_, %keyMap.values) });
+    } else {
+        die 'The third argument is expected to be non-empty value.'
+    }
+
+    my $commonKeys =
+            do if $join-spec.lc eq 'anti' {
+                Set(@ap>>.key) (-) Set(@bpKeys);
+            } else {
+                Set(@ap>>.key) (&) Set(@bpKeys);
+            }
+
+    my @res = @ap.grep({ $_.key (elem) $commonKeys })>>.value;
+
+    return @res;
+}
+
 #| Join across (SQL JOIN) for arrays of hashes.
-multi JoinAcross(@a, @b, %keyMap, Str :$join-spec= 'Inner',
+multi JoinAcross(@a, @b, %keyMap, Str :$join-spec = 'Inner',
                  Bool :$fill = True, :$missing-value = Whatever,
                  :&key-collision-function = WhateverCode) {
 
     if $join-spec.lc !(elem) <Inner Left Right Outer>>>.lc {
-        die "The argument 'join-spec' is expected to be one of 'Inner', 'Left', 'Right', or 'Outer'.";
+        die "The argument 'join-spec' is expected to be one of 'Anti', 'Inner', 'Left', 'Right', or 'Outer'.";
     }
 
     if !is-array-of-hashes(@a) {
@@ -90,7 +128,7 @@ multi JoinAcross(@a, @b, %keyMap, Str :$join-spec= 'Inner',
 
     my @res = push(%ah.grep({ $_.key (elem) $commonKeys }).Hash, %bh.grep({ $_.key (elem) $commonKeys }).Hash );
 
-    my @res2 = @res.map({ $_.value.reduce(&merge-hash) });
+    my @res2 = @res.map({ $_.value.reduce( { merge-hash($^a, $^b, :!deep) } ) });
 
     if $fill {
         my $allKeys = Set(@res2>>.keys);

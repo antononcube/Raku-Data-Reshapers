@@ -34,6 +34,10 @@ say to-pretty-table(@dfData0);
 my %res = summarize-at(@dfData0, <misnomer tank>, [&min, &max, &elems]);
 say to-pretty-table([%res,]);
 
+# Using Whatever columns
+say "Using Whatever columns:\n";
+my %res2 = summarize-at(@dfData0, Whatever, [&min, &max, &elems]);
+say to-pretty-table([%res2,]);
 
 say '#============================================================';
 say '# Hash of hashes';
@@ -54,7 +58,7 @@ say '#============================================================';
 my %dfData2 = group-by(@dfData0, <tank flower> );
 %dfData2.map({ say $_.key, "=>\n", (to-pretty-table($_.value)) });
 
-my %grRes = %dfData2.map({ $_.key => summarize-at($_.value, <misnomer  puma>, (&elems, &min)) });
+my %grRes = %dfData2.map({ $_.key => summarize-at($_.value, <misnomer puma>, (&elems, &min)) });
 say to-pretty-table(%grRes);
 
 
