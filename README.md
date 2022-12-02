@@ -1,7 +1,6 @@
 # Raku Data::Reshapers
 
 [![SparkyCI](http://ci.sparrowhub.io/project/gh-antononcube-Raku-Data-Reshapers/badge)](http://ci.sparrowhub.io)
-[![Build Status](https://app.travis-ci.com/antononcube/Raku-Data-Reshapers.svg?branch=main)](https://app.travis-ci.com/github/antononcube/Raku-Data-Reshapers)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
 This Raku package has data reshaping functions for different data structures that are 
@@ -54,10 +53,10 @@ to-pretty-table($res);
 ```
 ```
 # +--------+-----+-----+-----+
-# |        | 1st | 2nd | 3rd |
+# |        | 2nd | 1st | 3rd |
 # +--------+-----+-----+-----+
-# | female | 144 | 106 | 216 |
-# | male   | 179 | 171 | 493 |
+# | female | 106 | 144 | 216 |
+# | male   | 171 | 179 | 493 |
 # +--------+-----+-----+-----+
 ```
 
@@ -73,30 +72,30 @@ my @tbl1 = @tbl.roll(3);
 .say for @tbl1;
 ```
 ```
-# {id => 1156, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-# {id => 513, passengerAge => 30, passengerClass => 2nd, passengerSex => male, passengerSurvival => died}
-# {id => 1064, passengerAge => 40, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
+# {id => 1291, passengerAge => 50, passengerClass => 3rd, passengerSex => female, passengerSurvival => survived}
+# {id => 335, passengerAge => 30, passengerClass => 2nd, passengerSex => male, passengerSurvival => died}
+# {id => 245, passengerAge => 40, passengerClass => 1st, passengerSex => male, passengerSurvival => died}
 ```
 
 ```perl6
 .say for to-long-format( @tbl1 );
 ```
 ```
+# {AutomaticKey => 0, Value => 1291, Variable => id}
 # {AutomaticKey => 0, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 0, Value => -1, Variable => passengerAge}
-# {AutomaticKey => 0, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 0, Value => male, Variable => passengerSex}
-# {AutomaticKey => 0, Value => 1156, Variable => id}
+# {AutomaticKey => 0, Value => survived, Variable => passengerSurvival}
+# {AutomaticKey => 0, Value => 50, Variable => passengerAge}
+# {AutomaticKey => 0, Value => female, Variable => passengerSex}
+# {AutomaticKey => 1, Value => 335, Variable => id}
 # {AutomaticKey => 1, Value => 2nd, Variable => passengerClass}
-# {AutomaticKey => 1, Value => 30, Variable => passengerAge}
 # {AutomaticKey => 1, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 1, Value => 30, Variable => passengerAge}
 # {AutomaticKey => 1, Value => male, Variable => passengerSex}
-# {AutomaticKey => 1, Value => 513, Variable => id}
-# {AutomaticKey => 2, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 2, Value => 40, Variable => passengerAge}
+# {AutomaticKey => 2, Value => 245, Variable => id}
+# {AutomaticKey => 2, Value => 1st, Variable => passengerClass}
 # {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 2, Value => 40, Variable => passengerAge}
 # {AutomaticKey => 2, Value => male, Variable => passengerSex}
-# {AutomaticKey => 2, Value => 1064, Variable => id}
 ```
 
 ```perl6
@@ -104,18 +103,18 @@ my @lfRes1 = to-long-format( @tbl1, 'id', [], variablesTo => "VAR", valuesTo => 
 .say for @lfRes1;
 ```
 ```
-# {VAL2 => 3rd, VAR => passengerClass, id => 1064}
-# {VAL2 => 40, VAR => passengerAge, id => 1064}
-# {VAL2 => male, VAR => passengerSex, id => 1064}
-# {VAL2 => died, VAR => passengerSurvival, id => 1064}
-# {VAL2 => 3rd, VAR => passengerClass, id => 1156}
-# {VAL2 => -1, VAR => passengerAge, id => 1156}
-# {VAL2 => male, VAR => passengerSex, id => 1156}
-# {VAL2 => died, VAR => passengerSurvival, id => 1156}
-# {VAL2 => 2nd, VAR => passengerClass, id => 513}
-# {VAL2 => 30, VAR => passengerAge, id => 513}
-# {VAL2 => male, VAR => passengerSex, id => 513}
-# {VAL2 => died, VAR => passengerSurvival, id => 513}
+# {VAL2 => survived, VAR => passengerSurvival, id => 1291}
+# {VAL2 => 50, VAR => passengerAge, id => 1291}
+# {VAL2 => female, VAR => passengerSex, id => 1291}
+# {VAL2 => 3rd, VAR => passengerClass, id => 1291}
+# {VAL2 => died, VAR => passengerSurvival, id => 245}
+# {VAL2 => 40, VAR => passengerAge, id => 245}
+# {VAL2 => male, VAR => passengerSex, id => 245}
+# {VAL2 => 1st, VAR => passengerClass, id => 245}
+# {VAL2 => died, VAR => passengerSurvival, id => 335}
+# {VAL2 => 30, VAR => passengerAge, id => 335}
+# {VAL2 => male, VAR => passengerSex, id => 335}
+# {VAL2 => 2nd, VAR => passengerClass, id => 335}
 ```
 
 ### Wide format
@@ -127,13 +126,13 @@ the result has the same records as the `@tbl1`:
 to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
 ```
 ```
-# +--------------+------+--------------+----------------+-------------------+
-# | passengerAge |  id  | passengerSex | passengerClass | passengerSurvival |
-# +--------------+------+--------------+----------------+-------------------+
-# |      40      | 1064 |     male     |      3rd       |        died       |
-# |      -1      | 1156 |     male     |      3rd       |        died       |
-# |      30      | 513  |     male     |      2nd       |        died       |
-# +--------------+------+--------------+----------------+-------------------+
+# +------+--------------+--------------+----------------+-------------------+
+# |  id  | passengerSex | passengerAge | passengerClass | passengerSurvival |
+# +------+--------------+--------------+----------------+-------------------+
+# | 1291 |    female    |      50      |      3rd       |      survived     |
+# | 245  |     male     |      40      |      1st       |        died       |
+# | 335  |     male     |      30      |      2nd       |        died       |
+# +------+--------------+--------------+----------------+-------------------+
 ```
 
 ### Transpose
@@ -149,10 +148,10 @@ to-pretty-table($res, title => "Original");
 # +--------------------------+
 # |         Original         |
 # +--------+-----+-----+-----+
-# |        | 3rd | 1st | 2nd |
+# |        | 1st | 3rd | 2nd |
 # +--------+-----+-----+-----+
-# | female | 216 | 144 | 106 |
-# | male   | 493 | 179 | 171 |
+# | female | 144 | 216 | 106 |
+# | male   | 179 | 493 | 171 |
 # +--------+-----+-----+-----+
 ```
 
@@ -162,13 +161,13 @@ to-pretty-table($tres, title => "Transposed");
 ```
 # +---------------------+
 # |      Transposed     |
-# +-----+--------+------+
-# |     | female | male |
-# +-----+--------+------+
-# | 1st |  144   | 179  |
-# | 2nd |  106   | 171  |
-# | 3rd |  216   | 493  |
-# +-----+--------+------+
+# +-----+------+--------+
+# |     | male | female |
+# +-----+------+--------+
+# | 1st | 179  |  144   |
+# | 2nd | 171  |  106   |
+# | 3rd | 493  |  216   |
+# +-----+------+--------+
 ```
 
 ------
@@ -202,11 +201,11 @@ to-pretty-table(@dsTitanic.pick(5).List, field-names => <id passengerAge passeng
 # +------+--------------+----------------+--------------+-------------------+
 # |  id  | passengerAge | passengerClass | passengerSex | passengerSurvival |
 # +------+--------------+----------------+--------------+-------------------+
-# | 854  |      20      |      3rd       |     male     |        died       |
-# | 920  |      20      |      3rd       |     male     |        died       |
-# | 176  |      40      |      1st       |     male     |        died       |
-# | 1099 |      0       |      3rd       |    female    |        died       |
-# | 923  |      -1      |      3rd       |    female    |      survived     |
+# | 1096 |      -1      |      3rd       |    female    |        died       |
+# |  73  |      30      |      1st       |    female    |      survived     |
+# | 1108 |      20      |      3rd       |     male     |        died       |
+# | 915  |      30      |      3rd       |     male     |        died       |
+# |  88  |      30      |      1st       |     male     |      survived     |
 # +------+--------------+----------------+--------------+-------------------+
 ```
 

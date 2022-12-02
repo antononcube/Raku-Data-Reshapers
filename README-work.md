@@ -1,7 +1,6 @@
 # Raku Data::Reshapers
 
-[![SparkyCI](http://sparrowhub.io:2222/project/gh-antononcube-Raku-Data-Reshapers/badge)](http://sparrowhub.io:2222)
-[![Build Status](https://app.travis-ci.com/antononcube/Raku-Data-Reshapers.svg?branch=main)](https://app.travis-ci.com/github/antononcube/Raku-Data-Reshapers)
+[![SparkyCI](http://ci.sparrowhub.io/project/gh-antononcube-Raku-Data-Reshapers/badge)](http://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
 This Raku package has data reshaping functions for different data structures that are 
