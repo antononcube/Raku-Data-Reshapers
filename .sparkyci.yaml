@@ -1,4 +1,0 @@
-main:
-
-  with-code-coverage: true
-  verbose: true
