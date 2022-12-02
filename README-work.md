@@ -116,7 +116,7 @@ dimensions(@dsTitanic)
 Here is a sample of dataset's records:
 
 ```perl6
-to-pretty-table(@dsTitanic.pick(5), field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
+to-pretty-table(@dsTitanic.pick(5).List, field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
 ```
 
 Here is the type of a single record:
@@ -137,90 +137,109 @@ Here is the type of the whole dataset:
 deduce-type(@dsTitanic)
 ```
 
+Here is the type of "values only" records:
+
+```perl6
+my @valArr = @dsTitanic>>.values>>.Array;
+deduce-type(@valArr)
+```
+
+Here is the type of the string values only records:
+
+```perl6
+my @valArr = delete-columns(@dsTitanic, 'passengerAge')>>.values>>.Array;
+deduce-type(@valArr)
+```
+
 ------
 
 ## TODO
 
-1. [X] Simpler more convenient interface.
+1. [X] DONE Simpler more convenient interface.
 
    - ~~Currently, a user have to specify four different namespaces
      in order to be able to use all package functions.~~
     
-2. [ ] More extensive long format tests.
+2. [ ] TODO More extensive long format tests.
 
-3. [ ] More extensive wide format tests.
+3. [ ] TODO More extensive wide format tests.
 
-4. [ ] Implement verifications for
+4. [ ] TODO Implement verifications for:
    
-    - [X] Positional-of-hashes
+    - See the type system implementation -- it has all of functionalities listed here.
+    
+    - [X] DONE Positional-of-hashes
       
-    - [X] Positional-of-arrays
+    - [X] DONE Positional-of-arrays
        
-    - [X] Positional-of-key-to-array-pairs
+    - [X] DONE Positional-of-key-to-array-pairs
     
-    - [ ] Positional-of-hashes, each record of which has:
+    - [X] DONE Positional-of-hashes, each record of which has:
       
-       - [ ] Same keys 
-       - [ ] Same type of values of corresponding keys
+       - [X] Same keys 
+       - [X] Same type of values of corresponding keys
       
-    - [ ] Positional-of-arrays, each record of which has:
+    - [X] DONE Positional-of-arrays, each record of which has:
     
-       - [ ] Same length
-       - [ ] Same type of values of corresponding elements
+       - [X] Same length
+       - [X] Same type of values of corresponding elements
 
-5. [X] Implement "nice tabular visualization" using 
+5. [X] DONE Implement "nice tabular visualization" using 
    [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table)
    and/or
    [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
 
-6. [X] Document examples using pretty tables.
+6. [X] DONE Document examples using pretty tables.
 
-7. [X] Implement transposing operation for:
+7. [X] DONE Implement transposing operation for:
     - [X] hash of hashes
     - [X] hash of arrays
     - [X] array of hashes
     - [X] array of arrays
     - [X] array of key-to-array pairs 
 
-8. [X] Implement to-pretty-table for:
+8. [X] DONE Implement to-pretty-table for:
    - [X] hash of hashes
    - [X] hash of arrays
    - [X] array of hashes
    - [X] array of arrays
    - [X] array of key-to-array pairs
 
-9. [ ] Implemented join-across:
-   - [X] inner, left, right, outer
-   - [X] single key-to-key pair
-   - [ ] multiple key-to-key pairs
-   - [ ] optional fill-in of missing values
-   - [ ] handling collisions
-   
-10. [ ] Implement to long format conversion for:
-    - [ ] hash of hashes
-    - [ ] hash of arrays
+9. [ ] DONE Implement join-across:
+   - [X] DONE inner, left, right, outer
+   - [X] DONE single key-to-key pair
+   - [X] DONE multiple key-to-key pairs
+   - [X] DONE optional fill-in of missing values
+   - [ ] TODO handling collisions
 
-11. [ ] Speed/performance profiling.
-    - [ ] Come up with profiling tests
-    - [ ] Comparison with R
-    - [ ] Comparison with Python
+10. [X] DONE Implement semi- and anti-join
+
+11. [ ] TODO Implement to long format conversion for:
+    - [ ] TODO hash of hashes
+    - [ ] TODO hash of arrays
+
+12. [ ] TODO Speed/performance profiling.
+    - [ ] TODO Come up with profiling tests
+    - [ ] TODO Comparison with R
+    - [ ] TODO Comparison with Python
    
-12. [ ] Type system.
-    - [X] Base type (Int, Str, Numeric)
-    - [X] Homogenous list detection
-    - [X] Association detection
-    - [X] Struct discovery
-    - [ ] Enumeration detection
-    - [X] Dataset detection
+13. [ ] TODO Type system.
+    - [X] DONE Base type (Int, Str, Numeric)
+    - [X] DONE Homogenous list detection
+    - [X] DONE Association detection
+    - [X] DONE Struct discovery
+    - [ ] TODO Enumeration detection
+    - [X] DONE Dataset detection
        - [X] List of hashes
        - [X] Hash of hashes
        - [X] List of lists
 
-13. [ ] "Simple" or fundamental functions 
+14. [X] DONE "Simple" or fundamental functions 
     - [X] `flatten`
     - [X] `take-drop`
-    - [ ] `tally`
+    - [X] `tally`
        - Currently in "Data::Summarizers".
+       - Can be easily, on the spot, "implemented" with `.BagHash.Hash`.
     
 ------
 

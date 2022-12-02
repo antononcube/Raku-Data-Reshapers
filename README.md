@@ -54,10 +54,10 @@ to-pretty-table($res);
 ```
 ```
 # +--------+-----+-----+-----+
-# |        | 3rd | 1st | 2nd |
+# |        | 1st | 2nd | 3rd |
 # +--------+-----+-----+-----+
-# | female | 216 | 144 | 106 |
-# | male   | 493 | 179 | 171 |
+# | female | 144 | 106 | 216 |
+# | male   | 179 | 171 | 493 |
 # +--------+-----+-----+-----+
 ```
 
@@ -73,30 +73,30 @@ my @tbl1 = @tbl.roll(3);
 .say for @tbl1;
 ```
 ```
-# {id => 822, passengerAge => 30, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-# {id => 684, passengerAge => 40, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
-# {id => 1243, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
+# {id => 1156, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
+# {id => 513, passengerAge => 30, passengerClass => 2nd, passengerSex => male, passengerSurvival => died}
+# {id => 1064, passengerAge => 40, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
 ```
 
 ```perl6
 .say for to-long-format( @tbl1 );
 ```
 ```
-# {AutomaticKey => 0, Value => died, Variable => passengerSurvival}
 # {AutomaticKey => 0, Value => 3rd, Variable => passengerClass}
+# {AutomaticKey => 0, Value => -1, Variable => passengerAge}
+# {AutomaticKey => 0, Value => died, Variable => passengerSurvival}
 # {AutomaticKey => 0, Value => male, Variable => passengerSex}
-# {AutomaticKey => 0, Value => 30, Variable => passengerAge}
-# {AutomaticKey => 0, Value => 822, Variable => id}
+# {AutomaticKey => 0, Value => 1156, Variable => id}
+# {AutomaticKey => 1, Value => 2nd, Variable => passengerClass}
+# {AutomaticKey => 1, Value => 30, Variable => passengerAge}
 # {AutomaticKey => 1, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 1, Value => 3rd, Variable => passengerClass}
 # {AutomaticKey => 1, Value => male, Variable => passengerSex}
-# {AutomaticKey => 1, Value => 40, Variable => passengerAge}
-# {AutomaticKey => 1, Value => 684, Variable => id}
-# {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 1, Value => 513, Variable => id}
 # {AutomaticKey => 2, Value => 3rd, Variable => passengerClass}
+# {AutomaticKey => 2, Value => 40, Variable => passengerAge}
+# {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
 # {AutomaticKey => 2, Value => male, Variable => passengerSex}
-# {AutomaticKey => 2, Value => -1, Variable => passengerAge}
-# {AutomaticKey => 2, Value => 1243, Variable => id}
+# {AutomaticKey => 2, Value => 1064, Variable => id}
 ```
 
 ```perl6
@@ -104,18 +104,18 @@ my @lfRes1 = to-long-format( @tbl1, 'id', [], variablesTo => "VAR", valuesTo => 
 .say for @lfRes1;
 ```
 ```
-# {VAL2 => male, VAR => passengerSex, id => 1243}
-# {VAL2 => -1, VAR => passengerAge, id => 1243}
-# {VAL2 => died, VAR => passengerSurvival, id => 1243}
-# {VAL2 => 3rd, VAR => passengerClass, id => 1243}
-# {VAL2 => male, VAR => passengerSex, id => 684}
-# {VAL2 => 40, VAR => passengerAge, id => 684}
-# {VAL2 => died, VAR => passengerSurvival, id => 684}
-# {VAL2 => 3rd, VAR => passengerClass, id => 684}
-# {VAL2 => male, VAR => passengerSex, id => 822}
-# {VAL2 => 30, VAR => passengerAge, id => 822}
-# {VAL2 => died, VAR => passengerSurvival, id => 822}
-# {VAL2 => 3rd, VAR => passengerClass, id => 822}
+# {VAL2 => 3rd, VAR => passengerClass, id => 1064}
+# {VAL2 => 40, VAR => passengerAge, id => 1064}
+# {VAL2 => male, VAR => passengerSex, id => 1064}
+# {VAL2 => died, VAR => passengerSurvival, id => 1064}
+# {VAL2 => 3rd, VAR => passengerClass, id => 1156}
+# {VAL2 => -1, VAR => passengerAge, id => 1156}
+# {VAL2 => male, VAR => passengerSex, id => 1156}
+# {VAL2 => died, VAR => passengerSurvival, id => 1156}
+# {VAL2 => 2nd, VAR => passengerClass, id => 513}
+# {VAL2 => 30, VAR => passengerAge, id => 513}
+# {VAL2 => male, VAR => passengerSex, id => 513}
+# {VAL2 => died, VAR => passengerSurvival, id => 513}
 ```
 
 ### Wide format
@@ -127,13 +127,13 @@ the result has the same records as the `@tbl1`:
 to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
 ```
 ```
-# +----------------+-------------------+--------------+------+--------------+
-# | passengerClass | passengerSurvival | passengerSex |  id  | passengerAge |
-# +----------------+-------------------+--------------+------+--------------+
-# |      3rd       |        died       |     male     | 1243 |      -1      |
-# |      3rd       |        died       |     male     | 684  |      40      |
-# |      3rd       |        died       |     male     | 822  |      30      |
-# +----------------+-------------------+--------------+------+--------------+
+# +--------------+------+--------------+----------------+-------------------+
+# | passengerAge |  id  | passengerSex | passengerClass | passengerSurvival |
+# +--------------+------+--------------+----------------+-------------------+
+# |      40      | 1064 |     male     |      3rd       |        died       |
+# |      -1      | 1156 |     male     |      3rd       |        died       |
+# |      30      | 513  |     male     |      2nd       |        died       |
+# +--------------+------+--------------+----------------+-------------------+
 ```
 
 ### Transpose
@@ -149,10 +149,10 @@ to-pretty-table($res, title => "Original");
 # +--------------------------+
 # |         Original         |
 # +--------+-----+-----+-----+
-# |        | 2nd | 1st | 3rd |
+# |        | 3rd | 1st | 2nd |
 # +--------+-----+-----+-----+
-# | female | 106 | 144 | 216 |
-# | male   | 171 | 179 | 493 |
+# | female | 216 | 144 | 106 |
+# | male   | 493 | 179 | 171 |
 # +--------+-----+-----+-----+
 ```
 
@@ -196,17 +196,17 @@ dimensions(@dsTitanic)
 Here is a sample of dataset's records:
 
 ```perl6
-to-pretty-table(@dsTitanic.pick(5), field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
+to-pretty-table(@dsTitanic.pick(5).List, field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
 ```
 ```
 # +------+--------------+----------------+--------------+-------------------+
 # |  id  | passengerAge | passengerClass | passengerSex | passengerSurvival |
 # +------+--------------+----------------+--------------+-------------------+
-# | 1305 |      10      |      3rd       |    female    |        died       |
-# | 684  |      40      |      3rd       |     male     |        died       |
-# | 721  |      20      |      3rd       |     male     |        died       |
-# |  40  |      50      |      1st       |     male     |        died       |
-# | 399  |      10      |      2nd       |     male     |      survived     |
+# | 854  |      20      |      3rd       |     male     |        died       |
+# | 920  |      20      |      3rd       |     male     |        died       |
+# | 176  |      40      |      1st       |     male     |        died       |
+# | 1099 |      0       |      3rd       |    female    |        died       |
+# | 923  |      -1      |      3rd       |    female    |      survived     |
 # +------+--------------+----------------+--------------+-------------------+
 ```
 
@@ -225,7 +225,7 @@ Here is the type of single record's values:
 deduce-type(@dsTitanic[12].values.List)
 ```
 ```
-# Tuple([Atom((Str)), Atom((Str)), Atom((Str)), Atom((Str)), Atom((Int))])
+# Tuple([Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str)), Atom((Str))])
 ```
 
 Here is the type of the whole dataset:
@@ -237,90 +237,115 @@ deduce-type(@dsTitanic)
 # Vector(Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str]), 1309)
 ```
 
+Here is the type of "values only" records:
+
+```perl6
+my @valArr = @dsTitanic>>.values>>.Array;
+deduce-type(@valArr)
+```
+```
+# Vector((Any), 1309)
+```
+
+Here is the type of the string values only records:
+
+```perl6
+my @valArr = delete-columns(@dsTitanic, 'passengerAge')>>.values>>.Array;
+deduce-type(@valArr)
+```
+```
+# Vector(Vector(Atom((Str)), 4), 1309)
+```
+
 ------
 
 ## TODO
 
-1. [X] Simpler more convenient interface.
+1. [X] DONE Simpler more convenient interface.
 
    - ~~Currently, a user have to specify four different namespaces
      in order to be able to use all package functions.~~
     
-2. [ ] More extensive long format tests.
+2. [ ] TODO More extensive long format tests.
 
-3. [ ] More extensive wide format tests.
+3. [ ] TODO More extensive wide format tests.
 
-4. [ ] Implement verifications for
+4. [ ] TODO Implement verifications for:
    
-    - [X] Positional-of-hashes
+    - See the type system implementation -- it has all of functionalities listed here.
+    
+    - [X] DONE Positional-of-hashes
       
-    - [X] Positional-of-arrays
+    - [X] DONE Positional-of-arrays
        
-    - [X] Positional-of-key-to-array-pairs
+    - [X] DONE Positional-of-key-to-array-pairs
     
-    - [ ] Positional-of-hashes, each record of which has:
+    - [X] DONE Positional-of-hashes, each record of which has:
       
-       - [ ] Same keys 
-       - [ ] Same type of values of corresponding keys
+       - [X] Same keys 
+       - [X] Same type of values of corresponding keys
       
-    - [ ] Positional-of-arrays, each record of which has:
+    - [X] DONE Positional-of-arrays, each record of which has:
     
-       - [ ] Same length
-       - [ ] Same type of values of corresponding elements
+       - [X] Same length
+       - [X] Same type of values of corresponding elements
 
-5. [X] Implement "nice tabular visualization" using 
+5. [X] DONE Implement "nice tabular visualization" using 
    [Pretty::Table](https://gitlab.com/uzluisf/raku-pretty-table)
    and/or
    [Text::Table::Simple](https://github.com/ugexe/Perl6-Text--Table--Simple).
 
-6. [X] Document examples using pretty tables.
+6. [X] DONE Document examples using pretty tables.
 
-7. [X] Implement transposing operation for:
+7. [X] DONE Implement transposing operation for:
     - [X] hash of hashes
     - [X] hash of arrays
     - [X] array of hashes
     - [X] array of arrays
     - [X] array of key-to-array pairs 
 
-8. [X] Implement to-pretty-table for:
+8. [X] DONE Implement to-pretty-table for:
    - [X] hash of hashes
    - [X] hash of arrays
    - [X] array of hashes
    - [X] array of arrays
    - [X] array of key-to-array pairs
 
-9. [ ] Implemented join-across:
-   - [X] inner, left, right, outer
-   - [X] single key-to-key pair
-   - [ ] multiple key-to-key pairs
-   - [ ] optional fill-in of missing values
-   - [ ] handling collisions
-   
-10. [ ] Implement to long format conversion for:
-    - [ ] hash of hashes
-    - [ ] hash of arrays
+9. [ ] DONE Implement join-across:
+   - [X] DONE inner, left, right, outer
+   - [X] DONE single key-to-key pair
+   - [X] DONE multiple key-to-key pairs
+   - [X] DONE optional fill-in of missing values
+   - [ ] TODO handling collisions
 
-11. [ ] Speed/performance profiling.
-    - [ ] Come up with profiling tests
-    - [ ] Comparison with R
-    - [ ] Comparison with Python
+10. [X] DONE Implement semi- and anti-join
+
+11. [ ] TODO Implement to long format conversion for:
+    - [ ] TODO hash of hashes
+    - [ ] TODO hash of arrays
+
+12. [ ] TODO Speed/performance profiling.
+    - [ ] TODO Come up with profiling tests
+    - [ ] TODO Comparison with R
+    - [ ] TODO Comparison with Python
    
-12. [ ] Type system.
-    - [X] Base type (Int, Str, Numeric)
-    - [X] Homogenous list detection
-    - [X] Association detection
-    - [X] Struct discovery
-    - [ ] Enumeration detection
-    - [X] Dataset detection
+13. [ ] TODO Type system.
+    - [X] DONE Base type (Int, Str, Numeric)
+    - [X] DONE Homogenous list detection
+    - [X] DONE Association detection
+    - [X] DONE Struct discovery
+    - [ ] TODO Enumeration detection
+    - [X] DONE Dataset detection
        - [X] List of hashes
        - [X] Hash of hashes
        - [X] List of lists
 
-13. [ ] "Simple" or fundamental functions 
+14. [X] DONE "Simple" or fundamental functions 
     - [X] `flatten`
     - [X] `take-drop`
-    - [ ] `tally`
+    - [X] `tally`
        - Currently in "Data::Summarizers".
+       - Can be easily, on the spot, "implemented" with `.BagHash.Hash`.
     
 ------
 
