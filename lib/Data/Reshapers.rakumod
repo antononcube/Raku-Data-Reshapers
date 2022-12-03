@@ -396,6 +396,10 @@ multi stratified-take-drop(@data, $spec, @labels, Bool :$hash = True) {
 }
 
 #===========================================================
+#| Determines if given data is reshapable.
+#| (For example, a Positional of Maps.)
+#| C<:$iterable-type> - Expected type of the given argument.
+#| C<:$record-type> - Expected type of the elements of the given argument.
 our proto is-reshapable($data, |) is export {*}
 
 multi is-reshapable($data, *%args) {
@@ -407,6 +411,7 @@ multi is-reshapable($iterable-type, $record-type, $data) {
 }
 
 #===========================================================
+#| Returns the record types of the given argument.
 our proto record-types($data) is export {*}
 
 multi record-types($data) {
@@ -414,6 +419,7 @@ multi record-types($data) {
 }
 
 #===========================================================
+#| Deduces the type of the given argument.
 our proto deduce-type($data,|) is export {*}
 
 multi deduce-type($data, UInt :$max-enum-elems = 6, UInt :$max-struct-elems = 16, UInt :$max-tuple-elems = 16, Bool :$tally = False) {
@@ -422,6 +428,9 @@ multi deduce-type($data, UInt :$max-enum-elems = 6, UInt :$max-struct-elems = 16
 }
 
 #===========================================================
+#| Completes each of the records of the given dataset to have column names found across all records.
+#| C<$data> -- Dataset.
+#| C<:$missing-value> - Missing value to use.
 our proto complete-column-names(|) is export {*}
 
 multi complete-column-names(**@args, *%args) {
