@@ -26,7 +26,10 @@ my @dsAnsombe = [
 
 my @dsAnsombeLongForm = to-long-format(@dsAnsombe);
 
-plan 3;
+my @dsSmall = (11 .. 13 Z <a|b bIc x|y>).map({ %(id => $_[0], some => $_[1]) });
+my @dsSmall2 = (11 .. 13 Z <a|b bIc x|y> Z <a b x> Z <b c y>).map({ <id some left right> Z=> $_ })>>.Hash;
+
+plan 4;
 
 ## 1
 is dimensions(separate-column(@dsAnsombeLongForm, 'Variable', <Variable Set>, sep => ''))[1], 4;
@@ -39,5 +42,10 @@ is separate-column(@dsAnsombeLongForm, 'Variable', <Variable Set>, sep => '')[0]
 is-deeply
         separate-column(@dsAnsombeLongForm, 'Variable', <Variable Set>, sep => ''),
         separate-column(@dsAnsombeLongForm, from => 'Variable', to => <Variable Set>, sep => '');
+
+## 4
+is-deeply
+        separate-column(@dsSmall, 'some', <left right>, sep => / '|' | I /).Array,
+        @dsSmall2;
 
 done-testing;
