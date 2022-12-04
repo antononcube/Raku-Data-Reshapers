@@ -238,6 +238,11 @@ multi delete-columns(%data, @vars) {
 }
 
 #===========================================================
+#| Summarizes given columns (variables) in a given dataset with given functions.
+#| C<$data> - Dataset to be summarized; an array of hashes or a hash of hashes.
+#| C<$vars> - Variables (column names) to be summarized.
+#| C<$func> - A function (callable) or a positional of functions to summarize with.
+#| C<:$sep> - A separator to used in the new var-func column names.
 our proto summarize-at(|) is export {*}
 
 multi summarize-at($data, $vars, &func, Str :$sep = '.') {
@@ -273,6 +278,10 @@ multi summarize-at($data, $vars, @funcs, Str :$sep = '.') {
 }
 
 #===========================================================
+#| Group dataset records by values of given variables.
+#| C<$data> - Dataset, an array of hashes or a hash of hashes.
+#| C<@vars> - Variables to group with.
+#| C<:$sep> - A separator to use for the keys corresponding to the groups.
 our proto group-by(|) is export {*}
 
 multi group-by($data, Str $var, Str :$sep = '.') {
@@ -297,13 +306,18 @@ multi group-by($data, @vars, Str :$sep = '.') {
 }
 
 #===========================================================
+#| Separates the values of column of a given dataset into other columns using a given separator.
+#| C<$data> - Dataset.
+#| C<:$from> - Column to separate.
+#| C<:@to> - Columns to put the parts in.
+#| C<:$sep> - Separator to use. (An argument for C<&split>.)
 our proto separate-column(|) is export {*}
 
-multi separate-column($data, Str :$from, :@to, Str :$sep) {
+multi separate-column($data, Str :$from, :@to, :$sep) {
     return separate-column($data, $from, @to, :$sep);
 }
 
-multi separate-column($data, Str $from, @to, Str :$sep) {
+multi separate-column($data, Str $from, @to, :$sep) {
     return $data.map({ merge-hash($_, %( @to Z=> $_{$from}.split($sep):skip-empty)) }).List;
 }
 
@@ -438,6 +452,7 @@ multi complete-column-names(**@args, *%args) {
 }
 
 #===========================================================
+#| Makes a pretty ASCII table for a given dataset.
 our proto to-pretty-table(|) is export {*}
 
 multi to-pretty-table(**@args, *%args) {
