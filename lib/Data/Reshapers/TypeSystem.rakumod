@@ -165,8 +165,11 @@ class Data::Reshapers::TypeSystem {
     multi method deduce-type($data, Bool :$tally = False) {
         given $data {
             when $_ ~~ Int { return Data::Reshapers::TypeSystem::Atom.new(Int, 1) }
+            when $_ ~~ Rat { return Data::Reshapers::TypeSystem::Atom.new(Rat, 1) }
             when $_ ~~ Numeric { return Data::Reshapers::TypeSystem::Atom.new(Numeric, 1) }
             when $_ ~~ Str { return Data::Reshapers::TypeSystem::Atom.new(Str, 1) }
+            when $_ ~~ DateTime { return Data::Reshapers::TypeSystem::Atom.new(DateTime, 1) }
+            when $_ ~~ Dateish {return Data::Reshapers::TypeSystem::Atom.new(Dateish, 1) }
             when $_ ~~ Pair { return Data::Reshapers::TypeSystem::Pair.new(self.deduce-type($_.key), self.deduce-type($_.value)) }
 
             when $_ ~~ Seq { return self.deduce-type($data.List); }

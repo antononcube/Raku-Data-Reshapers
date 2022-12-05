@@ -37,7 +37,7 @@ my %hRand = :Aleppo("Zealander"), :Karaites(5.512476726477258e0),
 
 my %dsRandNum = ('a' ... 'z')[^@dsRandNum.elems] Z=> @dsRandNum;
 
-plan 9;
+plan 11;
 
 # 1
 is deduce-type(@dsTitanic),
@@ -74,5 +74,35 @@ is deduce-type(%hRand.pairs.List):!tally,
 # 9
 is deduce-type(%hRand.pairs.List):tally,
         'Tuple([Pair(Atom((Str)), Atom((Numeric))) => 10, Pair(Atom((Str)), Atom((Str))) => 10], 20)';
+
+# 10
+my @dsIRC10 = [{ :DateString("2020-12-23"),
+                 :DateTime(DateTime.new(2020, 12, 23, 14, 7, 0)), :Nick("Watson"),
+                 :TimeBucket("2020-12-23_14"), :Timestamp("2020-12-23Z14:07"),
+                 :Weekday(3) },
+               { :DateString("2019-10-29"),
+                 :DateTime(DateTime.new(2019, 10, 29, 15, 13, 0)), :Nick("Roxy"),
+                 :TimeBucket("2019-10-29_15"), :Timestamp("2019-10-29Z15:13-0001"),
+                 :Weekday(2) },
+               { :DateString("2020-08-06"),
+                 :DateTime(DateTime.new(2020, 8, 6, 18, 52, 0)), :Nick("Jimi"),
+                 :TimeBucket("2020-08-06_18"), :Timestamp("2020-08-06Z18:52-0002"),
+                 :Weekday(4) },
+               { :DateString("2021-11-18"),
+                 :DateTime(DateTime.new(2021, 11, 18, 2, 36, 0)), :Nick("Tucker"),
+                 :TimeBucket("2021-11-18_2"), :Timestamp("2021-11-18Z02:36"),
+                 :Weekday(4) }];
+
+is deduce-type(@dsIRC10),
+        'Vector(Struct([DateString, DateTime, Nick, TimeBucket, Timestamp, Weekday], [Str, DateTime, Str, Str, Str, Int]), 4)';
+
+# 11
+my @dsTable11 = [{ :Date(Date.new(2020, 12, 23)), :Nick("Watson"), :Weekday(3/7) },
+                 { :Date(Date.new(2019, 10, 29)), :Nick("Roxy"), :Weekday(2/3) },
+                 { :Date(Date.new(2020, 8, 6)), :Nick("Jimi"), :Weekday(4/5) },
+                 { :Date(Date.new(2021, 11, 18)), :Nick("Tucker"), :Weekday(4/9) }];
+
+is deduce-type(@dsTable11),
+        'Vector(Struct([Date, Nick, Weekday], [Date, Str, Rat]), 4)';
 
 done-testing;
