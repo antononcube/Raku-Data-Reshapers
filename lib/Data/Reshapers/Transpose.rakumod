@@ -50,12 +50,32 @@ multi Transpose(%tbl) {
 
     if %hash-of-hashes.defined and %hash-of-hashes {
 
-        my %h-new;
-        for %hash-of-hashes.values.first.keys X %hash-of-hashes.keys -> ($new-key, $current-key) {
-            %h-new{$new-key}{$current-key} = %hash-of-hashes{$current-key}{$new-key};
+        # This original implementation assumes homogeneity of the records.
+        # Obviously, not necessarily true. It can be applied for "optimization purposes"
+        # after, say, deducing the type and making sure all records have same keys;
+        #my %h-new;
+        #for %hash-of-hashes.values.first.keys X %hash-of-hashes.keys -> ($new-key, $current-key) {
+        #    %h-new{$new-key}{$current-key} = %hash-of-hashes{$current-key}{$new-key};
+        #}
+
+        # This is very ineffective for sparse hash-of-hashes,
+        # because it uses the cartesian product of top-hash-keys and unique record keys.
+        #my %h-new;
+        #for %hash-of-hashes.values>>.keys.flat.unique X %hash-of-hashes.keys -> ($new-key, $current-key) {
+        #    %h-new{$new-key}{$current-key} = %hash-of-hashes{$current-key}{$new-key};
+        #}
+
+        # Here we transpose existing pairs only. The sparsity is preserved.
+        my @recordKeys = |%hash-of-hashes.values>>.keys.flat.unique;
+        my %h-new = Hash(@recordKeys X=> Hash.new);
+
+        for %hash-of-hashes.kv -> $tag, $mix {
+            for $mix.kv -> $item, $val {
+                %h-new{$item}.push($tag => $val)
+            }
         }
 
-        return %h-new;
+        return %h-new>>.Hash;
 
     } else {
 
@@ -92,7 +112,7 @@ multi Transpose(@tbl) {
         if $! {
             # Check for an array of key-array pairs
             if is-array-of-key-array-pairs(@tbl) or is-array-of-key-hash-pairs(@tbl) {
-
+                note 'here 3';
                 # Convert an array of key-[array|hash] pairs into a hash of hashes
                 my %res = convert-to-hash-of-hashes(@tbl);
 
@@ -106,12 +126,23 @@ multi Transpose(@tbl) {
     # Convert to table
     if @arr-of-hashes.defined and @arr-of-hashes {
 
-        my Array %thash;
-        for @arr-of-hashes[0].keys X ^@arr-of-hashes.elems -> ($new-key, $current-index) {
-            %thash{$new-key}[$current-index] = @arr-of-hashes[$current-index]{$new-key};
+        # This is inefficient because of Cartesian product.
+        #my Array %thash;
+        #for @arr-of-hashes[0].keys X ^@arr-of-hashes.elems -> ($new-key, $current-index) {
+        #    %thash{$new-key}[$current-index] = @arr-of-hashes[$current-index]{$new-key};
+        #}
+        #return %thash;
+
+        my @recordKeys = |@arr-of-hashes.values>>.keys.flat.unique;
+        my %h-new = Hash(@recordKeys X=> Hash.new);
+
+        for @arr-of-hashes.kv -> $ind, $mix {
+            for $mix.kv -> $item, $val {
+                %h-new{$item}.push($ind => $val)
+            }
         }
 
-        return %thash;
+        return %h-new>>.Hash;
 
     } else {
 
