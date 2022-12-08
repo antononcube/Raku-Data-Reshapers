@@ -126,23 +126,30 @@ multi Transpose(@tbl) {
     # Convert to table
     if @arr-of-hashes.defined and @arr-of-hashes {
 
-        # This is inefficient because of Cartesian product.
-        #my Array %thash;
-        #for @arr-of-hashes[0].keys X ^@arr-of-hashes.elems -> ($new-key, $current-index) {
-        #    %thash{$new-key}[$current-index] = @arr-of-hashes[$current-index]{$new-key};
-        #}
-        #return %thash;
+        if has-homogeneous-keys(@arr-of-hashes) {
 
-        my @recordKeys = |@arr-of-hashes.values>>.keys.flat.unique;
-        my %h-new = Hash(@recordKeys X=> Hash.new);
-
-        for @arr-of-hashes.kv -> $ind, $mix {
-            for $mix.kv -> $item, $val {
-                %h-new{$item}.push($ind => $val)
+            # In the sparse case this is inefficient because of Cartesian product.
+            my Array %thash;
+            for @arr-of-hashes[0].keys X ^@arr-of-hashes.elems -> ($new-key, $current-index) {
+                %thash{$new-key}[$current-index] = @arr-of-hashes[$current-index]{$new-key};
             }
-        }
+            return %thash;
 
-        return %h-new>>.Hash;
+        } else {
+
+            my @recordKeys = |@arr-of-hashes.values>>.keys.flat.unique;
+            # It seems that this initialization is not needed:
+            #my %h-new = Hash(@recordKeys X=> Hash.new);
+            my %h-new;
+
+            for @arr-of-hashes.kv -> $ind, $mix {
+                for $mix.kv -> $item, $val {
+                    %h-new{$item}.push($ind => $val)
+                }
+            }
+
+            return %h-new>>.Hash;
+        }
 
     } else {
 
