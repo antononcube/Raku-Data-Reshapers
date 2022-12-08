@@ -1,0 +1,54 @@
+use Test;
+
+use lib './lib';
+use lib '.';
+
+use Data::Reshapers;
+
+my %dfRand =  "2" => ${ :drink(121.67239295221576e0), :refinance(111.49589770601989e0), :uncompromisingly(112.83057932039914e0) },
+              "1" => ${ :drink(140.0346028991027e0),                                    :uncompromisingly(86.9574096817264e0)   },
+              "0" => ${ :drink(125.29827601833546e0)                                                                            },
+              "4" => ${ :drink(124.73006527768604e0), :refinance(74.26748488483263e0),  :uncompromisingly(150.10090828356613e0) },
+              "3" => ${                               :refinance(75.86794386663075e0),  :uncompromisingly(114.90831504979715e0) };
+
+my @dfRand =  ["2" => ${ :drink(121.67239295221576e0), :refinance(111.49589770601989e0), :uncompromisingly(112.83057932039914e0) },
+               "1" => ${ :drink(140.0346028991027e0),                                    :uncompromisingly(86.9574096817264e0)   },
+               "0" => ${ :drink(125.29827601833546e0)                                                                            },
+               "4" => ${ :drink(124.73006527768604e0), :refinance(74.26748488483263e0),  :uncompromisingly(150.10090828356613e0) },
+               "3" => ${                               :refinance(75.86794386663075e0),  :uncompromisingly(114.90831504979715e0) }];
+
+my @dfRand2 =  ${ :drink(121.67239295221576e0), :refinance(111.49589770601989e0), :uncompromisingly(112.83057932039914e0) },
+               ${ :drink(140.0346028991027e0),                                    :uncompromisingly(86.9574096817264e0)   },
+               ${ :drink(125.29827601833546e0)                                                                            },
+               ${ :drink(124.73006527768604e0), :refinance(74.26748488483263e0),  :uncompromisingly(150.10090828356613e0) },
+               ${                               :refinance(75.86794386663075e0),  :uncompromisingly(114.90831504979715e0) };
+
+plan 5;
+
+## 1
+ok transpose(%dfRand),
+        'transpose of hash of sparse hashes';
+
+## 2
+my %res2 = transpose(%dfRand);
+
+is %res2<drink>.elems == 4 && %res2<refinance>.elems == 3 && %res2<uncompromisingly>.elems == 4,
+        True,
+        'transpose of hash of sparse hashes expected shape';
+
+## 3
+ok transpose(@dfRand),
+        'transpose of array of sparse hashes';
+
+## 4
+isa-ok transpose(@dfRand), Hash,
+        'transpose of array of sparse hashes is a hash';
+
+## 5
+my %res5 = transpose(@dfRand);
+is %res5<drink>.elems == 4 && %res5<refinance>.elems == 3 && %res5<uncompromisingly>.elems == 4,
+        True,
+        'transpose of hash of sparse hashes expected shape';
+
+
+done-testing;
