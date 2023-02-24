@@ -1,8 +1,5 @@
 #!/usr/bin/env perl6
 
-use lib './lib';
-use lib '.';
-
 use Data::Reshapers;
 use Data::Generators;
 
@@ -22,6 +19,8 @@ say to-pretty-table(@dfData0, junction-char => 'O', float-format=> '6.3f');
 say to-pretty-table(rename-columns(@dfData0, { delta => 'ura', 'beta' => 'B'}));
 
 say to-pretty-table(select-columns(@dfData0, <delta gamma>) );
+
+say to-pretty-table(select-columns(%dfData1.pairs, <delta gamma>) );
 
 say to-pretty-table(rename-columns(@dfData0, 'beta' => 'CIGAR'));
 say to-pretty-table(rename-columns(%dfData1, 'beta' => 'CIGAR'));
