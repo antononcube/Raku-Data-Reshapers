@@ -36,9 +36,18 @@ use Hash::Merge;
 #===========================================================
 
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
-our sub get-titanic-dataset(Str:D :$headers = 'auto', --> Positional) is export {
+our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
     my $csv = Text::CSV.new;
     my $fileHandle = %?RESOURCES<dfTitanic.csv>;
+
+    # Here takes https://github.com/Tux/CSV/blob/master/doc/Text-CSV.md#detect-bom
+    # it is documented that:
+    #    If headers is supplied, it should be an Array of column names,
+    #    a Bool, a Hash, a Callable, or a literal flag: auto, lc, uc, or skip.
+    given $headers {
+        when Whatever { $headers = 'auto' }
+        when $_ ~~ Str and $_.lc eq 'none' { $headers = 'skip' }
+    }
 
     my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
 
@@ -49,9 +58,14 @@ our sub get-titanic-dataset(Str:D :$headers = 'auto', --> Positional) is export 
 #===========================================================
 
 #| Get the Lake Mead levels dataset. Returns Positional[Hash] or Positional[Array].
-our sub get-lake-mead-levels-dataset(Str:D :$headers = 'auto', --> Positional) is export {
+our sub get-lake-mead-levels-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
     my $csv = Text::CSV.new;
     my $fileHandle = %?RESOURCES<dfLakeMeadLevels.csv>;
+
+    given $headers {
+        when Whatever { $headers = 'auto' }
+        when $_ ~~ Str and $_.lc eq 'none' { $headers = 'skip' }
+    }
 
     my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
 
