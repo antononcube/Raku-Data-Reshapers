@@ -27,58 +27,127 @@ my @b = [{ :A("a"), :D("k"), :E(15) },
 plan 9;
 
 ## 1
-is-deeply join-across(@a, @b, 'A', join-spec => 'Inner').sort,
-        [{ :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
-         { :A("a"), :B("n"), :C(5), :D("i"), :E(13) }].sort,
+my @res1 =
+        (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+         ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+         ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)},
+         ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+         ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+         ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+         ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+         ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+         ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+         ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+         ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+         ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+         ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)},
+         ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)},
+         ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
+is-deeply
+        join-across(@a, @b, 'A', join-spec => 'Inner').sort,
+        @res1.sort,
         'join across inner';
 
 ## 2
-is-deeply join-across(@a, @b, 'A', join-spec => 'Left', :!fill).sort,
-        [{ :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
-         { :A("g"), :B("i"), :C(3) },
-         { :A("a"), :B("n"), :C(5), :D("i"), :E(13) }].sort,
+my @res2 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("g"), :B("i"), :C(3)}, ${:A("g"), :B("n"), :C(4)},
+            ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
+is-deeply
+        join-across(@a, @b, 'A', join-spec => 'Left', :!fill).sort,
+        @res2.sort,
         'join across left, no fill';
 
 
 ## 3
-is-deeply join-across(@a, @b, 'A', join-spec => 'Left', :fill, missing-value => 'Whatever').sort,
-        [{ :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
-         { :A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever') },
-         { :A("a"), :B("n"), :C(5), :D("i"), :E(13) }].sort,
+
+# Same as @res2 except the added :D('Whatever'), :E('Whatever') .
+my @res3 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever')}, ${:A("g"), :B("n"), :C(4), :D('Whatever'), :E('Whatever')},
+            ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
+is-deeply
+        join-across(@a, @b, 'A', join-spec => 'Left', :fill, missing-value => 'Whatever').sort,
+        @res3.sort,
         'join across left, with fill';
 
 
 ## 4
-is-deeply join-across(@a, @b, 'A', join-spec => 'Right', :!fill).sort,
-        [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
-         { :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
-         { :A("b"), :D("k"), :E(13) }].sort,
-        'join across inner, with no fill';
+
+my @res4 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("b"), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
+is-deeply
+        join-across(@a, @b, 'A', join-spec => 'Right', :!fill).sort,
+        @res4.sort,
+        'join across right, with no fill';
 
 
 ## 5
+
+my @res5 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
 is-deeply join-across(@a, @b, 'A', join-spec => 'Right', :fill, missing-value => 'Whatever').sort,
-        [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
-         { :A("l"), :B("n"), :C(3), :D("i"), :E(13) },
-         { :A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13) }].sort,
-        'join across inner, with fill';
+        @res5.sort,
+        'join across right, with fill';
 
 
 ## 6
+my @res6 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("b"), :D("k"), :E(13)}, ${:A("g"), :B("i"), :C(3)},
+            ${:A("g"), :B("n"), :C(4)}, ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
 is-deeply join-across(@a, @b, 'A', join-spec => 'Outer', :!fill).sort,
-        [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
-         { :A("g"), :B("i"), :C(3) },
-         { :A("b"), :D("k"), :E(13) },
-         { :A("l"), :B("n"), :C(3), :D("i"), :E(13) }].sort,
-        'join across inner, with fill';
+        @res6.sort,
+        'join across outer, with fill';
 
 ## 7
+
+my @res7 = (${:A("a"), :B("i"), :C(4), :D("i"), :E(13)}, ${:A("a"), :B("i"), :C(4), :D("i"), :E(13)},
+            ${:A("a"), :B("i"), :C(4), :D("k"), :E(15)}, ${:A("a"), :B("i"), :C(4), :D("r"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)}, ${:A("a"), :B("n"), :C(5), :D("i"), :E(13)},
+            ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("k"), :E(15)},
+            ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)}, ${:A("a"), :B("n"), :C(5), :D("r"), :E(15)},
+            ${:A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13)}, ${:A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever')},
+            ${:A("g"), :B("n"), :C(4), :D('Whatever'), :E('Whatever')}, ${:A("l"), :B("n"), :C(3), :D("i"), :E(13)},
+            ${:A("l"), :B("n"), :C(3), :D("k"), :E(13)}, ${:A("l"), :B("n"), :C(3), :D("k"), :E(15)});
+
 is-deeply join-across(@a, @b, 'A', join-spec => 'Outer', :fill, missing-value => 'Whatever').sort,
-        [{ :A("a"), :B("n"), :C(5), :D("i"), :E(13) },
-         { :A("g"), :B("i"), :C(3), :D('Whatever'), :E('Whatever') },
-         { :A("b"), :B('Whatever'), :C('Whatever'), :D("k"), :E(13) },
-         { :A("l"), :B("n"), :C(3), :D("i"), :E(13) }].sort,
-        'join across inner, with fill';
+        @res7.sort,
+        'join across outer, with fill';
 
 ## 8
 is-deeply join-across(@a, @b, 'A', join-spec => 'Semi').sort,
