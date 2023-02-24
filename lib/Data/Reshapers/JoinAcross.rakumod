@@ -12,8 +12,14 @@ use Data::Reshapers::Predicates;
 unit module Data::Reshapers::JoinAcross;
 
 #===========================================================
-sub make-combined-key( %h, @keys, Str :$sep = ':::' ) {
-    return @keys.map({ %h{$_} }).join($sep)
+proto sub make-combined-key(%h, |) {*}
+
+multi sub make-combined-key(%h, $key, Str :$sep = ':::') {
+    return make-combined-key(%h, [$key,], :$sep);
+}
+
+multi sub make-combined-key(%h, @keys, Str :$sep = ':::') {
+    return @keys.map({ %h{$_} }).join($sep);
 }
 
 #===========================================================
@@ -31,7 +37,7 @@ multi JoinAcross(@a, @b, @keys, *%args) {
     my %keyMap;
     if @keys.all ~~ Str {
         %keyMap = @keys.map({ $_ => $_ })
-    } elsif @keys.all ~~ Pair  {
+    } elsif @keys.all ~~ Pair {
         %keyMap = @keys
     } else {
         die 'When the third argument is an array then it is expected to be an array of strings or an array of pairs.'
@@ -85,7 +91,8 @@ multi JoinAcross(@a, @b, %keyMap, Str :$join-spec where *.lc (elem) <anti semi>,
 #| Join across (SQL JOIN) for arrays of hashes.
 multi JoinAcross(@a, @b, %keyMap, Str :$join-spec = 'Inner',
                  Bool :$fill = True, :$missing-value = Whatever,
-                 :&key-collision-function = WhateverCode) {
+                 :&key-collision-function = WhateverCode,
+                 Str :$sep = ':::') {
 
     if $join-spec.lc !(elem) <Inner Left Right Outer>>>.lc {
         die "The argument 'join-spec' is expected to be one of 'Anti', 'Inner', 'Left', 'Right', or 'Outer'.";
@@ -99,19 +106,12 @@ multi JoinAcross(@a, @b, %keyMap, Str :$join-spec = 'Inner',
         die "The second argument is expected to be an array of hashes."
     }
 
-    my (%ah, %bh);
-    if %keyMap.elems == 1 {
-        my $akey = %keyMap.first.key;
-        my $bkey = %keyMap.first.value;
-
-        %ah = @a.map({ $_{$akey} => $_ });
-        %bh = @b.map({ $_{$bkey} => $_ });
-    } elsif %keyMap.elems > 1 {
-        %ah = @a.map({ make-combined-key($_, %keyMap.keys) => $_ });
-        %bh = @b.map({ make-combined-key($_, %keyMap.values) => $_ });
-    } else {
+    if %keyMap.elems == 0 {
         die 'The third argument is expected to be non-empty value.'
     }
+
+    my %ah = @a.classify({ make-combined-key($_, %keyMap.keys) });
+    my %bh = @b.classify({ make-combined-key($_, %keyMap.values) });
 
     my $commonKeys =
             do if $join-spec.lc eq 'inner' {
@@ -123,18 +123,28 @@ multi JoinAcross(@a, @b, %keyMap, Str :$join-spec = 'Inner',
             } elsif $join-spec.lc eq 'outer' {
                 Set(%ah.keys) (|) Set(%bh.keys)
             } else {
-                die "Uknown join spec: $join-spec."
+                die "Unknown join spec: $join-spec."
             }
 
-    my @res = push(%ah.grep({ $_.key (elem) $commonKeys }).Hash, %bh.grep({ $_.key (elem) $commonKeys }).Hash );
+    my @grandRes;
+    for $commonKeys.keys -> $k {
 
-    my @res2 = @res.map({ $_.value.reduce( { merge-hash($^a, $^b, :!deep) } ) });
-
-    if $fill {
-        my $allKeys = Set(@res2>>.keys);
-        my %default = $allKeys.keys Z=> ($missing-value xx $allKeys);
-        @res2 = @res2.map({ merge-hash(%default, $_ ) })
+        if (%ah{$k}:exists) && (%bh{$k}:exists) {
+            my @res = %ah{$k}.Array X %bh{$k}.Array;
+            my @res2 = @res.map({ merge-hash($_[0], $_[1], :!deep) });
+            @grandRes.append(@res2)
+        } elsif $join-spec.lc ∈ <left outer> && (%ah{$k}:exists)  {
+            @grandRes.append(%ah{$k}.Array)
+        } elsif $join-spec.lc ∈ <right outer> && (%bh{$k}:exists) {
+            @grandRes.append(%bh{$k}.Array)
+        }
     }
 
-    return @res2;
+    if $fill {
+        my $allKeys = Set(@grandRes>>.keys);
+        my %default = $allKeys.keys Z=> ($missing-value xx $allKeys);
+        @grandRes = @grandRes.map({ merge-hash(%default, $_) })
+    }
+
+    return @grandRes;
 }
