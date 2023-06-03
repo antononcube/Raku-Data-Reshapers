@@ -4,6 +4,7 @@ use lib './lib';
 use lib '.';
 
 use Data::Reshapers;
+use Data::TypeSystem;
 
 use Test;
 
