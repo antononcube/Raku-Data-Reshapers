@@ -97,8 +97,11 @@ to-pretty-table($tres, title => "Transposed");
 
 ## Type system
 
-There is a type "deduction" system in place. The type system conventions follow
-those of Mathematica's 
+Earlier versions of the package implemented a type "deduction" system. 
+Currently, the type system is provided by the package [
+"Data::TypeSystem"](https://resources.wolframcloud.com/FunctionRepository), [AAp1].
+
+The type system conventions follow those of Mathematica's 
 [`Dataset`](https://reference.wolfram.com/language/ref/Dataset.html) 
 -- see the presentation 
 ["Dataset improvements"](https://www.wolfram.com/broadcast/video.php?c=488&p=4&disp=list&v=3264).
@@ -121,6 +124,7 @@ to-pretty-table(@dsTitanic.pick(5).List, field-names => <id passengerAge passeng
 Here is the type of a single record:
 
 ```perl6
+use Data::TypeSystem;
 deduce-type(@dsTitanic[12])
 ```
 
@@ -232,8 +236,10 @@ deduce-type(@valArr)
        - [X] List of hashes
        - [X] Hash of hashes
        - [X] List of lists
+       - 
+14. [X] DONE Refactor the type system into a separate package.
 
-14. [X] DONE "Simple" or fundamental functions 
+15. [X] DONE "Simple" or fundamental functions 
     - [X] `flatten`
     - [X] `take-drop`
     - [X] `tally`
@@ -277,6 +283,10 @@ deduce-type(@valArr)
 (2019),
 [Wolfram Function Repository](https://resources.wolframcloud.com/FunctionRepository).
 
+[AAp1] Anton Antonov,
+[Data::TypeSystem Raku package](https://github.com/antononcube/Raku-Data-TypeSystem),
+(2023),
+[GitHub/antononcube](https://github.com/antononcube).
 
 ### Videos
 

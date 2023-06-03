@@ -1,6 +1,6 @@
 # Raku Data::Reshapers
 
-[![Actions Status](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/test.yml/badge.svg)](https://github.com/antononcube/Raku-Data-Reshapers/actions)
+[![SparkyCI](http://ci.sparrowhub.io/project/gh-antononcube-Raku-Data-Reshapers/badge)](http://ci.sparrowhub.io)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
 This Raku package has data reshaping functions for different data structures that are 
@@ -53,10 +53,10 @@ to-pretty-table($res);
 ```
 ```
 # +--------+-----+-----+-----+
-# |        | 2nd | 1st | 3rd |
+# |        | 2nd | 3rd | 1st |
 # +--------+-----+-----+-----+
-# | female | 106 | 144 | 216 |
-# | male   | 171 | 179 | 493 |
+# | female | 106 | 216 | 144 |
+# | male   | 171 | 493 | 179 |
 # +--------+-----+-----+-----+
 ```
 
@@ -72,30 +72,30 @@ my @tbl1 = @tbl.roll(3);
 .say for @tbl1;
 ```
 ```
-# {id => 1291, passengerAge => 50, passengerClass => 3rd, passengerSex => female, passengerSurvival => survived}
-# {id => 335, passengerAge => 30, passengerClass => 2nd, passengerSex => male, passengerSurvival => died}
-# {id => 245, passengerAge => 40, passengerClass => 1st, passengerSex => male, passengerSurvival => died}
+# {id => 671, passengerAge => 30, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
+# {id => 1256, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
+# {id => 796, passengerAge => -1, passengerClass => 3rd, passengerSex => male, passengerSurvival => died}
 ```
 
 ```perl6
 .say for to-long-format( @tbl1 );
 ```
 ```
-# {AutomaticKey => 0, Value => 1291, Variable => id}
+# {AutomaticKey => 0, Value => male, Variable => passengerSex}
+# {AutomaticKey => 0, Value => 30, Variable => passengerAge}
+# {AutomaticKey => 0, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 0, Value => 671, Variable => id}
 # {AutomaticKey => 0, Value => 3rd, Variable => passengerClass}
-# {AutomaticKey => 0, Value => survived, Variable => passengerSurvival}
-# {AutomaticKey => 0, Value => 50, Variable => passengerAge}
-# {AutomaticKey => 0, Value => female, Variable => passengerSex}
-# {AutomaticKey => 1, Value => 335, Variable => id}
-# {AutomaticKey => 1, Value => 2nd, Variable => passengerClass}
-# {AutomaticKey => 1, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 1, Value => 30, Variable => passengerAge}
 # {AutomaticKey => 1, Value => male, Variable => passengerSex}
-# {AutomaticKey => 2, Value => 245, Variable => id}
-# {AutomaticKey => 2, Value => 1st, Variable => passengerClass}
-# {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
-# {AutomaticKey => 2, Value => 40, Variable => passengerAge}
+# {AutomaticKey => 1, Value => -1, Variable => passengerAge}
+# {AutomaticKey => 1, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 1, Value => 1256, Variable => id}
+# {AutomaticKey => 1, Value => 3rd, Variable => passengerClass}
 # {AutomaticKey => 2, Value => male, Variable => passengerSex}
+# {AutomaticKey => 2, Value => -1, Variable => passengerAge}
+# {AutomaticKey => 2, Value => died, Variable => passengerSurvival}
+# {AutomaticKey => 2, Value => 796, Variable => id}
+# {AutomaticKey => 2, Value => 3rd, Variable => passengerClass}
 ```
 
 ```perl6
@@ -103,18 +103,18 @@ my @lfRes1 = to-long-format( @tbl1, 'id', [], variablesTo => "VAR", valuesTo => 
 .say for @lfRes1;
 ```
 ```
-# {VAL2 => survived, VAR => passengerSurvival, id => 1291}
-# {VAL2 => 50, VAR => passengerAge, id => 1291}
-# {VAL2 => female, VAR => passengerSex, id => 1291}
-# {VAL2 => 3rd, VAR => passengerClass, id => 1291}
-# {VAL2 => died, VAR => passengerSurvival, id => 245}
-# {VAL2 => 40, VAR => passengerAge, id => 245}
-# {VAL2 => male, VAR => passengerSex, id => 245}
-# {VAL2 => 1st, VAR => passengerClass, id => 245}
-# {VAL2 => died, VAR => passengerSurvival, id => 335}
-# {VAL2 => 30, VAR => passengerAge, id => 335}
-# {VAL2 => male, VAR => passengerSex, id => 335}
-# {VAL2 => 2nd, VAR => passengerClass, id => 335}
+# {VAL2 => died, VAR => passengerSurvival, id => 1256}
+# {VAL2 => male, VAR => passengerSex, id => 1256}
+# {VAL2 => 3rd, VAR => passengerClass, id => 1256}
+# {VAL2 => -1, VAR => passengerAge, id => 1256}
+# {VAL2 => died, VAR => passengerSurvival, id => 671}
+# {VAL2 => male, VAR => passengerSex, id => 671}
+# {VAL2 => 3rd, VAR => passengerClass, id => 671}
+# {VAL2 => 30, VAR => passengerAge, id => 671}
+# {VAL2 => died, VAR => passengerSurvival, id => 796}
+# {VAL2 => male, VAR => passengerSex, id => 796}
+# {VAL2 => 3rd, VAR => passengerClass, id => 796}
+# {VAL2 => -1, VAR => passengerAge, id => 796}
 ```
 
 ### Wide format
@@ -126,13 +126,13 @@ the result has the same records as the `@tbl1`:
 to-pretty-table( to-wide-format( @lfRes1, 'id', 'VAR', 'VAL2' ) );
 ```
 ```
-# +------+--------------+--------------+----------------+-------------------+
-# |  id  | passengerSex | passengerAge | passengerClass | passengerSurvival |
-# +------+--------------+--------------+----------------+-------------------+
-# | 1291 |    female    |      50      |      3rd       |      survived     |
-# | 245  |     male     |      40      |      1st       |        died       |
-# | 335  |     male     |      30      |      2nd       |        died       |
-# +------+--------------+--------------+----------------+-------------------+
+# +-------------------+----------------+--------------+------+--------------+
+# | passengerSurvival | passengerClass | passengerSex |  id  | passengerAge |
+# +-------------------+----------------+--------------+------+--------------+
+# |        died       |      3rd       |     male     | 1256 |      -1      |
+# |        died       |      3rd       |     male     | 671  |      30      |
+# |        died       |      3rd       |     male     | 796  |      -1      |
+# +-------------------+----------------+--------------+------+--------------+
 ```
 
 ### Transpose
@@ -148,10 +148,10 @@ to-pretty-table($res, title => "Original");
 # +--------------------------+
 # |         Original         |
 # +--------+-----+-----+-----+
-# |        | 1st | 3rd | 2nd |
+# |        | 1st | 2nd | 3rd |
 # +--------+-----+-----+-----+
-# | female | 144 | 216 | 106 |
-# | male   | 179 | 493 | 171 |
+# | female | 144 | 106 | 216 |
+# | male   | 179 | 171 | 493 |
 # +--------+-----+-----+-----+
 ```
 
@@ -161,21 +161,24 @@ to-pretty-table($tres, title => "Transposed");
 ```
 # +---------------------+
 # |      Transposed     |
-# +-----+------+--------+
-# |     | male | female |
-# +-----+------+--------+
-# | 1st | 179  |  144   |
-# | 2nd | 171  |  106   |
-# | 3rd | 493  |  216   |
-# +-----+------+--------+
+# +-----+--------+------+
+# |     | female | male |
+# +-----+--------+------+
+# | 1st |  144   | 179  |
+# | 2nd |  106   | 171  |
+# | 3rd |  216   | 493  |
+# +-----+--------+------+
 ```
 
 ------
 
 ## Type system
 
-There is a type "deduction" system in place. The type system conventions follow
-those of Mathematica's 
+Earlier versions of the package implemented a type "deduction" system. 
+Currently, the type system is provided by the package [
+"Data::TypeSystem"](https://resources.wolframcloud.com/FunctionRepository), [AAp1].
+
+The type system conventions follow those of Mathematica's 
 [`Dataset`](https://reference.wolfram.com/language/ref/Dataset.html) 
 -- see the presentation 
 ["Dataset improvements"](https://www.wolfram.com/broadcast/video.php?c=488&p=4&disp=list&v=3264).
@@ -198,20 +201,21 @@ Here is a sample of dataset's records:
 to-pretty-table(@dsTitanic.pick(5).List, field-names => <id passengerAge passengerClass passengerSex passengerSurvival>)
 ```
 ```
-# +------+--------------+----------------+--------------+-------------------+
-# |  id  | passengerAge | passengerClass | passengerSex | passengerSurvival |
-# +------+--------------+----------------+--------------+-------------------+
-# | 1096 |      -1      |      3rd       |    female    |        died       |
-# |  73  |      30      |      1st       |    female    |      survived     |
-# | 1108 |      20      |      3rd       |     male     |        died       |
-# | 915  |      30      |      3rd       |     male     |        died       |
-# |  88  |      30      |      1st       |     male     |      survived     |
-# +------+--------------+----------------+--------------+-------------------+
+# +-----+--------------+----------------+--------------+-------------------+
+# |  id | passengerAge | passengerClass | passengerSex | passengerSurvival |
+# +-----+--------------+----------------+--------------+-------------------+
+# | 743 |      40      |      3rd       |     male     |      survived     |
+# | 157 |      40      |      1st       |     male     |        died       |
+# | 659 |      0       |      3rd       |    female    |      survived     |
+# | 228 |      20      |      1st       |    female    |      survived     |
+# | 738 |      20      |      3rd       |     male     |        died       |
+# +-----+--------------+----------------+--------------+-------------------+
 ```
 
 Here is the type of a single record:
 
 ```perl6
+use Data::TypeSystem;
 deduce-type(@dsTitanic[12])
 ```
 ```
@@ -224,7 +228,7 @@ Here is the type of single record's values:
 deduce-type(@dsTitanic[12].values.List)
 ```
 ```
-# Tuple([Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str)), Atom((Str))])
+# Tuple([Atom((Str)), Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str))])
 ```
 
 Here is the type of the whole dataset:
@@ -338,8 +342,10 @@ deduce-type(@valArr)
        - [X] List of hashes
        - [X] Hash of hashes
        - [X] List of lists
+       - 
+14. [X] DONE Refactor the type system into a separate package.
 
-14. [X] DONE "Simple" or fundamental functions 
+15. [X] DONE "Simple" or fundamental functions 
     - [X] `flatten`
     - [X] `take-drop`
     - [X] `tally`
@@ -383,6 +389,10 @@ deduce-type(@valArr)
 (2019),
 [Wolfram Function Repository](https://resources.wolframcloud.com/FunctionRepository).
 
+[AAp1] Anton Antonov,
+[Data::TypeSystem Raku package](https://github.com/antononcube/Raku-Data-TypeSystem),
+(2023),
+[GitHub/antononcube](https://github.com/antononcube).
 
 ### Videos
 
