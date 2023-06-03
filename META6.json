@@ -1,13 +1,14 @@
 {
   "name": "Data::Reshapers",
   "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
   ],
   "auth": "zef:antononcube",
   "depends": [
+    "Data::TypeSystem:ver<0.1.0+>",
     "Hash::Merge:ver<2.0.0+>:api<2+>",
     "Text::CSV:ver<0.010+>",
     "Pretty::Table:ver<0.0.4+>"
@@ -19,18 +20,14 @@
     "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
     "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
     "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
-    "Data::Reshapers::Predicates": "lib/Data/Reshapers/Predicates.rakumod",
     "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
     "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
     "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
-    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod",
-    "Data::Reshapers::TypeSystem": "lib/Data/Reshapers/TypeSystem.rakumod"
+    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
   },
   "resources": [
     "dfLakeMeadLevels.csv",
-    "dfTitanic.csv",
-    "Data-Reshapers.puml",
-    "Data-Reshapers-TypeSystem.puml"
+    "dfTitanic.csv"
   ],
   "license": "Artistic-2.0",
   "tags": [
