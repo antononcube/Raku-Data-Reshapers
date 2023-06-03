@@ -455,8 +455,6 @@ multi record-types($data) {
 #    return $ts.deduce-type($data, :$tally);
 #}
 
-require Data::TypeSystem;
-
 #===========================================================
 #| Completes each of the records of the given dataset to have column names found across all records.
 #| C<$data> -- Dataset.
