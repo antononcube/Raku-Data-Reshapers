@@ -1,4 +1,4 @@
-use Data::Reshapers::Predicates;
+use Data::TypeSystem::Predicates;
 
 unit module Data::Reshapers::Adapters;
 

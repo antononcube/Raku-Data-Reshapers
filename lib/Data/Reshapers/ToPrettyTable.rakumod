@@ -17,7 +17,7 @@ different data structures coercible to full-arrays.
 
 use Pretty::Table;
 use Data::Reshapers::Adapters;
-use Data::Reshapers::Predicates;
+use Data::TypeSystem::Predicates;
 use Hash::Merge;
 
 unit module Data::Reshapers::ToPrettyTable;

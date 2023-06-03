@@ -15,7 +15,7 @@ different data structures coercible to full-arrays.
 
 =end pod
 
-use Data::Reshapers::Predicates;
+use Data::TypeSystem::Predicates;
 use Data::Reshapers::Adapters;
 
 unit module Data::Reshapers::Transpose;

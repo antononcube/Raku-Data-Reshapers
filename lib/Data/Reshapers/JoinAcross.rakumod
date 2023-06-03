@@ -7,7 +7,7 @@ C<Data::Reshapers::JoinAcross> package module has functions that join two arrays
 =end pod
 
 use Hash::Merge;
-use Data::Reshapers::Predicates;
+use Data::TypeSystem::Predicates;
 
 unit module Data::Reshapers::JoinAcross;
 

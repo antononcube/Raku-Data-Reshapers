@@ -23,16 +23,16 @@ different data structures coercible to full-arrays.
 
 unit module Data::Reshapers::CrossTabulate;
 
-use Data::Reshapers::TypeSystem;
+use Data::TypeSystem;
 
 #===========================================================
 our proto CrossTabulate(|) is export {*}
 
 #-----------------------------------------------------------
 #| Count or sum using two or three columns wrt number of columns.
-multi CrossTabulate($tbl where Data::Reshapers::TypeSystem.is-reshapable(Positional, Positional, $tbl)) {
+multi CrossTabulate($tbl where Data::TypeSystem::Examiner.is-reshapable(Positional, Positional, $tbl)) {
 
-    if Data::Reshapers::TypeSystem.has-homogeneous-shape($tbl) {
+    if Data::TypeSystem::Examiner.has-homogeneous-shape($tbl) {
         given $tbl[0].elems {
             when 1 { return CrossTabulate($tbl, 0); }
             when 2 { return CrossTabulate($tbl, 0, 1); }

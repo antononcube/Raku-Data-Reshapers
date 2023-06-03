@@ -29,8 +29,8 @@ use Data::Reshapers::ToWideFormat;
 use Data::Reshapers::JoinAcross;
 use Data::Reshapers::ToPrettyTable;
 use Data::Reshapers::Transpose;
-use Data::Reshapers::Predicates;
-use Data::Reshapers::TypeSystem;
+use Data::TypeSystem;
+use Data::TypeSystem::Predicates;
 use Hash::Merge;
 
 #===========================================================
@@ -46,7 +46,7 @@ our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is
     #    a Bool, a Hash, a Callable, or a literal flag: auto, lc, uc, or skip.
     given $headers {
         when Whatever { $headers = 'auto' }
-        when $_ ~~ Str and $_.lc eq 'none' { $headers = 'skip' }
+        when 'none' { $headers = 'skip' }
     }
 
     my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
@@ -431,11 +431,11 @@ multi stratified-take-drop(@data, $spec, @labels, Bool :$hash = True) {
 our proto is-reshapable($data, |) is export {*}
 
 multi is-reshapable($data, *%args) {
-    return Data::Reshapers::TypeSystem.is-reshapable($data, |%args);
+    return Data::TypeSystem.is-reshapable($data, |%args);
 }
 
 multi is-reshapable($iterable-type, $record-type, $data) {
-    Data::Reshapers::TypeSystem.is-reshapable($data, :$iterable-type, :$record-type)
+    Data::TypeSystem.is-reshapable($data, :$iterable-type, :$record-type)
 }
 
 #===========================================================
@@ -443,17 +443,19 @@ multi is-reshapable($iterable-type, $record-type, $data) {
 our proto record-types($data) is export {*}
 
 multi record-types($data) {
-    return Data::Reshapers::TypeSystem.record-types($data);
+    return Data::TypeSystem.record-types($data);
 }
 
 #===========================================================
 #| Deduces the type of the given argument.
-our proto deduce-type($data,|) is export {*}
+#our proto deduce-type($data,|) is export {*}
+#
+#multi deduce-type($data, UInt :$max-enum-elems = 6, UInt :$max-struct-elems = 16, UInt :$max-tuple-elems = 16, Bool :$tally = False) {
+#    my $ts = Data::TypeSystem::Examiner.new(:$max-enum-elems, :$max-struct-elems, :$max-tuple-elems);
+#    return $ts.deduce-type($data, :$tally);
+#}
 
-multi deduce-type($data, UInt :$max-enum-elems = 6, UInt :$max-struct-elems = 16, UInt :$max-tuple-elems = 16, Bool :$tally = False) {
-    my $ts = Data::Reshapers::TypeSystem.new(:$max-enum-elems, :$max-struct-elems, :$max-tuple-elems);
-    return $ts.deduce-type($data, :$tally);
-}
+require Data::TypeSystem;
 
 #===========================================================
 #| Completes each of the records of the given dataset to have column names found across all records.
