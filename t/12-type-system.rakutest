@@ -4,7 +4,6 @@ use lib './lib';
 use lib '.';
 
 use Data::Reshapers;
-use Data::TypeSystem;
 
 use Test;
 
@@ -41,39 +40,39 @@ my %dsRandNum = ('a' ... 'z')[^@dsRandNum.elems] Z=> @dsRandNum;
 plan 11;
 
 # 1
-is deduce-type(@dsTitanic),
+is Data::TypeSystem::deduce-type(@dsTitanic),
         'Vector(Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str]), 1309)';
 
 # 2
-is deduce-type(@dsTitanic[12]),
+is Data::TypeSystem::deduce-type(@dsTitanic[12]),
         'Struct([id, passengerAge, passengerClass, passengerSex, passengerSurvival], [Str, Int, Str, Str, Str])';
 
 # 3
-is deduce-type(@dsTitanic[12].sort({ $_.key })>>.value.List),
+is Data::TypeSystem::deduce-type(@dsTitanic[12].sort({ $_.key })>>.value.List),
         'Tuple([Atom((Str)), Atom((Int)), Atom((Str)), Atom((Str)), Atom((Str))])';
 
 # 4
-is deduce-type(@dsTitanic[12]<passengerClass>),
+is Data::TypeSystem::deduce-type(@dsTitanic[12]<passengerClass>),
         'Atom((Str))';
 
 # 5
-is deduce-type(@dsRandNum),
+is Data::TypeSystem::deduce-type(@dsRandNum),
         "Vector(Assoc(Atom((Str)), Atom((Numeric)), { @dsRandNum[0].elems }), { @dsRandNum.elems })";
 
 # 6
-is deduce-type(%dsRandNum),
+is Data::TypeSystem::deduce-type(%dsRandNum),
         "Assoc(Atom((Str)), Assoc(Atom((Str)), Atom((Numeric)), { @dsRandNum[0].elems }), { @dsRandNum.elems })";
 
 # 7
-is deduce-type(@dsTitanic.pick(3).map({ $_.sort({ $_.key }) })>>.Array),
+is Data::TypeSystem::deduce-type(@dsTitanic.pick(3).map({ $_.sort({ $_.key }) })>>.Array),
         "Vector(Tuple([Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Int))), Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Str))), Pair(Atom((Str)), Atom((Str)))]), 3)";
 
 # 8
-is deduce-type(%hRand.pairs.List):!tally,
+is Data::TypeSystem::deduce-type(%hRand.pairs.List):!tally,
         'Vector((Any), 20)';
 
 # 9
-is deduce-type(%hRand.pairs.List):tally,
+is Data::TypeSystem::deduce-type(%hRand.pairs.List):tally,
         'Tuple([Pair(Atom((Str)), Atom((Numeric))) => 10, Pair(Atom((Str)), Atom((Str))) => 10], 20)';
 
 # 10
@@ -94,7 +93,7 @@ my @dsIRC10 = [{ :DateString("2020-12-23"),
                  :TimeBucket("2021-11-18_2"), :Timestamp("2021-11-18Z02:36"),
                  :Weekday(4) }];
 
-is deduce-type(@dsIRC10),
+is Data::TypeSystem::deduce-type(@dsIRC10),
         'Vector(Struct([DateString, DateTime, Nick, TimeBucket, Timestamp, Weekday], [Str, DateTime, Str, Str, Str, Int]), 4)';
 
 # 11
@@ -103,7 +102,7 @@ my @dsTable11 = [{ :Date(Date.new(2020, 12, 23)), :Nick("Watson"), :Weekday(3/7)
                  { :Date(Date.new(2020, 8, 6)), :Nick("Jimi"), :Weekday(4/5) },
                  { :Date(Date.new(2021, 11, 18)), :Nick("Tucker"), :Weekday(4/9) }];
 
-is deduce-type(@dsTable11),
+is Data::TypeSystem::deduce-type(@dsTable11),
         'Vector(Struct([Date, Nick, Weekday], [Date, Str, Rat]), 4)';
 
 done-testing;
