@@ -143,7 +143,7 @@ multi dimensions(%arg -->List) {
         }
         return (%arg.elems, $first.elems)
     } else {
-        return (%arg.elems)
+        return (%arg.elems,)
     }
 }
 
@@ -155,22 +155,26 @@ multi dimensions(@arg -->List) {
         }
         return (@arg.elems, $first.elems)
     } else {
-        return (@arg.elems)
+        return (@arg.elems,)
     }
 }
 
 #===========================================================
 our proto select-columns(|) is export {*}
 
+multi select-columns($data, :vars(:$column-names)!, :&chooser = &infix:<(elem)>) {
+    return select-columns($data, $column-names, :&chooser);
+}
+
 multi select-columns($data, Whatever, :&chooser = &infix:<(elem)>) {
     return $data;
 }
 
 multi select-columns($data, Str $var, :&chooser = &infix:<(elem)>) {
-    return select-columns($data, [$var,])
+    return select-columns($data, [$var,], :&chooser)
 }
 
-multi select-columns(@data, %mapper) {
+multi select-columns(@data, %mapper, :&chooser = &infix:<(elem)>) {
     return rename-columns(select-columns(@data, %mapper.keys), %mapper)
 }
 
@@ -189,7 +193,7 @@ multi select-columns(@data, @vars, :&chooser = &infix:<(elem)>) {
     }
 }
 
-multi select-columns(%data, %mapper) {
+multi select-columns(%data, %mapper, :&chooser = &infix:<(elem)>) {
     return rename-columns(select-columns(%data, %mapper.keys), %mapper)
 }
 
@@ -206,8 +210,12 @@ multi select-columns(%data, @vars, :&chooser = &infix:<(elem)>) {
 #===========================================================
 our proto rename-columns(|) is export {*}
 
+multi rename-columns(@data, :map($mapper)!) {
+    return rename-columns(@data, $mapper);
+}
+
 multi rename-columns(@data, Pair $map) {
-    return rename-columns(@data, %($map))
+    return rename-columns(@data, %($map));
 }
 
 multi rename-columns(@data, %mapper) {
@@ -220,7 +228,7 @@ multi rename-columns(@data, %mapper) {
 }
 
 multi rename-columns(%data, Pair $map) {
-    return rename-columns(%data, %($map))
+    return rename-columns(%data, %($map));
 }
 
 multi rename-columns(%data, %mapper) {
@@ -235,20 +243,24 @@ multi rename-columns(%data, %mapper) {
 #===========================================================
 our proto delete-columns(|) is export {*}
 
+multi delete-columns($data, :vars(:$column-names)!) {
+    return delete-columns($data, $column-names);
+}
+
 multi delete-columns($data, Str $var) {
-    return delete-columns($data, [$var,])
+    return delete-columns($data, [$var,]);
 }
 
 multi delete-columns(@data, @vars) {
-    return select-columns(@data, @vars, chooser => &infix:<∉>)
+    return select-columns(@data, @vars, chooser => &infix:<∉>);
 }
 
 multi delete-columns(%data, Str $var) {
-    return delete-columns(%data, [$var,])
+    return delete-columns(%data, [$var,]);
 }
 
 multi delete-columns(%data, @vars) {
-    return select-columns(%data, @vars, chooser => &infix:<∉>)
+    return select-columns(%data, @vars, chooser => &infix:<∉>);
 }
 
 #===========================================================
@@ -259,8 +271,12 @@ multi delete-columns(%data, @vars) {
 #| C<:$sep> - A separator to used in the new var-func column names.
 our proto summarize-at(|) is export {*}
 
+multi summarize-at($data, :vars($column-names)!, :f(&func)!, Str :$sep = '.') {
+    return summarize-at($data, $column-names, &func, :$sep);
+}
+
 multi summarize-at($data, $vars, &func, Str :$sep = '.') {
-    return summarize-at($data, $vars, [&func,], :$sep)
+    return summarize-at($data, $vars, [&func,], :$sep);
 }
 
 multi summarize-at($data, $vars, @funcs, Str :$sep = '.') {
@@ -297,6 +313,10 @@ multi summarize-at($data, $vars, @funcs, Str :$sep = '.') {
 #| C<@vars> - Variables to group with.
 #| C<:$sep> - A separator to use for the keys corresponding to the groups.
 our proto group-by(|) is export {*}
+
+multi group-by($data, :vars(:$column-names)!, Str :$sep = '.') {
+    return group-by($data, $column-names, :$sep)
+}
 
 multi group-by($data, Str $var, Str :$sep = '.') {
     return group-by($data, [$var, ], :$sep)
@@ -377,7 +397,15 @@ multi flatten (%h) {
 #| where C<$list1> contains the first C<$n> elements of C<@list> and C<$list2> contains the rest.
 #| C<take-drop(@list, @pos)> finds the complement C<@not-pos=((^@list.elems) (-) @pos).keys>
 #| and gives the pair C<(@list[@pos], @list[@not-pos])>.
-our proto sub take-drop(@data, $spec) is export {*}
+our proto sub take-drop(@data,|) is export {*}
+
+multi take-drop(@data, :$spec = Whatever) {
+    return take-drop(@data, $spec);
+}
+
+multi take-drop(@data, Whatever) {
+    return take-drop(@data, 0.75);
+}
 
 multi take-drop(@data, Numeric $ratio where 0 ≤ $ratio < 1) {
     return take-drop(@data, round($ratio * @data.elems));
@@ -404,7 +432,11 @@ multi take-drop(@data, @pos) {
 #===========================================================
 #| C<stratified-take-drop(@data, $spec, $labels)> applies the function C<take-drop($_, $spec)>
 #| over stratified @data groups.
-our proto sub stratified-take-drop(@data, $spec, $labels, Bool :$hash = True) is export {*}
+our proto sub stratified-take-drop(@data, |) is export {*}
+
+multi stratified-take-drop(@data, :$spec!, :$labels!, Bool :$hash = True) {
+    return stratified-take-drop(@data, $spec, $labels, :$hash);
+}
 
 multi stratified-take-drop(@data, $spec, Str $label, Bool :$hash = True) {
     return stratified-take-drop(@data, $spec, [$label, ], :$hash);
