@@ -80,7 +80,7 @@ my @dsRand = [{ :Label("yes"), :Normal(11.971013254520807e0), :Pet("Tommie"), :R
               { :Label("mu"), :Normal(11.02608935949652e0), :Pet("Molly"), :Real(6.9442655402459526e0), :Word("review") }];
 
 
-plan 7;
+plan 9;
 
 # 1
 dies-ok { stratified-take-drop([{ Label => 1 },], 4, <Label>); }, '[{Label=>1},] 4, <Label>';
@@ -111,5 +111,14 @@ is-deeply group-by($split2<drop>, <Label Word>)>>.elems,
         {'mu.Carica' => 3, 'mu.review' => 3, 'no.Carica' => 5, 'no.review' => 6, 'yes.Carica' => 7, 'yes.review' => 5},
         'Expected drop elems of hash result';
 
+## 8
+is-deeply
+        stratified-take-drop(@dsRand, spec => 0.5, labels => <Label Word>, :!hash)>>.elems,
+        stratified-take-drop(@dsRand, 0.5, <Label Word>, :!hash)>>.elems;
+
+## 9
+is-deeply
+        group-by($split2<take>, column-names => <Label Word>)>>.elems,
+        group-by($split2<take>, <Label Word>)>>.elems;
 
 done-testing;

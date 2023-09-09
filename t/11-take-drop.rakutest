@@ -10,7 +10,7 @@ use Test;
 my @list = 0 ... 20;
 my @list2 = 'a' ... 'z';
 
-plan 12;
+plan 14;
 
 # 1
 dies-ok { take-drop([], 12) }, '[] 12';
@@ -57,5 +57,15 @@ is take-drop(@list, 0.3)[0],
 is take-drop(@list2, 1)[0],
         ('a',),
         '0.6 of a-z';
+
+# 13
+is
+        take-drop(@list2, Whatever),
+        take-drop(@list2, 0.75);
+
+# 13
+is
+        take-drop(@list2, spec => 0.5),
+        take-drop(@list2, 0.5);
 
 done-testing;
