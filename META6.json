@@ -1,7 +1,7 @@
 {
   "name": "Data::Reshapers",
   "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "perl": "6.d",
   "authors": [
     "Anton Antonov"
