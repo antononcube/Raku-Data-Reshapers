@@ -38,7 +38,7 @@ use Hash::Merge;
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
 our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
     my $csv = Text::CSV.new;
-    my $fileHandle = %?RESOURCES<dfTitanic.csv>;
+    my $fileResource = %?RESOURCES<dfTitanic.csv>;
 
     # Here takes https://github.com/Tux/CSV/blob/master/doc/Text-CSV.md#detect-bom
     # it is documented that:
@@ -49,7 +49,7 @@ our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is
         when 'none' { $headers = 'skip' }
     }
 
-    my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
+    my @tbl = $csv.csv(in => $fileResource.open, :$headers);
 
     return @tbl;
 }
@@ -60,14 +60,14 @@ our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is
 #| Get the Lake Mead levels dataset. Returns Positional[Hash] or Positional[Array].
 our sub get-lake-mead-levels-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
     my $csv = Text::CSV.new;
-    my $fileHandle = %?RESOURCES<dfLakeMeadLevels.csv>;
+    my $fileResource = %?RESOURCES<dfLakeMeadLevels.csv>;
 
     given $headers {
         when Whatever { $headers = 'auto' }
         when $_ ~~ Str and $_.lc eq 'none' { $headers = 'skip' }
     }
 
-    my @tbl = $csv.csv(in => $fileHandle.Str, :$headers);
+    my @tbl = $csv.csv(in => $fileResource.open, :$headers);
 
     return @tbl;
 }
