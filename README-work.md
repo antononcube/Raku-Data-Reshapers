@@ -1,7 +1,9 @@
 # Raku Data::Reshapers
 
-[![SparkyCI](http://ci.sparrowhub.io/project/gh-antononcube-Raku-Data-Reshapers/badge)](http://ci.sparrowhub.io)
-[![Build Status](https://app.travis-ci.com/antononcube/Raku-Data-Reshapers.svg?branch=main)](https://app.travis-ci.com/github/antononcube/Raku-Data-Reshapers)
+[![MacOS](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/macos.yml/badge.svg)](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/macos.yml)
+[![Linux](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/linux.yml/badge.svg)](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/linux.yml)
+[![Win64](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/windows.yml/badge.svg)](https://github.com/antononcube/Raku-Data-Reshapers/actions/workflows/windows.yml)
+[![https://raku.land/zef:antononcube/Data::Reshapers](https://raku.land/zef:antononcube/Data::Reshapers/badges/version)](https://raku.land/zef:antononcube/Data::Reshapers)
 [![License: Artistic-2.0](https://img.shields.io/badge/License-Artistic%202.0-0298c3.svg)](https://opensource.org/licenses/Artistic-2.0)
 
 This Raku package has data reshaping functions for different data structures that are 
