@@ -12,9 +12,9 @@ unit module Data::Reshapers::ToWideFormat;
 #===========================================================
 our proto auto-aggregator(|) is export {*}
 
-multi auto-aggregator(Num @vec ) { @vec.sum }
+multi auto-aggregator(@vec where @vec.all ~~ Numeric:D) { @vec.sum }
 
-multi auto-aggregator(Str @vec) { @vec.join(', ') }
+multi auto-aggregator(@vec where @vec.all ~~ Str:D) { @vec.join(', ') }
 
 multi auto-aggregator($vec) {
     my Num @arr;
