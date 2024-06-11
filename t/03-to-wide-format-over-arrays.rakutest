@@ -15,7 +15,7 @@ TBD...
 
 )
 
-plan 3;
+plan 4;
 
 ## 1
 ok @tblHeaders.isa(Array) and
@@ -39,5 +39,27 @@ is-deeply
         @wfRes1.sort,
         @wfRes2.sort,
         'wide-format equivalence between positional and optional calls';
+
+##-----------------------------------------------------------
+## 4
+my @arr41 = ${:group("Cities"), :x(0), :y(<103/1822>)},
+            ${:group("Cities"), :x(1), :y(<3659/32796>)},
+            ${:group("Cities"), :x(2), :y(<1361/8199>)},
+            ${:group("Cities"), :x(3), :y(<200/911>)},
+            ${:group("Cities"), :x(4), :y(<971/3644>)};
+
+my @arr42 = ${:group("Populations"), :x(0), :y(<18850511/132248859>)},
+            ${:group("Populations"), :x(1), :y(<60157397/264497718>)},
+            ${:group("Populations"), :x(2), :y(<13496497/44082953>)},
+            ${:group("Populations"), :x(3), :y(<48896489/132248859>)},
+            ${:group("Populations"), :x(4), :y(<36373957/88165906>)};
+
+my @arrWide4 = to-wide-format([|@@arr41, |@arr42], <x>, <group>, <y>);
+
+is
+        (@arrWide4.map(*<Cities>).all ~~ Numeric:D) && (@arrWide4.map(*<Populations>).all ~~ Numeric:D),
+        True,
+        "The original numeric values are still numeric after wide form conversation";
+
 
 done-testing;
