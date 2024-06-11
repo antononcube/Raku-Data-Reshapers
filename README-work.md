@@ -13,7 +13,7 @@ The supported data structures are:
   - Positional-of-hashes
   - Positional-of-arrays
  
-The five data reshaping provided by the package over those data structures are:
+The most important data reshaping provided by the package over those data structures are:
 
 - Cross tabulation, `cross-tabulate`
 - Long format conversion, `to-long-format`
@@ -26,6 +26,24 @@ see [AA1, Wk1, Wk2, AAv1-AAv2].
 
 (Transposing of tabular data is, of course, also fundamental, but it also can be seen as a
 basic functional programming operation.)
+
+There are other reshaping functions for:
+
+- Flattening and tallying, 
+- Simple and stratified (dataset) splitting
+- Taking, renaming, and deleting of table columns,
+- Table column separation
+
+An overview is given in (some part of) the presentation 
+["TRC 2022 Implementation of ML algorithms in Raku"](https://youtu.be/efRHfjYebs4?si=-KHucA8exZ8Cxx-w&t=1335),
+[AAv4]. 
+
+More detailed explanations of the data wrangling methodology and workflows is given in the article
+["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/), [AA2]. 
+(And its Bulgarian version [AA3].)
+
+This package is one of the translation targets of the interpreter(s) provided by the package
+["DSL::English::DataQueryWorkflows"](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows), [AAp2].
 
 ------
 
@@ -170,7 +188,7 @@ deduce-type(@valArr)
 
 3. [ ] TODO More extensive wide format tests.
 
-4. [ ] TODO Implement verifications for:
+4. [X] DONE Implement verifications for:
    
     - See the type system implementation -- it has all of functionalities listed here.
     
@@ -260,6 +278,16 @@ deduce-type(@valArr)
 (2016), 
 [MathematicaForPrediction at WordPress](https://mathematicaforprediction.wordpress.com).
 
+[AA2] Anton Antonov,
+["Introduction to data wrangling with Raku"](https://rakuforprediction.wordpress.com/2021/12/31/introduction-to-data-wrangling-with-raku/),
+(2021),
+[RakuForPrediction at WordPress](https://rakuforprediction.wordpress.com).
+
+[AA3] Anton Antonov,
+["Увод в обработката на данни с Raku"](https://rakuforprediction.wordpress.com/2022/05/24/увод-в-обработката-на-данни-с-raku/),
+(2022),
+[RakuForPrediction at WordPress](https://rakuforprediction.wordpress.com).
+
 [Wk1] Wikipedia entry, [Contingency table](https://en.wikipedia.org/wiki/Contingency_table).
 
 [Wk2] Wikipedia entry, [Wide and narrow data](https://en.wikipedia.org/wiki/Wide_and_narrow_data).
@@ -291,6 +319,11 @@ deduce-type(@valArr)
 (2023),
 [GitHub/antononcube](https://github.com/antononcube).
 
+[AAp2] Anton Antonov,
+[DSL::English::DataQueryWorkflows Raku package](https://github.com/antononcube/Raku-DSL-English-DataQueryWorkflows),
+(2022-2024),
+[GitHub/antononcube](https://github.com/antononcube).
+
 ### Videos
 
 [AAv1] Anton Antonov,
@@ -308,3 +341,8 @@ deduce-type(@valArr)
 ["Data Transformation Workflows with Anton Antonov, Session #2"](https://www.youtube.com/watch?v=DWGgFsaEOsU),
 (2020),
 [YouTube channel of Wolfram Research, Inc.](https://www.youtube.com/channel/UCJekgf6k62CQHdENWf2NgAQ).
+
+[AAv4] Anton Antonov,
+["TRC 2022 Implementation of ML algorithms in Raku](https://youtu.be/efRHfjYebs4?si=-KHucA8exZ8Cxx-w),
+(2022),
+[YouTube/@AAA4Prediction](https://www.youtube.com/@AAA4prediction).
