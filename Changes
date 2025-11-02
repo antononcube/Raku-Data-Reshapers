@@ -4,3 +4,5 @@ Revision history for "Data::Reshapers"
     - The function &cross-tabulate produces sparse matrices with the option :sparse.
         - If the package "Math::SparseMatrix" is not installed and error message is given.
         - I.e. there "Data::Reshapers" does not depend on "Math::SparseMatrix".
+    - Kebab-case can be used for option names of &to-wide-format and &to-long-format.
+        - Only camelCase was supported previously.
