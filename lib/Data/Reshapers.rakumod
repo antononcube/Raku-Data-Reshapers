@@ -33,6 +33,37 @@ use Data::TypeSystem;
 use Data::TypeSystem::Predicates;
 use Hash::Merge;
 
+#============================================================
+# Check utilities
+#============================================================
+# These are taken for "App::Rak" by lizmat.
+
+my $MathSparseMatrix;
+
+# Sane way of quitting
+my sub meh($message) is hidden-from-backtrace {
+    die $message.ends-with('.' | '?')
+            ?? $message
+            !! "$message.";
+}
+
+# Quit if module not installed
+my sub meh-not-installed($module, $feature) is hidden-from-backtrace {
+    meh qq:to/MEH/.chomp;
+Must have the $module module installed to do $feature.
+You can do this by running 'zef install $module'.
+MEH
+}
+
+# check Math::SparseMatrix availability
+my sub check-MathSparseMatrix(str $name) {
+    unless $MathSparseMatrix {
+        CATCH { meh-not-installed 'Math::SparseMatrix', "$name" }
+        require Math::SparseMatrix;
+        $MathSparseMatrix := Math::SparseMatrix;
+    }
+}
+
 #===========================================================
 
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
@@ -77,8 +108,15 @@ our sub get-lake-mead-levels-dataset(Str:D :$headers is copy = 'auto', --> Posit
 #===========================================================
 our proto cross-tabulate(|) is export {*}
 
-multi cross-tabulate(**@args) {
-    Data::Reshapers::CrossTabulate::CrossTabulate(|@args)
+multi cross-tabulate(**@args, Bool:D :$sparse=False) {
+    if $sparse {
+        check-MathSparseMatrix('Cross tabulation to sparse matrix');
+        my %ct = Data::Reshapers::CrossTabulate::CrossTabulate(|@args);
+        my @dataset = %ct.kv.map( -> $k, %v { %v.map({ %(from => $k, to => $_.key, weight => $_.value) }) }).map(*.Slip);
+        $MathSparseMatrix.new(edge-dataset => @dataset):directed
+    } else {
+        Data::Reshapers::CrossTabulate::CrossTabulate(|@args)
+    }
 }
 
 #===========================================================
