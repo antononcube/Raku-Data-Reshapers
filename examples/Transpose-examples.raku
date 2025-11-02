@@ -1,7 +1,6 @@
 #!/usr/bin/env perl6
 
-use lib './lib';
-use lib '.';
+# use lib <. lib>
 
 use Data::Reshapers;
 
