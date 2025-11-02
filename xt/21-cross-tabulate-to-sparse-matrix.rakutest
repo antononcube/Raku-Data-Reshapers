@@ -1,0 +1,41 @@
+use Test;
+
+# use lib <. lib>
+
+use Data::Reshapers;
+# Note that this package is not in META6.json.
+# Hence, this file is an ./xt test.
+use Math::SparseMatrix;
+
+my @tblHeaders = get-titanic-dataset(headers => 'auto');
+my @tblNoHeaders = get-titanic-dataset(headers => 'none');
+
+plan *;
+
+## 1
+subtest {
+    ok cross-tabulate(@tblHeaders, 'passengerClass', 'passengerSex', :sparse),
+            'ok to call with :sparse';
+
+    ok cross-tabulate(@tblHeaders, 'passengerSex', 'passengerClass', 'passengerAge', :!sparse),
+            'ok to call with :!sparse';
+
+}, 'ok to use :sparse and :!sparse';
+
+## 2
+isa-ok
+        cross-tabulate(@tblHeaders, 'passengerClass', 'passengerSex', :sparse),
+        Math::SparseMatrix:D,
+        'expected Math::SparseMatrix object';
+
+#cross-tabulate(@tblHeaders, 'passengerClass', 'passengerSex', 'passengerAge', :sparse).print;
+
+## 3
+my $res3 = cross-tabulate(@tblHeaders, 'passengerClass', 'passengerSex', 'passengerAge', :!sparse);
+say $res3.raku;
+is
+        $res3 ~~ Map:D && $res3.values.all ~~ Map:D,
+        True,
+        'expected hashmap of hashmaps with :!sparse';
+
+done-testing;
