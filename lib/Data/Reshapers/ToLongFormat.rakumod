@@ -19,11 +19,11 @@ multi ToLongFormat(@tbl) {
 
 #-----------------------------------------------------------
 multi ToLongFormat(@tbl,
-                   :idColumns(:$identifierColumns) = Whatever,
-                   :varColumns(:$variableColumns) = Whatever,
-                   Str:D :$automaticKeysTo = 'AutomaticKey',
-                   Str:D :$variablesTo = 'Variable',
-                   Str:D :$valuesTo = 'Value') {
+                   :id-columns(:idColumns(:$identifierColumns)) = Whatever,
+                   :var-columns(:varColumns(:$variableColumns)) = Whatever,
+                   Str:D :automatic-keys-to(:$automaticKeysTo) = 'AutomaticKey',
+                   Str:D :variables-to(:$variablesTo) = 'Variable',
+                   Str:D :values-to(:$valuesTo) = 'Value') {
     ToLongFormat(@tbl, $identifierColumns, $variableColumns, :$automaticKeysTo, :$valuesTo, :$variablesTo)
 }
 
@@ -32,9 +32,9 @@ multi ToLongFormat(@tbl,
 multi ToLongFormat(@tbl,
                    $idColsSpec,
                    $valColsSpec = Whatever,
-                   Str:D :$automaticKeysTo = 'AutomaticKey',
-                   Str:D :$variablesTo = 'Variable',
-                   Str:D :$valuesTo = 'Value') {
+                   Str:D :automatic-keys-to(:$automaticKeysTo) = 'AutomaticKey',
+                   Str:D :variables-to(:$variablesTo) = 'Variable',
+                   Str:D :values-to(:$valuesTo) = 'Value') {
 
     # Coerce into array-of-hashes
     my Hash @arr-of-hashes;

@@ -31,18 +31,22 @@ our proto ToWideFormat(|) is export {*}
 #| To long form conversion for arrays of hashes.
 multi ToWideFormat(@tbl,
                    :$identifierColumns = Whatever,
-                   Str:D :$variablesFrom,
-                   Str:D :$valuesFrom,
-                   Str:D :$automaticKeysTo = 'AutomaticKey',
-                   :&aggregationFunction = &auto-aggregator) {
+                   Str:D :variables-from(:$variablesFrom)!,
+                   Str:D :values-from(:$valuesFrom)!,
+                   Str:D :automatic-keys-to(:$automaticKeysTo) = 'AutomaticKey',
+                   :agg-func(:aggregation-function(:&aggregationFunction)) = &auto-aggregator) {
 
     ToWideFormat( @tbl, $identifierColumns, $variablesFrom, $valuesFrom, :$automaticKeysTo, :&aggregationFunction)
 }
 
 #-----------------------------------------------------------
 #| To long form conversion for arrays of hashes.
-multi ToWideFormat(@tbl, $idColsSpec, Str:D $variableColName, Str:D $valueColName,
-                     Str:D :$automaticKeysTo = 'AutomaticKey', :&aggregationFunction = &auto-aggregator) {
+multi ToWideFormat(@tbl,
+                   $idColsSpec,
+                   Str:D $variableColName,
+                   Str:D $valueColName,
+                   Str:D :automatic-keys-to(:$automaticKeysTo) = 'AutomaticKey',
+                   :agg-func(:aggregation-function(:&aggregationFunction)) = &auto-aggregator) {
 
     # Coerce into array-of-hashes
     my Hash @arr-of-hashes;
