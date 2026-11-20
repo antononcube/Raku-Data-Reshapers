@@ -22,7 +22,6 @@ different data structures (full arrays, Red tables, Text::CSV tables.)
 
 unit module Data::Reshapers;
 
-use Text::CSV;
 use Data::Reshapers::CrossTabulate;
 use Data::Reshapers::ToLongFormat;
 use Data::Reshapers::ToWideFormat;
@@ -67,20 +66,29 @@ my sub check-MathSparseMatrix(str $name) {
 #===========================================================
 
 #| Get the Titanic dataset. Returns Positional[Hash] or Positional[Array].
-our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
-    my $csv = Text::CSV.new;
+#| C<:$headers> One of True, False, "auto", "automatic", or Whatever.
+our sub get-titanic-dataset(:$headers is copy = Whatever, --> Positional) is export {
     my $fileResource = %?RESOURCES<dfTitanic.csv>;
 
-    # Here takes https://github.com/Tux/CSV/blob/master/doc/Text-CSV.md#detect-bom
-    # it is documented that:
-    #    If headers is supplied, it should be an Array of column names,
-    #    a Bool, a Hash, a Callable, or a literal flag: auto, lc, uc, or skip.
-    given $headers {
-        when Whatever { $headers = 'auto' }
-        when 'none' { $headers = 'skip' }
+    $headers = do given $headers {
+        when Whatever { True }
+        when $_ ~~ Bool:D { $_ }
+        when $_ ~~ Str:D && $_.lc ∈ <auto automatic> { True }
+        default { False }
     }
 
-    my @tbl = $csv.csv(in => $fileResource.open, :$headers);
+    my @tbl = slurp($fileResource.IO).lines.map({ $_.subst('"',:g).split(',') });
+
+    my @column-names = |@tbl.head;
+    @tbl.shift;
+
+    # 1st and 2nd elements of each row are integers,
+    # but the 1st is an identifier, hence keeping it a string.
+    @tbl .= map({ my @row = |$_; @row[2] .= Int; @row });
+
+    if $headers {
+        @tbl = @tbl.map({ @column-names Z=> $_.Array })>>.Hash;
+    }
 
     return @tbl;
 }
@@ -89,16 +97,21 @@ our sub get-titanic-dataset(Str:D :$headers is copy = 'auto', --> Positional) is
 #===========================================================
 
 #| Get the Lake Mead levels dataset. Returns Positional[Hash] or Positional[Array].
-our sub get-lake-mead-levels-dataset(Str:D :$headers is copy = 'auto', --> Positional) is export {
-    my $csv = Text::CSV.new;
+#| C<:$headers> One of True, False, "auto", "automatic", or Whatever.
+our sub get-lake-mead-levels-dataset(:$headers is copy = Whatever, --> Positional) is export {
     my $fileResource = %?RESOURCES<dfLakeMeadLevels.csv>;
 
-    given $headers {
-        when Whatever { $headers = 'auto' }
-        when $_ ~~ Str and $_.lc eq 'none' { $headers = 'skip' }
-    }
+    # All row elements are numbers
+    my @tbl = slurp($fileResource.IO).lines.map({
+        $_.subst('"',:g).split(',')>>.trim>>.subst(/ '.' $ /, '.0', :g)>>.Numeric
+    });
 
-    my @tbl = $csv.csv(in => $fileResource.open, :$headers);
+    my @column-names = |@tbl.head;
+    @tbl.shift;
+
+    if $headers {
+        @tbl = @tbl.map({ @column-names Z=> $_.Array })>>.Hash;
+    }
 
     return @tbl;
 }
