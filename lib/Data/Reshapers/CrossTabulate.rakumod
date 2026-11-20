@@ -9,6 +9,7 @@ different data structures coercible to full-arrays.
 
     use Data::Reshapers;
     use Data::Reshapers::CrossTabulate;
+    use Text::CSV;
 
     my @tbl = get-titanic-dataset();
 

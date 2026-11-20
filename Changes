@@ -1,5 +1,9 @@
 Revision history for "Data::Reshapers"
 
+0.4.0 2026-11-20
+    - Refactoring: removed the package's data ingestion via "Text::CSV".
+        - Using built-in operators / subs only.
+
 0.3.8 2025-11-01
     - The function &cross-tabulate produces sparse matrices with the option :sparse.
         - If the package "Math::SparseMatrix" is not installed and error message is given.

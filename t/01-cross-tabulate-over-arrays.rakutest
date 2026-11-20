@@ -39,8 +39,12 @@ ok @array-of-arrays.isa(Array[Array]);
 ##-----------------------------------------------------------
 
 ## 4
-my Hash %res0 = "1st" => %(:female(144), :male(179)), "2nd" => %(:female(106), :male(171)), "3rd" => %(:male(493),
-                                                                                                       :female(216));
+my Hash %res0 =
+        "1st" => %(:female(144), :male(179)),
+        "2nd" => %(:female(106), :male(171)),
+        "3rd" => %(:male(493), :female(216))
+        ;
+
 ok
         %res0.isa(Hash[Hash]),
         "expected result for counts";
