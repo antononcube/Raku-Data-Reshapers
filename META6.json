@@ -1,50 +1,47 @@
 {
-  "name": "Data::Reshapers",
-  "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
-  "version": "0.3.8",
-  "perl": "6.d",
-  "authors": [
-    "Anton Antonov"
-  ],
-  "auth": "zef:antononcube",
-  "depends": [
-    "Data::TypeSystem:ver<0.1.2+>",
-    "Hash::Merge:ver<2.0.0+>:api<2+>",
-    "Text::CSV:ver<0.010+>",
-    "Pretty::Table:ver<0.0.4+>"
-  ],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "Data::Reshapers": "lib/Data/Reshapers.rakumod",
-    "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
-    "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
-    "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
-    "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
-    "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
-    "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
-    "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
-  },
-  "resources": [
-    "dfLakeMeadLevels.csv",
-    "dfTitanic.csv"
-  ],
-  "license": "Artistic-2.0",
-  "tags": [
-    "contingency table",
-    "cross tabulate",
-    "cross tabulation",
-    "data",
-    "dataset",
-    "long form",
-    "long format",
-    "narrow format",
-    "reshape",
-    "schema",
-    "transpose",
-    "wide form",
-    "wide format"
-  ],
-  "api": "1",
-  "source-url": "https://github.com/antononcube/Raku-Data-Reshapers.git"
+    "name": "Data::Reshapers",
+    "description": "Data reshaping functions for different data structures (arrays, lists of hashes, Text::CSV tables.)",
+    "version": "0.4.0",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "depends": [
+        "Data::TypeSystem:ver<0.1.2+>",
+        "Hash::Merge:ver<2.0.0+>:api<2+>",
+        "Pretty::Table:ver<0.0.4+>"
+    ],
+    "build-depends": [],
+    "provides": {
+        "Data::Reshapers": "lib/Data/Reshapers.rakumod",
+        "Data::Reshapers::Adapters": "lib/Data/Reshapers/Adapters.rakumod",
+        "Data::Reshapers::CrossTabulate": "lib/Data/Reshapers/CrossTabulate.rakumod",
+        "Data::Reshapers::JoinAcross": "lib/Data/Reshapers/JoinAcross.rakumod",
+        "Data::Reshapers::ToLongFormat": "lib/Data/Reshapers/ToLongFormat.rakumod",
+        "Data::Reshapers::ToPrettyTable": "lib/Data/Reshapers/ToPrettyTable.rakumod",
+        "Data::Reshapers::ToWideFormat": "lib/Data/Reshapers/ToWideFormat.rakumod",
+        "Data::Reshapers::Transpose": "lib/Data/Reshapers/Transpose.rakumod"
+    },
+    "resources": [
+        "dfLakeMeadLevels.csv",
+        "dfTitanic.csv"
+    ],
+    "license": "Artistic-2.0",
+    "tags": [
+        "contingency table",
+        "cross tabulate",
+        "cross tabulation",
+        "data",
+        "dataset",
+        "long form",
+        "long format",
+        "narrow format",
+        "reshape",
+        "schema",
+        "transpose",
+        "wide form",
+        "wide format"
+    ],
+    "api": "1",
+    "source-url": "https://github.com/antononcube/Raku-Data-Reshapers.git"
 }
